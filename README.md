@@ -1,6 +1,6 @@
 # DRMF-Seeding-Project
 
-This project is meant to convert raw TeX files into WikiText.
+This project is meant to convert different designated source formats to WediaWiki WiWiText.
 
 ##Usage
 
