@@ -1,5 +1,4 @@
-Seeding-Project
-===============
+# DRMF-Seeding-Project
 
 This project is meant to convert raw TeX files into WikiText.
 
