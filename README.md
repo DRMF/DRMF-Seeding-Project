@@ -2,6 +2,8 @@
 
 This project is meant to convert different designated source formats to MediaWiki WikiText.
 
+## MediaWiki Wikitext Generation
+
 ## Alex Danoff Seeding Source Code
 
 To achieve the desired result, one should execute the progams in the following order (using the output of the previous program as input for the next one):
