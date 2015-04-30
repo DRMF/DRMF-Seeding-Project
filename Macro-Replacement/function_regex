@@ -1,0 +1,438 @@
+\pochhammer{a}{n}`p
+`
+open_paren + r'?\(([^();]*?)' + close_paren + r'?\)_(?P<open>{)?([^=\n\s,]+?)(?(open)})'~-~
+open_paren + r'?\(([^=;\n()]*?)\(([^=;\n()]*?)\)([^=;\n()]*?)' + close_paren + r'?\)_(?P<open>{)?([^=\n\s,]+?)(?(open)})'
+`
+r'\pochhammer{\1}{\3}'~-~
+r'\pochhammer{\1(\2)\3}{\5}'
+`
+Pochhammer's symbol~?~
+
+\qPochhammer{a}{q}{n}`qP
+`
+r'(?P<open>' + open_paren + r')?\(([^;()]*?);([^;()\\]*?)(?(open)' + close_paren + r')\)_(\\[A-Za-z0-9]+)'~-~
+r'(?P<open>' + open_paren + r')?\(([^;()]+);([^;()]+)(?(open)' + close_paren + r')\)_(?P<open_2>{)?([^=; ]+?)(?(open_2)})'~-~
+r'(?P<open>' + open_paren + r')?\(([^=;()]*?)\(([^=;()]*?)\)([^=;()]*?);([^=;()]+)(?(open)' + close_paren + r')\)_(\\[A-Za-z0-9]+)'~-~
+r'(?P<open>' + open_paren + r')?\(([^=;()]*?)\(([^=;()]*?)\)([^=;()]*?);([^=;()]+)(?(open)' + close_paren + r')\)_(?P<open_2>{)?([^=;\ |$]+?)(?(open_2)})'~-~
+r'(?P<open>' + open_paren + r')?\(([^=;()]*?)\(([^=;()]*?)\)([^=;()]*?)\(([^=;()]*?)\)([^=;()]*?);([^=;()]+)(?(open)' + close_paren + r')\)_(\\[A-Za-z0-9]+)'~-~
+r'(?P<open>' + open_paren + r')?\(([^=;()]*?)\(([^=;()]*?)\)([^=;()]*?)\(([^=;()]*?)\)([^=;()]*?);([^=;()]+)(?(open)' + close_paren + r')\)_(?P<open_2>{)?([^=;\ |$]+?)(?(open_2)})'
+`
+r'\qPochhammer{\2}{\3}{\4}'~-~
+r'\qPochhammer{\2}{\3}{\5}'~-~
+r'\qPochhammer{\2(\3)\4}{\5}{\6}'~-~
+r'\qPochhammer{\2(\3)\4}{\5}{\7}'~-~
+r'\qPochhammer{\2(\3)\4(\5)\6}{\7}{\8}'~-~
+r'\qPochhammer{\2(\3)\4(\5)\6}{\7}{\9}'
+`
+$q$-factorial (or $q$-shifted factorial)~?~
+
+\HyperpFq{p}{q}@@{a_1,\dots,a_p}{b_1,\dots,b_q}{z}`Hy
+`
+r'\\hyp{?(\d)}?{?(\d)}?{(.+)}{([^{]+)}\s*{(.+)}'~-~
+r'\\hyp{?(\d)}?{?(\d)}?{(.+)}(\w+)\s*{(.+)}'~-~
+r'\\hyp(\d)(\d){(.+?)}\s*{([^{]+?)}(\S{,1})'~-~
+r'\\hyp{(.+?)}{(.+?)}{(.+)}\s*{(.+)}\s*{(.+)}'~-~
+r'(?:\\mbox)*{}_(.?)F_(.?)'
+`
+r'\HyperpFq{\1}{\2}@@{\3}{\4}{\5}'~-~
+r'\HyperpFq{\1}{\2}@@{\3}{\4}{\5}'~-~
+r'\\HyperpFq{\1}{\2}@@{\3}{\4}{\5}'~-~
+r'\\HyperpFq{\1}{\2}@@{\3}{\4}{\5}'~-~
+r'\\HyperpFq{\1}{\2}'
+`
+generalized hypergeometric function~?~
+
+\qHyperrphis{r}{s}@@{a_1,\dots,a_r}{b_1,b_2,\dots,b_s}{q}{z}`qHy
+`
+r'\\qhyp{([^=;|%$]+?)}{([^=;|%$]+?)}{([^=;|{}$]+?)}\s*{([^=;|{}$]+?)}\s*{([^=;|{}$]+?)}(?!{)'~-~
+r'\\qhyp{(\d)}{(\d)}{([^=;|\n$]+)}\s*{([^=;|\n$]+)}\s*{([^=;|\n$]+)}\\,(?!{)'~-~
+r'\\qhyp{(\d)}{(\d)}\s*{([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]*?)}\s*{([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]*?)}\s*{([^=;,|\&$]+?)}\\,'~-~
+r'\\qhyp{(\d)}{(\d)}\s*{([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]*?)}\s*{([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]*?)}\s*{([^=;,|\&$]+?)}\\,'~-~
+r'\\qhyp{(\d)}{(\d)}\s*{([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]*?)}\s*{([^=;,|\&$]*?)}\s*{([^=;,|\&$]+?)}\\,'~-~
+r'\\qhyp{(\d)}{(\d)}\s*{([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]*?)}\s*{([^=;,|\&$]*?)}\s*{([^=;,|\&$]+?)}\\,'~-~
+r'\\qhyp{(\d)}{(\d)}\s*{([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]*?)}(\s*){([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]*?)}(\s*){([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]+?)\\frac{(\d)}{(\d)}([^=;|\&$]*?)}'~-~
+r'\\qhyp{(\d)}{(\d)}\s*{([^=;|\&$]*)\\frac{([^=;|\n\&$]+?)}{([^=;|\n\&$]+?)}([^=;|\&$]*)\\frac{([^=;|\n\&$]+?)}{([^=;|\n\&$]+?)}([^=;|\&$]*)}\s*{([^=;|\&$]+)}\s*{([^=;|\n\&$.]+)}(?!{)'~-~
+r'\\qhyp{(\d)}{(\d)}{([^=;|\&$]+)}\s*{([^=;|\&$]+)}\s*{([^=;|\&$]*)\\frac{([^=;|\n\&$]+?)}{([^=;|\n\&$]+?)}([^=;|\%@&$.]*)}(?!{)'~-~
+r'\\qhyp{([^=;|{}%$]+?)}{([^=;|{}%$]+?)}{([^=;|\&%$]+)}\s*{([^=;|\&%$]+)}\s*{([^=;|\&%$]*)\\frac{([^=;|\n\&%$]+?)}{([^=;|\n\&%$]+?)}([^=;|\&%$.]*)}(?!{)'~-~
+r'\\qhyp{([^=;|%@$]+?)}{([^=;|%@$]+?)}{([^=;|\n0$]+)}\s*{([^=;|\n\-$]+)}\s*{([^=;|\n$]+)}(?!{)'~-~
+r'\\qhyp{(\d)}{(\d)}{([^=;| \&$]+)}\s*{([^=;| \&$]+)}\s*{([^=;| \&$.]+)}\\'~-~
+r'\\qhyp{(\d)}{(\d)}{([^=;|\&$]+)}\s*{([^=;|\&$]+)}\s*{([^=;|\&$.,]+)}(?!{)'~-~
+r'\\qhyp(\d)(\d)(?P<open>{)?([^=;|$]+?)(?(open)})\s*([^}]?){([^=;|$]+?),([^=;|$]+?)}'~-~
+r'\\qhyp{([^=;|@%$]+?)}(?P<open>{)?([^=;|@%$]+?)(?(open)}){([^=;|@%$]+?)}\s*{([^=;|@%$]+?)}{([^=;|@%$]+?)}{([^=;|@%$\n]+?)}'~-~
+r'\\qhyp{([^=;|@%$]+?)}(?P<open>{)?([^=;|@%$]+?)(?(open)}){([^=;|@%$]+?)}\s*{([^=;|@%$]+?)}{([^=;|@%$]+?),([^=;|\n@%$]+?)}'~-~
+r'\\qhypK{([^=;|$]+?)}(?P<open>{)?([^=;|$]+?)(?(open)}){([^=;|@$]+?)}\s*{([^=;|$]+?)}{([^=;|$]+?),([^=;|$]+?)}'~-~
+r'\\qhyp{([^=;|$]+?)}{([^=;|$]+?)}{([^=;|$]+?)}\s*{([^=;|$]+?)}\s*{([^=;|$]+?)}(?!{)'~-~
+r'\\qhypK\s*([a-zA-Z0-9])([a-zA-Z0-9]){([^=;|$]+?)}\s*{([^=;|$]+?)}\s*{([^=;|$,]+?),([^=;|$,]+?)}(?!{)'~-~
+r'\\qhypK\s*([a-zA-Z0-9])([a-zA-Z0-9]){([^=;|$]+?)}\s*([a-zA-Z0-9])\s*{([^=;|$,]+?),([^=;|$,]+?)}(?!{)'~-~
+r'\\qhypK\s*([a-zA-Z0-9])([a-zA-Z0-9])([a-zA-Z0-9\-])\s*([a-zA-Z0-9])\s*{([^=;|$,]+?),([^=;|$,]+?)}(?!{)'~-~
+r'\\qhypK\s*{([^=;|$]+?)}([a-zA-Z0-9]){([^=;|$]+?)}\s*{([^=;|$]+?)}\s*{([^=;|$,]+?),([^=;|$,]+?)}(?!{)'~-~
+r'\\qhypK\s*([a-zA-Z0-9]){([^=;|$]+?)}{([^=;|$]+?)}\s*{([^=;|$]+?)}\s*{([^=;|$,]+?),([^=;|$,]+?)}(?!{)'~-~
+r'\\qhypK\s*{([^=;|$]+?)}{([^=;|$]+?)}{([^=;|$]+?)}\s*{([^=;|$]+?)}\s*{([^=;|$,]+?),([^=;|$,]+?)}(?!{)'~-~
+r'(?:\\mbox)*{}_(.?)\\phi_(.?)'
+`
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{q}{\5}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{q}{\5}\\,'~-~
+r'\qHyperrphis{\1}{\2}@@{\3\\frac{\4}{\5}\6\\frac{\7}{\8}\9\\frac{\10}{\11}\12\\frac{\13}{\14}\15}{\16\\frac{\17}{\18}\19}{q}{\20}\\,'~-~
+r'\qHyperrphis{\1}{\2}@@{\3\\frac{\4}{\5}\6\\frac{\7}{\8}\9\\frac{\10}{\11}\12}{\13\\frac{\14}{\15}\16}{q}{\17}\\,'~-~
+r'\qHyperrphis{\1}{\2}@@{\3\\frac{\4}{\5}\6\\frac{\7}{\8}\9\\frac{\10}{\11}\12\\frac{\13}{\14}\15}{\16}{q}{\17}\\,'~-~
+r'\qHyperrphis{\1}{\2}@@{\3\\frac{\4}{\5}\6\\frac{\7}{\8}\9}{\10}{q}{\11}\\,'~-~
+r'\qHyperrphis{\1}{\2}@@{\3\\frac{\4}{\5}\6\\frac{\7}{\8}\9}\10{\11\\frac{\12}{\13}\14\\frac{\15}{\16}\17}\18{q}{\19\\frac{\20}{\21}\22\\frac{\23}{\24}\25}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3\\frac{\4}{\5}\6\\frac{\7}{\8}\9}{\10}{q}{\11}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{q}{\5\\frac{\6}{\7}\8}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{q}{\5\\frac{\6}{\7}\8}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{q}{\5}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{q}{\5}\\'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{q}{\5}'~-~
+r'\qHyperrphis{\1}{\2}@@{\4}{\5}{\6}{\7}'~-~
+r'\qHyperrphis{\1}{\3}@@{\4}{\5}{\6}{\7}'~-~
+r'\qHyperrphis{\1}{\3}@@{\4}{\5}{\6}{\7}'~-~
+r'\qHyperrphis{\1}{\3}@@{\4}{\5}{\6}{\7}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{q}{\5}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{\5}{\6}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{\5}{\6}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{\5}{\6}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{\5}{\6}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{\5}{\6}'~-~
+r'\qHyperrphis{\1}{\2}@@{\3}{\4}{\5}{\6}'~-~
+r'\qHyperrphis{\1}{\2}'
+`
+basic hypergeometric (or $q$-hypergeometric) function~?~
+
+\qHyperrWs{r}{s}@@{a_1,\dots,a_r}{b_1,b_2,\dots,b_s}{q}{z}`qHw`r'{}_(?P<open>{)?([^=;,|$]+?)(?(open)})W_([^=;,|$]+?)(?P<open_2>\\big)?\(([^=;|$]+?);([^=;|$]+?);(q),([^=;,|$]+?)(?(open_2)\\big)\)'`r'\qHyperrWs{\2}{\3}@@{\5}{\6}{\7}{\8}'`very-well-poised $q$-hypergeometric series~?~
+
+\AppellFiv@{\alpha}{\beta}{\gamma}{\gamma'}{x}{y}`A`r'F_4(?P<open>' + open_paren + r')?\(([^;,]*?),([^,;]*?);([^,;]*?),([^,;]*?);(.*?),([^\)},;]*?)(?(open)' + close_paren + r')\)'~-~r'F_4(?P<open>' + open_paren + r')?\(([^;,]*?),([^,;]*?);([^,;]*?),([^,;]*?);([^,;]*?),(.*)(?(open)' + close_paren + ')\)'~-~r'\$F_4\$'`r'\AppellFiv@{\2}{\3}{\4}{\5}{\6}{\7}'~-~r'\AppellFiv@{\2}{\3}{\4}{\5}{\6}{\7}'~-~r'$\AppellFiv$'`Appell function~?~
+
+\Wilson{n}@{x}{a}{b}{c}{d}`W
+`
+r'W_{([^()=_ ]+)}\s*' + open_paren + r'?\(\s*(?P<_0_arg_1>(?:[^_=\s,;|])+);\s*(?P<_0_arg_2>(?:[^_=\s,;|])+),\s*(?P<_0_arg_3>(?:[^_=\s,;|])+),\s*(?P<_0_arg_4>(?:[^_=\s,;|])+),\s*(?P<_0_arg_5>(?:[^_=\s,;|])+?)' + close_paren + r'?\)'~-~
+r'W_([a-zA-Z0-9])\s*' + open_paren + r'?\(\s*(?P<_0_arg_1>(?:[^_=\s,;|])+);\s*(?P<_0_arg_2>(?:[^_=\s,;|])+),\s*(?P<_0_arg_3>(?:[^_=\s,;|])+),\s*(?P<_0_arg_4>(?:[^_=\s,;|])+),\s*(?P<_0_arg_5>(?:[^_=\s,;|])+?)' + close_paren + r'?\)(?!\\big)'~-~
+r'\$W_n\$'
+`
+r'\Wilson{\1}@{\2}{\3}{\4}{\5}{\6}'~-~
+r'\Wilson{\1}@{\2}{\3}{\4}{\5}{\6}'~-~
+r'$\Wilson{n}$'
+`
+Wilson polynomial~?~
+
+\AlSalamCarlitzI{a}{n}@{x}{q}`ASC1`r'U_(?P<open>{)?([^=;,|$]+?)(?(open)})\^{\(([^=;,|$]+?)\)}(?P<open_2>' + open_paren + r')?\(([^=_;\|$]+?);([^=_;\|$]+?)(?(open_2)' + close_paren + r')\)'`r'\AlSalamCarlitzI{\3}{\2}@{\5}{\6}'`$q$-Al-Salam-Carlitz I polynomial~?~
+
+\AlSalamCarlitzII{a}{n}@{x}{q}`ASC2`r'V_(?P<open>{)?([^=;,|$]+?)(?(open)})\^{\(([^=;,|$]+?)\)}(?P<open_2>' + open_paren + r')?\(([^=_;\|$]+?);([^=_;\|$]+?)(?(open_2)' + close_paren + r')\)'`r'\AlSalamCarlitzII{\3}{\2}@{\5}{\6}'`$q$-Al-Salam-Carlitz II polynomial~?~
+
+\AlSalamChihara{n}@{x}{a}{b}{q}`AS`r'Q_(\w+)' + open_paren + r'?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?)\|\s*q' + close_paren + r'?\)'~-~r'\(Q_(\w+)Q_(\w+)\)' + open_paren + r'?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?);q' + close_paren + r'?\)'`r'\AlSalamChihara{\1}@{\2}{\3}{\4}{q}'~-~r'\AlSalamChihara{\1}@{\3}{\4}{\5}{q}\AlSalamChihara{\2}@{\3}{\4}{\5}{q}'`Al-Salam--Chihara polynomial~?~
+
+\qinvAlSalamChihara{n}@{x}{a}{b}{q^{-1}}`qAS`r'Q_(\w+)' + open_paren + r'?\((.*?);(.*?),(.*?)\|\s*q\^{-1}\s*' + close_paren + r'?\)'~-~r'\(Q_(\w+)Q_(\w+)\)' + open_paren + r'?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?)\|\s*q\^{-1}\s*' + close_paren + r'?\)'`r'\qinvAlSalamChihara{\1}@{\2}{\3}{\4}{q^{-1}}'~-~r'\qinvAlSalamChihara{\1}@{\3}{\4}{\5}{q^{-1}}\qinvAlSalamChihara{\2}@{\3}{\4}{\5}{q^{-1}}'`$q^{-1}$-Al-Salam--Chihara polynomial~?~
+
+\qHahn{n}@{x}{\alpha}{\beta}{N}{q}`qH`r'Q_(?P<open>{)?([^=_^;,|$]+?)(?(open)})' + open_paren + r'?\(([^=_;,|$]+?);([^=_^;,|$]+?),([^=_^;,|$]+?),([^=_^;,|$]+?)\|([^=_^;,|$]+?)' + close_paren + r'?\)'`r'\qHahn{\2}@{\3}{\4}{\5}{\6}{\7}'`$q$-Hahn polynomial~?~
+
+\ctsdualHahn{n}@{x}{a}{b}{c}`HS`r'S_(?P<open>{)?([^=\s\n]+?)(?(open)})' + open_paren + r'?\(([^;=,|]*?);([^;=,|]*?),([^;=,|]*?),([^;=,)\s|$]*?)' + close_paren + r'?\)'~-~r'\$S_(\w+)\$'`r'\ctsdualHahn{\2}@{\3}{\4}{\5}{\6}'~-~r'$\ctsdualHahn{\1}$'`continuous dual Hahn polynomial~?~
+
+\Hahn{n}@{x}{\alpha}{\beta}{N}`HQ`r'Q_(?P<open>{)?([^=\s\n]+?)(?(open)})' + open_paren + r'?\(([^=;,|]*?);([^=;,|]*?),([^=;,|]*?),([^=;,)\s|$]*?)' + close_paren + r'?\)'~-~r'\$Q_(\w+)\$'`r'\Hahn{\2}@{\3}{\4}{\5}{\6}'~-~r'$\Hahn{\1}$'`Hahn polynomial~?~
+
+\dualHahn{n}@{x}{\gamma}{\delta}{N}`HR`r'R_(?P<open>{)?([^=\s\n]+?)(?(open)})' + open_paren + r'?\(([^=;,|]*?);([^=;,|]*?),([^=;,|]*?),([^=;,)\s|$]*?)' + close_paren + r'?\)'~-~r'\$R_(\w+)\$'`r'\dualHahn{\2}@{\3}{\4}{\5}{\6}'~-~r'$\dualHahn{\1}$'`dual Hahn polynomial~?~
+
+\dualqHahn{n}@{x}{\alpha}{\beta}{N}{q}`qHR`r'R_(?P<open>{)?([^=_^;,|$]+?)(?(open)})' + open_paren + r'?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^;,)|$]+?)\|([^;,|)]+?)' + close_paren + r'?\)'`r'\dualqHahn{\2}@{\3}{\4}{\5}{\6}{\7}'`dual $q$-Hahn polynomial~?~
+
+\littleqJacobi{n}@{x}{a}{b}{q}`qJp`r'p_(?P<open>{)?([^=_\^\n$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|\n$]+?);([^=;,|\n$]+?),([^=;,|\n$]+?)\|([^=;,|\n$]+?)(?(open_2)' + close_paren + r')?\)'~-~r'p_(?P<open>{)?([^=_\^\n$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|\n$]+?);([^=;,|\n$]+?),([^=;,|\n$]+?);([^=;,|\n$]+?)(?(open_2)' + close_paren + r')?\)'`r'\littleqJacobi{\2}@{\4}{\5}{\6}{\7}'~-~r'\littleqJacobi{\2}@{\4}{\5}{\6}{\7}'`little $q$-Jacobi polynomial~?~
+
+\bigqJacobiIVparam{n}@{x}{a}{b}{c}{d}{q}`qjP4`r'P_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')?\)'`r'\\bigqJacobiIVparam{\2}@{\4}{\5}{\6}{\7}{\8}{\9}'`big $q$-Jacobi polynomial with four parameters Pn~?~
+
+\bigqJacobi{n}@{x}{a}{b}{c}{q}`qjP`r'P_(?P<open>{)?([^=_\^\n$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,\n$]+?);([^=;,\n$]+?),([^=;,\n$]+?),([^=;,\n$]+?);([^=;,\n$]+?)(?(open_2)' + close_paren + r')?\)'`r'\\bigqJacobi{\2}@{\4}{\5}{\6}{\7}{\8}'`big $q$-Jacobi polynomial Pn~?~
+
+{\ctsqJacobi{\alpha}{\beta}{n}@{x}{q}`CqJ`r'P_(?P<open>{)?(\w+)(?(open)})\^{\((.*?),(.*?)\)}\((.*?)\|(.*?)\)'`r'\\ctsqJacobi{\3}{\4}{\2}@{\5}{\6}'`continuous $q$-Jacobi polynomial~?~
+
+\ctsqJacobiRahman{\alpha}{\beta}{n}@{x}{q}`CqJR`r'P_(?P<open>{)?([\w+-]+)(?(open)})\^{\(([^=;,|$]+?),([^=;,|$]+?)\)}(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\\ctsqJacobiRahman{\3}{\4}{\2}@{\6}{\7}'`PLACEHOLDER~?~
+
+\Jacobi{\alpha}{\beta}{n}@{x}`JP`r'P_{?([\w+-]+)}?\^{\(([^=;,|$]+?),([^=;,|$]+?)\)}(?P<open>' + open_paren + r')?\(([^=;\|]+?)(?(open)' + close_paren + r')\)'`r'\Jacobi{\2}{\3}{\1}@{\5}'`Jacobi polynomial~?~
+
+\normJacobiR{\alpha}{\beta}{n}@{x}`JR`r'R_{?([\w+-]+)}?\^{\((.*?),(.*?)\)}(?P<open>' + open_paren + r')?\(([^=\|]+?)(?(open)' + close_paren + r')\)'`r'\\normJacobiR{\2}{\3}{\1}@{\5}'`normalized Jacobi polynomial~?~
+
+\pseudoJacobi{n}@{x}{c}{N}`pJ`r'P_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?)(?(open_2)' + close_paren + r')?\)'`r'\pseudoJacobi{\2}@{\4}{\5}{\6}'`pseudo Jacobi polynomial~?~
+
+\AskeyWilson{n}@{x}{a}{b}{c}{d}{q}`AW`r'p_(?P<open>{)?([^=;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')?\)'`r'\AskeyWilson{\2}@{\4}{\5}{\6}{\7}{\8}{\9}'`Askey-Wilson polynomial~?~
+
+\qRacah{n}@{x}{\alpha}{\beta}{\gamma}{\delta}{q}`qR`r'R_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\qRacah{\2}@{\4}{\5}{\6}{\7}{\8}{\9}'`$q$-Racah polynomial~?~
+
+\Racah{n}@{x}{a}{b}{c}{d}`R`r'R_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\Racah{\2}@{\4}{\5}{\6}{\7}{\8}'`Racah polynomial~?~
+
+\GottliebLaguerre{n}@{x}`GbL`r'l_(?P<open>{)?([^{}()=,;|$]+)(?(open)})(?<!\mu)(?P<open_2>' + open_paren + r')?\(([^=();_|]+?)(?(open_2)' + close_paren + r')\)'`r'\GottliebLaguerre{\2}@{\4}'`PLACEHOLDER~?~
+
+\Hermite{n}@{x}`H`r'H_(?P<open>{)?([^{}()=]+)(?(open)})(?<!\mu)(?P<open_2>' + open_paren + r')?\(([^=();_|]+?)(?(open_2)' + close_paren + r')\)'`r'\Hermite{\2}@{\4}'`Hermite polynomial Hn~?~
+
+\ctsqHermite{n}@{x}{q}`qH`r'H_{?([^{}()=]+)}?(?<!\mu)' + open_paren + r'?\(([^=;_|]+?)\|([^=;_|]+?)' + close_paren + r'?\)'`r'\ctsqHermite{\1}@{\2}{\3}'`continuous $q$-Hermite polynomial~?~
+
+\ctsbigqHermite{n}@{x}{a}{q}`BqH`r'H_{?([^{}()=]+)}?(?<!\mu)' + open_paren + r'?\(([^=;|]+?);([^=;|]+?)\|([^=;_|]+?)' + close_paren + r'?\)'`r'\ctsbigqHermite{\1}@{\2}{\3}{\4}'`continuous Big $q$-Hermite polynomial~?~
+
+\discrqHermiteI{n}@{x}{q}`qH1`r'(?<!\\wt\s)h_(\w+)' + open_paren + r'?\(([^;]*?);(.*?)' + close_paren + r'?\)'~-~r'(?<!\\wt\s)h_{(.+?)}' + open_paren + r'?\(([^;]*?);(.*?)' + close_paren + r'?\)'`r'\discrqHermiteI{\1}@{\2}{\3}'~-~r'\discrqHermiteI{\1}@{\2}{\3}'`discrete $q$-Hermite I polynomial~?~
+
+\discrqHermiteII{n}@{x}{q}`qH2`r'\\wt\sh_(\w+)' + open_paren + r'?\(([^;]*?);(.*?)' + close_paren + r'?\)'~-~r'\\wt\sh_{(.+?)}' + open_paren + r'?\(([^;]*?);(.*?)' + close_paren + r'?\)'~-~r'{?\\tilde\s*{?h}?}?_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\discrqHermiteII{\1}@{\2}{\3}'~-~r'\discrqHermiteII{\1}@{\2}{\3}'~-~r'\discrqHermiteII{\2}@{\4}{\5}'`discrete $q$-Hermite II polynomial~?~
+
+\GenHermite[\mu]{n}@{x}`GHe`r'H_(?P<open>{)?([^=;,|$]+?)(?(open)})\^(?P<sup>{)?([^=;,|$]+?)(?(sup)})(?P<open_2>' + open_paren + r')?\(([^=_;,.|$]+?)(?(open_2)' + close_paren + r')?\)'`r'\GenHermite[\4]{\2}@{\6}'`PLACEHOLDER~?~
+
+\Laguerre[\alpha]{n}@{x}`L
+`
+r'\$L_(\w+)\^(?P<open_sup>{\()?\(?([^;=$]+?)\)?(?(open_sup)\)})\$'~-~
+r'L_(\w+)\^{\(([^;{$]*?)\)}\(([^;{$]*?)\)'~-~
+r'L_{([^;{$]+?)}\^{\(([^;{$]*?)\)}\(([^;{$]*?)\)'~-~
+r'L_(\w+)\^([^;{$]*?)\(([^;{$]*?)\)'~-~
+r'L_{([^;{$]+?)}\^([^;{$]*?)\(([^;{$]*?)\)'~-~
+r'L_(\w+)\^{\(([^=;$]*?)\\frac{(.+?)}{(.+?)}([^;$]*?)\)}\(([^;{$]*?)\)'~-~
+r'\$L_(\w+)\^(?P<open_sup>{)?\(?([^;$]+?)\)?(?(open_sup)})\$'~-~
+r'L_(\w+)\^{([^;{$]*?)}\(([^;{$]*?)\)'~-~
+r'L_{([^;{$]+?)}\^{([^;{$]*?)}\(([^;{$]*?)\)'~-~
+r'L_(\w+)\^{([^;$]*?)\\frac{(.+?)}{(.+?)}([^;$]*?)}\(([^;{$]*?)\)'
+`
+r'$\Laguerre[\3]{\1}$'~-~
+r'\Laguerre[\2]{\1}@{\3}'~-~
+r'\Laguerre[\2]{\1}@{\3}'~-~
+r'\Laguerre[\2]{\1}@{\3}'~-~
+r'\Laguerre[\2]{\1}@{\3}'~-~
+r'\Laguerre[\2\\frac{\3}{\4}\5]{\1}@{\6}'~-~
+r'$\Laguerre[\3]{\1}$'~-~
+r'\Laguerre[\2]{\1}@{\3}'~-~
+r'\Laguerre[\2]{\1}@{\3}'~-~
+r'\Laguerre[\2\\frac{\3}{\4}\5]{\1}@{\6}'
+`
+Laguerre (or generalized Laguerre) polynomial~?~
+
+\qLaguerre[\alpha]{n}@{x}{q}`qL
+`
+r'L_{([^=;,|$]+?)}\^{\(([^=$]*?)\)}' + open_paren + r'?\(([^;$]*?);([^=$]*?)' + close_paren + r'?\)'~-~
+r'L_(\w+)\^{\(([^=$]*?)\)}' + open_paren + r'?\(([^;$]*?);([^=$]*?)' + close_paren + r'?\)'~-~
+r'L_(\w+)\^{([^=$]*?)}' + open_paren + r'?\(([^;$]*?);([^=$]*?)' + close_paren + r'?\)'~-~
+r'L_(\w+)\^\\(.*?)' + open_paren + r'?\(([^;]*?);([^=]*?)' + close_paren + r'?\)'
+`
+r'\qLaguerre[\2]{\1}@{\3}{\4}'~-~
+r'\qLaguerre[\2]{\1}@{\3}{\4}'~-~
+r'\qLaguerre[\2]{\1}@{\3}{\4}'~-~
+r'\qLaguerre[' + r'\\' + '\g<2>]{\g<1>}@{\g<3>}{\g<4>}'
+`
+$q$-Laguerre polynomial~?~
+
+\Ultra{\lambda}{n}@{x}`U
+`
+r'C_{([^= _,;()|$]+?)}\^(?P<open_sup>{\()?([^= _|{$]+?)(?(open_sup)\)})\(([^=;_$]+?)\)'~-~
+r'C_{([^=; _|()[\]^$]+?)}\^(?P<open_sup>{\()?([^= _|;{[\]$]+)(?(open_sup)\)})'~-~
+r'C_(\w?)\^(?P<open_sup>{\()?([^= _|{$]+?)(?(open_sup)\)})\(([^=;_$]+?)\)'~-~
+r'C_(\w?)\^(?P<open_sup>{\()?([^= _|;{[\]$]+)(?(open_sup)\)})'~-~
+r'C_(\w?)\^(?P<open_sup>{\()?([^=_,;|$]*?)\\frac{(.+?)}{(.+?)}([^=_,;|$]*?)(?(open_sup)\)})\(([^=;_$]+?)\)'~-~
+r'C_{([^=_,;()|$]+?)}\^(?P<open_sup>{\()?([^=_,;|$]*?)\\frac{(.+?)}{(.+?)}([^=_,;|$]*?)(?(open_sup)\)})\(([^=;_$]+?)\)'~-~
+r'C_{([^= _,;()|$]+?)}\^(?P<open_sup>{)?([^=_|{$]+?)(?(open_sup)})\(([^=;_$]+?)\)'~-~
+r'C_{([^=; _|()[\]^$]+?)}\^(?P<open_sup>{)?([^= _|;{[\]$]+)(?(open_sup)})'~-~
+r'C_(\w?)\^(?P<open_sup>{)?([^= _|{$]+?)(?(open_sup)})\(([^=;_$]+?)\)'~-~
+r'C_(\w?)\^(?P<open_sup>{)?([^= _|;{[\]$]+)(?(open_sup)})'~-~
+r'C_(\w?)\^(?P<open_sup>{)?([^=_,;|$]*?)\\frac{(.+?)}{(.+?)}([^=_,;|$]*?)(?(open_sup)})\(([^=;_$]+?)\)'~-~
+r'C_{([^=_,;()|$]+?)}\^(?P<open_sup>{)?([^=_,;|$]*?)\\frac{(.+?)}{(.+?)}([^=_,;|$]*?)(?(open_sup)})\(([^=;_$]+?)\)'
+`
+r'\Ultra{\3}{\1}@{\4}'~-~
+r'\Ultra{\3}{\1}'~-~
+r'\Ultra{\3}{\1}@{\4}'~-~
+r'\Ultra{\3}{\1}'~-~
+r'\Ultra{\3\\frac{\4}{\5}\6}{\1}@{\7}'~-~
+r'\Ultra{\3\\frac{\4}{\5}\6}{\1}@{\7}'~-~
+r'\Ultra{\3}{\1}@{\4}'~-~
+r'\Ultra{\3}{\1}'~-~
+r'\Ultra{\3}{\1}@{\4}'~-~
+r'\Ultra{\3}{\1}'~-~
+r'\Ultra{\3\\frac{\4}{\5}\6}{\1}@{\7}'~-~
+r'\Ultra{\3\\frac{\4}{\5}\6}{\1}@{\7}'
+`
+ultraspherical (or Gegenbauer) polynomial~?~
+
+\ctsqUltrae{n}@{x}{\beta}{q}`qUe`r'C_(?P<open>{)?([^= _,;|$]+?)(?(open)})\[([^=;,|$]+?);([^=;,|$]+?)\|([^=;,|$]+?)\]'`r'\ctsqUltrae{\2}@{\3}{\4}{\5}'`exponential argument Rogers polynomial~?~
+
+\ctsqUltra{n}@{x}{\beta}{q}`qU`r'C_(?P<open>{)?([^= _,;|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\ctsqUltra{\2}@{\4}{\5}{\6}'`continuous $q$-ultraspherical polynomial~?~
+
+\Meixner{n}@{x}{\beta}{c}`M`r'M_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open_2)' + close_paren + r')\)'~-~r'M_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\Meixner{\2}@{\4}{\5}{\6(\7)\8}'~-~r'\Meixner{\2}@{\4}{\5}{\6}'`Meixner polynomial~?~
+
+\qMeixner{n}@{a}{b}{c}{q}`qM`r'M_(?P<open>{)?([^= ,;|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\qMeixner{\2}@{\4}{\5}{\6}{\7}'`$q$-Meixner polynomial~?~
+
+\GenGegenbauer{\alpha}{\beta}{m}@{x}`G`r'S_{?([^=\n{}]+)}?\^{\(([^,]*?),([^,]*?)\)}' + open_paren + r'?\((.*?)' + close_paren + r'?\)'~-~r'S_{?([^=\n{}]+)}?\^{\(([^,]*?),([^,]*?)\)}'`r'\GenGegenbauer{\2}{\3}{\1}@{\4}'~-~r'\GenGegenbauer{\2}{\3}{\1}'`Generalized Gegenbauer Polynomial~?~
+
+\BesselJ{\nu}@{z}`B_J`r'J_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\BesselJ{\2}@{\4}'`Bessel function of the first kind~?~
+
+\EulerGamma@{z}`EG`r'\\Ga(?:mma)?\((.+?)\)'`r'\EulerGamma@{\1}'`Euler's gamma function~?~
+
+\qGamma{q}@{z}`qG`r'\\Gamma_q' + open_paren + r'?\((.*?)' + close_paren + r'?\)'`r'\\qGamma{q}@{\1}'`$q$-gamma function~?~
+
+\qBinomial{n}{m}{q}`qB`r'\\genfrac{\[}{\]}{0pt}{}{(.+?)}{(.+?)}_q'`r'\\qBinomial{\1}{\2}{q}'`$q$-binomial coefficient (or Gaussian polynomial)~?~
+
+\binomial{n}{m}`bi`r'\\binom{([^=_^;,|$]+?)}{([^=_^;,|$]+?)}'`r'\\binomial{\1}{\2}'`binomial coefficient~?~ 
+
+\qexpKLS{q}@{z}`qexp`r'{\\mathrm e}_q\(([^=;,|$]+)\)'`r'\\qexpKLS{q}@{\1}'`PLACEHOLDER~?~
+
+\qExpKLS{q}@{x}`qExp`r'\\E_q' + open_paren + r'?\(([^=\s_]+)' + close_paren + r'?\)'`r'\\qExpKLS{q}@{\1}'`$q$-exponential function Eq~?~
+
+\qcosKLS{q}@{x}`qcos`r'\\cos_q' + open_paren + r'?\((.+?)' + close_paren + r'?\)'`r'\\qcosKLS{q}@{\1}'`$q$-cosine function cosq~?~
+
+\qCosKLS{q}@{x}`qCos`r'\\textrm{Cos}_q' + open_paren + r'?\((.+?)' + close_paren + r'?\)'`r'\\qCosKLS{q}@{\1}'`$q$-cosine function Cosq~?~
+
+\qsinKLS{q}@{x}`qsin`r'\\sin_q' + open_paren + r'?\((.+?)' + close_paren + r'?\)'`r'\\qsinKLS{q}@{\1}'`$q$-sine function sinq~?~
+
+\qSinKLS{q}@{x}`qSin`r'\\textrm{Sin}_q' + open_paren + r'?\((.+?)' + close_paren + r'?\)'`r'\\qSinKLS{q}@{\1}'`$q$-sine function Sinq~?~
+
+\Kronecker{j}{k}`Kn`
+r'\\delta_{(.?)(.?)}'~-~
+r'\\de_{(.?)(.?)}'~-~
+r'\\delta_{(.?)(.?)}'~-~
+r'\\de_{([^,;=|$]+?),([^,;=|$]+?)}'~-~
+r'\\delta_{([^,;=|$]+?),([^,;=|$]+?)}'
+
+`
+r'\\Kronecker{\1}{\2}'~-~
+r'\\Kronecker{\1}{\2}'~-~
+r'\\Kronecker{\1}{\2}'~-~
+r'\\Kronecker{\1}{\2}'~-~
+r'\\Kronecker{\1}{\2}'
+`Kronecker delta~?~
+
+\EulerBeta@{a}{b}`EB`r'\\textrm{B}\(([^,]+?),([^,]+?)\)'`r'\\EulerBeta@{\1}{\2}'`beta function~?~
+
+\MeixnerPollaczek{\lambda}{n}@{x}{\phi}`MP`r'P_(?P<open>{)?([^=_;\|]+?)(?(open)})\^{\(([^=_;\|]+)\)}\s*' + open_paren + r'?\(([^;\|]+?);([^;\|]+?)' + close_paren + r'?\)'`r'\\MeixnerPollaczek{\3}{\2}@{\4}{\5}'`Meixner-Pollaczek polynomial~?~
+
+\ctsHahn{n}@{x}{a}{b}{\conj{a}}{\conj{b}}`Hp`r'p_(?P<open>{)?([^=\s;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?),([^=);,|$]+?)(?(open_2)' + close_paren + r')?\)'`r'\ctsHahn{\2}@{\4}{\5}{\6}{\7}{\8}'`continuous Hahn polynomial~?~
+
+\ctsdualqHahn`qHp`r'p_(?P<open>{)?([^=\s\n]+?)(?(open)})' + open_paren + r'?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?)\|\s*([^;,)\s|$]*?)' + close_paren + r'?\)'`r'\ctsdualqHahn{\2}@{\3}{\4}{\5}{\6}{\7}'`continuous dual $q$-Hahn polynomial~?~
+
+\BesselPoly{n}@{x}{a}`BPy`r'y_(?P<open>{)?([^=_ ]+?)(?(open)})' + open_paren + r'?\(([^;]+?);([^;]+?)' + close_paren + r'?\)'`r'\BesselPoly{\2}@{\3}{\4}'`Bessel polynomial~?~
+
+\qCharlier{n}@{x}{c}{q}`qC`r'C_(?P<open>{)?([^= _{},;|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^_=;,|$\n]+?);([^=;,|$\n]+?)(?(open_2)' + close_paren + r')\)'`r'\qCharlier{\2}@{\4}{\5}{\6}'`$q$-Charlier polynomial~?~
+
+\Charlier{n}@{x}{a}`C`r'C_(?P<open>{)?([^=_; ]+?)(?(open)})(?!\^)' + open_paren + r'?\(([^= ;,|]+?);([^= ;\,|]+?)' + close_paren + r'?\)'`r'\Charlier{\2}@{\3}{\4}'`Charlier polynomial~?~
+
+\StieltjesWigert{n}@{x}{q}`SW`r'S_(?P<open>{)?([^=_ |]+?)(?(open)})' + open_paren + r'?\(([^;,|]+?);([^;,|]+?)' + close_paren + r'?\)'`r'\StieltjesWigert{\2}@{\3}{\4}'`Stieltjes-Wigert polynomial~?~
+
+\qderiv{0}@{f}`qD
+`
+r'\\mathcal{D}_q\^(?P<open>{)?([^=;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\[([^=;,|$]+?)(?(open_2)' + close_paren + r')\]'~-~
+r'\\mathcal{D}_q(?P<open_2>' + open_paren + r')?\[([^=;,|$]+?)(?(open_2)' + close_paren + r')\]'~-~
+r'\\mathcal{D}_q(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'~-~
+r'\\mathcal{D}_q\^(?P<open>{)?([^=;,|$]+?)(?(open)})'~-~
+r'\\mathcal{D}_q'
+`
+r'\qderiv[\2]{q}@{\4}'~-~
+r'\qderiv{q}@{\2}'~-~
+r'\qderiv{q}@{\2}'~-~
+r'\qderiv[\2]{q}'~-~
+r'\qderiv{q}'
+`
+q derivative~?~
+
+\CiglerqChebyT{n}@{x}`CqCT`r'T_(?P<open>{)?([^=;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(\s*([^=_;,|$]+?),([^=_;,|$]+?),([^=_;,|$]+?)\s*(?(open_2)' + close_paren + r')\)'`r'\CiglerqChebyT{\2}@{\4}{\5}{\6}'`PLACEHOLDER~?~
+
+\ChebyT{n}@{x}`CT`r'T_(?P<open>{)?([^=\s;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(\s*([^=_;,|$]+?)\s*(?(open_2)' + close_paren + r')?\)'`r'\ChebyT{\2}@{\4}'`Chebyshev polynomial of the first kind~?~
+
+\CiglerqChebyU{n}@{x}`CqCU`r'U_(?P<open>{)?([^=;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(\s*([^=_;,|$]+?),([^=_;,|$]+?),([^=_;,|$]+?)\s*(?(open_2)' + close_paren + r')\)'`r'\CiglerqChebyU{\2}@{\4}{\5}{\6}'`PLACEHOLDER~?~
+
+\ChebyU{n}@{x}`CU`r'U_(?P<open>{)?([^=;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(\s*([^=_;,|$]+?)\s*(?(open_2)' + close_paren + r')\)'~-~r'\$U_(?P<open>{)?([^=;,|$]+?)(?(open)})\$'`r'\ChebyU{\2}@{\4}'~-~r'$\ChebyU{\2}$'`Chebyshev polynomial of the second kind~?~
+
+\AlSalamIsmail{n}@{x}`ASIs`r'U_(?P<open>{)?([^=;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(\s*([^=_;,|$]+?);([^=_;,|$]+?),([^=_;,|$]+?)\s*(?(open_2)' + close_paren + r')\)'`r'\AlSalamIsmail{\2}@{\4}{\5}{\6}'`PLACEHOLDER~?~
+
+\ChebyV{n}@{x}`CV`r'V_(?P<open>{)?([^=;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(\s*([^=_;,|$]+?)\s*(?(open_2)' + close_paren + r')?\)'~-~r'\$V_(?P<open>{)?([^=;,|$]+?)(?(open)})\$'`r'\ChebyV{\2}@{\4}'~-~r'$\ChebyV{\2}$'`PLACEHOLDER~?~
+
+\ChebyW{n}@{x}`CW`r'W_(?P<open>{)?([^=;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(\s*([^=_;,|$]+?)\s*(?(open_2)' + close_paren + r')?\)'~-~r'\$W_(?P<open>{)?([^=;,|$]+?)(?(open)})\$'`r'\ChebyW{\2}@{\4}'~-~r'$\ChebyW{\2}$'`PLACEHOLDER~?~
+
+\qMeixnerPollaczek{n}@{x}{a}{q}`qMP`r'P_(?P<open>{)?([^=_;\|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\qMeixnerPollaczek{\2}@{\4}{\5}{\6}'`$q$-Meixner-Pollaczek polynomial~?~
+
+\ctsqLegendre{n}@{x}{q}`qLe`r'P_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\\ctsqLegendre{\2}@{\4}{\5}'`continuous $q$-Legendre polynomial~?~
+
+\ctsqLegendreRahman{n}@{x}{q}`CqLR`r'P_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\ctsqLegendreRahman{\2}@{\4}{\5}'`PLACEHOLDER~?~
+
+\littleqLegendre{n}@{x}{q}`qLep`r'p_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\littleqLegendre{\2}@{\4}{\5}'`little $q$-Legendre polynomial~?~
+
+\bigqLegendre{n}@{x}{c}{q}`qLeP`r'P_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\\bigqLegendre{\2}@{\4}{\5}{\6}'`big $q$-Legendre polynomial~?~
+
+\LegendrePoly{n}@{x}`LP`r'P_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\\LegendrePoly{\2}@{\4}'`Legendre polynomial~?~
+
+\Krawtchouk{n}@{x}{p}{N}`K`r'K_(\w+)' + open_paren + r'?\(([^;,]*?);([^;,]*?),([^ \|\s\)\(;,]*?)' + close_paren + r'?\)'~-~r'K_{(.+?)}' + open_paren + r'?\(([^;,]*?);([^;,]*?),([^ \|\s\)\(;,]*?)' + close_paren + r'?\)'`r'\Krawtchouk{\1}@{\2}{\3}{\4}'~-~r'\Krawtchouk{\1}@{\2}{\3}{\4}'`Krawtchouk polynomial~?~
+
+\dualqKrawtchouk{n}@{x}{p}{N}{q}`dqK`r'K_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\dualqKrawtchouk{\2}@{\4}{\5}{\6}{\7}'`dual $q$-Krawtchouk polynomial~?~
+
+\qKrawtchouk{n}@{x}{p}{N}{q}`qK`r'K_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\qKrawtchouk{\2}@{\4}{\5}{\6}{\7}'`$q$-Krawtchouk polynomial~?~
+
+\qtmqKrawtchouk{n}@{a}{p}{N}{q}`qqK`r'K_(?P<open>{)?([^=_^;,|$]+?)(?(open)})\^{(?:\\rm\s*)*qtm}(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\qtmqKrawtchouk{\2}@{\4}{\5}{\6}{\7}'`quantum $q$-Krawtchouk polynomial~?~
+
+\AffqKrawtchouk{n}@{a}{p}{N}{q}`aqK`r'K_(?P<open>{)?([^=_^;,|$]+?)(?(open)})\^{(?:\\rm\s*)*Aff}(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?)(;|\|)([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\\AffqKrawtchouk{\2}@{\4}{\5}{\6}{\8}'`affine $q$-Krawtchouk polynomial~?~
+
+\qBesselPoly{n}@{x}{a}{q}`qB`r'y_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\qBesselPoly{\2}@{\4}{\5}{\6}'`$q$-Bessel polynomial~?~
+
+\bigqLaguerre{n}@{x}{a}{c}{q}`bqL`r'P_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\\bigqLaguerre{\2}@{\4}{\5}{\6}{\7}'`big $q$-Laguerre-polynomial~?~
+
+\littleqLaguerre{n}@{x}{a}{q}`lqL`r'p_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'~-~r'p_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\littleqLaguerre{\2}@{\4}{\5}{\6}'~-~r'\littleqLaguerre{\2}@{\4}{\5}{\6}'`little $q$-Laguerre polynomial~?~
+
+\ctsqLaguerre{n}{\alpha}@{x}{q}`cqL`r'P_(?P<open>{)?([^=_^;,|$]+?)(?(open)})\^{\(([^=;,|$]+?)\)}(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\ctsqLaguerre{\3}{\2}@{\5}{\6}'`continuous $q$-Laguerre polynomial~?~
+
+\ctsqHahn{n}@{x}{a}{b}{c}{d}{q}`cqH`r'p_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\ctsqHahn{\2}@{\4}{\5}{\6}{\7}{\8}{\9}'`continuous $q$-Hahn polynomial~?~
+
+\normctsHahnptilde{n}@{x}{a}{b}{c}{d}`nHp`r'\\tilde{p}_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=_^;,|$]+?),([^=_^;,|$]+?),([^=_^;,|$]+?),([^=_^;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\\normctsHahnptilde{\2}@{\4}{\5}{\6}{\7}{\8}'`normalized continuous Hahn polynomial~?~
+
+\normWilsonWtilde{n}@{x}{a}{b}{c}{d}`nW`r'{?\\tilde{W}}?_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\\normWilsonWtilde{\2}@{\4}{\5}{\6}{\7}{\8}'`normalized-Wilson-polynomial~?~
+
+\normctsdualHahnStilde{n}@{x}{a}{b}{c}`nHS`r'{\\tilde\s{S}}_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\\normctsdualHahnStilde{\2}@{\4}{\5}{\6}{\7}'`normalized continuous dual Hahn polynomial~?~
+
+\normAskeyWilsonptilde{n}@{x}{a}{b}{c}{d}{q}`nAW`r'{\\tilde p}_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\\normAskeyWilsonptilde{\2}@{\4}{\5}{\6}{\7}{\8}{\9}'`PLACEHOLDER~?~
+
+\normctsdualqHahnptilde{n}@{x}{a}{b}{c}{q}`ncdqH`r'{\\tilde p}_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\\normctsdualqHahnptilde{\2}@{\4}{\5}{\6}{\7}{\8}'`PLACEHOLDER~?~
+
+\normctsqHahnptilde{n}@{x}{a}{b}{c}{d}{q}`ncqH`r'{\\tilde p}_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\\normctsqHahnptilde{\2}@{\4}{\5}{\6}{\7}{\8}{\9}'`PLACEHOLDER~?~
+
+\normctsqJacobiPtilde{a}{b}{n}@{x}{q}`nCqJ`r'{\\tilde P}_(?P<open>{)?([^=_^;,|$]+?)(?(open)})\^{\(([^=_^;,|$]+?),([^=_^;,|$]+?)\)}\(([^=_^;,|$]+?)\|([^=_^;,|$]+?)\)'`r'\\normctsqJacobiPtilde{\3}{\4}{\2}@{\5}{\6}'`PLACEHOLDER~?~
+
+\JacksonqBesselI{n}@{z}{q}`JqB1`r'J_(?P<open>{)?([^=_^;,|$]+?)(?(open)})\^{\(1\)}(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\JacksonqBesselI{\2}@{\4}{\5}'`Jackson $q$-Bessel 1~?~
+
+\JacksonqBesselII{n}@{z}{q}`JqB2`r'J_(?P<open>{)?([^=_^;,|$]+?)(?(open)})\^{\(2\)}(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\JacksonqBesselII{\2}@{\4}{\5}'`Jackson $q$-Bessel 2~?~
+
+\JacksonqBesselIII{n}@{z}{q}`JqB3`r'J_(?P<open>{)?([^=_^;,|$]+?)(?(open)})\^{\(3\)}(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`r'\JacksonqBesselIII{\2}@{\4}{\5}'`Jackson $q$-Bessel 3~?~
+
+\exp@{z}`exp`r'\\exp(?P<open>' + open_paren + r')?\(([^=_;,|$]+?)(?(open)' + close_paren + r')\)'`r'\\exp@{\2}'`PLACEHOLDER~?~
+
+\ln@{z}`ln`r'(\\ln(\^\w)*)\s*(\w+?)(?!\^)'~-~r'(\\ln(\^\w)*)\s*([A-Za-z0-9^{}\-]+)(?!@|\d)'~-~r'(\\ln(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]+?)(?(open)' + close_paren + r')\)'`r'\1@@{\3}'~-~r'\1@@{\3}'~-~r'\1@{\4}'`PLACEHOLDER~?~
+
+\sinh@{z}`sinh`r'(\\sinh(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\sinh(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\sinh(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$\n]+?)(?(open)' + close_paren + r')\)'~-~r'(\\sinh(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))'`r'\1@{\4(\5)\6(\7)\8}'~-~r'\1@{\4(\5)\6}'~-~r'\1@{\4}'~-~r'\1@@{\3}'`PLACEHOLDER~?~
+
+\cosh@{z}`cosh`r'(\\cosh(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\cosh(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=()_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\cosh(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$\n]+?)(?(open)' + close_paren + r')\)'~-~r'(\\cosh(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))'`r'\1@{\4(\5)\6(\7)\8}'~-~r'\1@{\4(\5)\6}'~-~r'\1@{\4}'~-~r'\1@@{\3}'`PLACEHOLDER~?~
+
+\tanh@{z}`tanh`r'(\\tanh(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\tanh(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\tanh(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$\n]+?)(?(open)' + close_paren + r')\)'~-~r'(\\tanh(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))'`r'\1@{\4(\5)\6(\7)\8}'~-~r'\1@{\4(\5)\6}'~-~r'\1@{\4}'~-~r'\1@@{\3}'`PLACEHOLDER~?~
+
+\coth@{z}`coth`r'(\\coth(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\coth(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\coth(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$\n]+?)(?(open)' + close_paren + r')\)'~-~r'(\\coth(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))'`r'\1@{\4(\5)\6(\7)\8}'~-~r'\1@{\4(\5)\6}'~-~r'\1@{\4}'~-~r'\1@@{\3}'`PLACEHOLDER~?~
+
+\sech@{z}`sech`r'(\\sech(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\sech(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\sech(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$\n]+?)(?(open)' + close_paren + r')\)'~-~r'(\\sech(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))'`r'\1@{\4(\5)\6(\7)\8}'~-~r'\1@{\4(\5)\6}'~-~r'\1@{\4}'~-~r'\1@@{\3}'`PLACEHOLDER~?~
+
+\csch@{z}`csch`r'(\\csch(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\csch(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\csch(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$\n]+?)(?(open)' + close_paren + r')\)'~-~r'(\\csch(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))'`r'\1@{\4(\5)\6(\7)\8}'~-~r'\1@{\4(\5)\6}'~-~r'\1@{\4}'~-~r'\1@@{\3}'`PLACEHOLDER~?~
+
+\sin@{z}`sin`r'(\\sin(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\sin(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\sin(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]+?)(?(open)' + close_paren + r')\)'~-~r'(\\sin(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))(?!@)'`r'\1@{\4(\5)\6(\7)\8}'~-~r'\1@{\4(\5)\6}'~-~r'\1@{\4}'~-~r'\1@@{\3}'`PLACEHOLDER~?~
+
+\cos@{z}`cos`r'(\\cos(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\cos(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$\n]*?)\(([^=_;,|$\n]+?)\)([^=_;,|$\n]*?)(?(open)' + close_paren + r')\)'~-~r'(\\cos(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$\n]+?)(?(open)' + close_paren + r')\)'~-~r'(\\cos(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))(?!@)'`r'\1@{\4(\5)\6(\7)\8}'~-~r'\1@{\4(\5)\6}'~-~r'\1@{\4}'~-~r'\1@@{\3}'`PLACEHOLDER~?~
+
+\tan@{z}`tan`r'(\\tan(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\tan(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\tan(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]+?)(?(open)' + close_paren + r')\)'~-~r'(\\tan(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))(?!@)'`r'\1@{\4(\5)\6(\7)\8}'~-~r'\1@{\4(\5)\6}'~-~r'\1@{\4}'~-~r'\1@@{\3}'`PLACEHOLDER~?~
+
+\cot@{z}`cot`r'(\\cot(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\cot(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\cot(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]+?)(?(open)' + close_paren + r')\)'~-~r'(\\cot(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))(?!@)'`r'\1@{\4(\5)\6(\7)\8}'~-~r'\1@{\4(\5)\6}'~-~r'\1@{\4}'~-~r'\1@@{\3}'`PLACEHOLDER~?~
+
+\sec@{z}`sec`r'(\\sec(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\sec(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\sec(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]+?)(?(open)' + close_paren + r')\)'~-~r'(\\sec(?!tion)(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))(?!@)'`r'\1@{\4(\5)\6(\7)\8}'~-~r'\1@{\4(\5)\6}'~-~r'\1@{\4}'~-~r'\1@@{\3}'`PLACEHOLDER~?~
+
+\csc@{z}`csc`r'(\\csc(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\csc(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\csc(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]+?)(?(open)' + close_paren + r')\)'~-~r'(\\csc(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))(?!@)'`r'\1@{\4(\5)\6(\7)\8}'~-~r'\1@{\4(\5)\6}'~-~r'\1@{\4}'~-~r'\1@@{\3}'`PLACEHOLDER~?~
+
+\atan@{z}`atan`r'(\\arctan(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\arctan(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]*?)\(([^=_;,|$]+?)\)([^=_;,|$]*?)(?(open)' + close_paren + r')\)'~-~r'(\\arctan(\^\w)*)\s*(?P<open>' + open_paren + r')?\(([^=_;,|$]+?)(?(open)' + close_paren + r')\)'~-~r'(\\arctan(\^\w)*)\s*((\\)?([A-Za-z0-9^]+))(?!@)'`r'\\atan@{\4(\5)\6(\7)\8}'~-~r'\\atan@{\4(\5)\6}'~-~r'\\atan@{\4}'~-~r'\\atan@@{\3}'`inverse tangent function~?~
+
+\realpart{x}`rp`
+r'(?<!\\renewcommand)(?P<dollar>\$)Re' + whitespace + r'*(?P<open>' + open_paren + r'\()?(?P<open_2>\()?([^=_|]+?)(?(open_2)\))(?(open)' + close_paren + r'\))'~-~
+r'(?<!\\renewcommand)\\Re' + whitespace + r'*(?P<open>' + open_paren + r'\()?(?P<open_2>\()?([^=_|]+?)(?(open_2)\))(?(open)' + close_paren + r'\))'~-~
+r'\\textrm{Re}\(([^=_^;,|$]+?)\)'~-~
+r'\\textrm{Re}' + whitespace + r'*([A-Za-z0-9])'
+`
+r'\g<dollar>\\realpart{\4}'~-~
+r'\\realpart{\3}'~-~
+r'\\realpart{\1}'~-~
+r'\\realpart{\1}'
+`real part~?~
+
+\imagpart{x}`ip`
+r'(?<!\\renewcommand)(?P<dollar>\$)Im' + whitespace + r'*(?P<open>' + open_paren + r'\()?(?P<open_2>\()?([^=_|]+?)(?(open_2)\))(?(open)' + close_paren + r'\))'~-~
+r'(?<!\\renewcommand)\\Im' + whitespace + r'*(?P<open>' + open_paren + r'\()?(?P<open_2>\()?([^=_|]+?)(?(open_2)\))(?(open)' + close_paren + r'\))'~-~
+r'\\textrm{Im}\(([^=_^;,|$]+?)\)'~-~
+r'\\textrm{Im}' + whitespace + r'*([A-Za-z0-9])'
+`
+r'\g<dollar>\\imagpart{\4}'~-~
+r'\\imagpart{\3}'~-~
+r'\\imagpart{\1}'~-~
+r'\\imagpart{\1}'
+`imaginary part~?~

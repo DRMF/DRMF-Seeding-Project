@@ -1,0 +1,52 @@
+09out.tex:\section{Wilson} Wilson
+09out.tex:\section{Racah} Racah
+09out.tex:\section{Continuous dual Hahn} ctsdualHahn
+09out.tex:\section{Continuous Hahn} ctsHahn
+09out.tex:\section{Hahn} Hahn
+09out.tex:\section{Dual Hahn} dualHahn
+09out.tex:\section{Meixner-Pollaczek} MeixnerPollaczek
+09out.tex:\section{Jacobi} Jacobi
+09out.tex:\subsection{Gegenbauer / Ultraspherical} Ultra
+09out.tex:\subsection{Chebyshev}  ChebyT ChebyU
+09out.tex:\subsection{Legendre / Spherical} LegendrePoly
+09out.tex:\section{Pseudo Jacobi} pseudoJacobi
+09out.tex:\section{Meixner} Meixner
+09out.tex:\section{Krawtchouk} Krawtchouk 
+09out.tex:\section{Laguerre} Laguerre
+09out.tex:\section{Bessel} BesselPoly
+09out.tex:\section{Charlier} Charlier
+09out.tex:\section{Hermite} Hermite
+14out.tex:\section{Askey-Wilson} AskeyWilson
+14out.tex:\section{$q$-Racah} qRacah
+14out.tex:\section{Continuous dual $q$-Hahn} ctsdualqHahn
+14out.tex:\section{Continuous $q$-Hahn} ctsqHahn
+14out.tex:\section{Big $q$-Jacobi} bigqJacobi
+14out.tex:\subsection{Big $q$-Legendre} bigqLegendre
+14out.tex:\section{$q$-Hahn} qHahn
+14out.tex:\section{Dual $q$-Hahn} dualqHahn
+14out.tex:\section{Al-Salam-Chihara} AlSalamChihara
+14out.tex:\section{$q$-Meixner-Pollaczek} qMeixnerPollaczek
+14out.tex:\section{Continuous $q$-Jacobi} ctsqJacobi
+14out.tex:\subsection{Continuous $q$-ultraspherical / Rogers} ctsqUltra
+14out.tex:\subsection{Continuous $q$-Legendre} ctsqLegendre
+14out.tex:\section{Big $q$-Laguerre} bigqLaguerre
+14out.tex:\section{Little $q$-Jacobi} littleqJacobi
+14out.tex:\subsection{Little $q$-Legendre} littleqLegendre
+14out.tex:\section{$q$-Meixner} qMeixner
+14out.tex:\section{Quantum $q$-Krawtchouk} qtmqKrawtchouk
+14out.tex:\section{$q$-Krawtchouk} qKrawtchouk
+14out.tex:\section{Affine $q$-Krawtchouk} AffqKrawtchouk
+14out.tex:\section{Dual $q$-Krawtchouk} dualqKrawtchouk
+14out.tex:\section{Continuous big $q$-Hermite} ctsbigqHermite
+14out.tex:\section{Continuous $q$-Laguerre} ctsqLaguerre
+14out.tex:\section{Little $q$-Laguerre / Wall} littleqLaguerre
+14out.tex:\section{$q$-Laguerre} qLaguerre
+14out.tex:\section{$q$-Bessel} qBesselPoly
+14out.tex:\section{$q$-Charlier} qCharlier
+14out.tex:\section{Al-Salam-Carlitz~I} AlSalamCarlitzI
+14out.tex:\section{Al-Salam-Carlitz~II} AlSalamCarlitzII
+14out.tex:\section{Continuous $q$-Hermite} ctsqHermite
+14out.tex:\section{Stieltjes-Wigert} StieltjesWigert
+14out.tex:\section{Discrete $q$-Hermite~I} discrqHermiteI
+14out.tex:\section{Discrete $q$-Hermite~II} discrqHermiteII
+KLSaddK.tex:\section{$q$-inverse Al-Salam-Chihara} qinvAlSalamChihara
