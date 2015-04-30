@@ -1,6 +1,6 @@
 # DRMF Macro Replacement Project
 
-This project inserts DLMF and DRMF macros into unprocesssed TeX based on the regular expressions specified in `function_regex`.
+This project uses regular expressions and string methods to insert DLMF and DRMF macros into unprocesssed TeX based on the regular expressions specified in `function_regex`.
 
 ## Usage
 
