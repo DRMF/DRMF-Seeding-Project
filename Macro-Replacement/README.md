@@ -21,7 +21,7 @@ Flags:
 ## Files
 
 The project consists of several program files:
-* `drmfconfig.py`     - used to configure initial settings of program
+* `drmfconfig.py`      - used to configure initial settings of program
 * `drmfdriver.py`      - driver file
 * `function.py`        - creates function objects and provides methods to search and replace functions
 * `identifiers.py`     - inserts identifiers of functions to be replaced
@@ -30,4 +30,5 @@ The project consists of several program files:
 * `replace.py`         - makes main body of function replacements
 * `replace_special.py` - modifiers certain special symbols such as \pi and i
 * `search.py`          - searches for functions to be replaced
-* `ssnippets.py`       - contains snippets of code for use in other programs
+* `snippets.py`        - contains snippets of code for use in other programs
+* `utilities.py`       - contains methods called by other files for convenience
