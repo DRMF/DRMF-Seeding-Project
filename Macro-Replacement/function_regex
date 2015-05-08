@@ -293,7 +293,11 @@ r'\\Kronecker{\1}{\2}'
 
 \ctsdualqHahn`qHp`r'p_(?P<open>{)?([^=\s\n]+?)(?(open)})' + open_paren + r'?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?)\|\s*([^;,)\s|$]*?)' + close_paren + r'?\)'`r'\ctsdualqHahn{\2}@{\3}{\4}{\5}{\6}{\7}'`continuous dual $q$-Hahn polynomial~?~
 
-\BesselPoly{n}@{x}{a}`BPy`r'y_(?P<open>{)?([^=_ ]+?)(?(open)})' + open_paren + r'?\(([^;]+?);([^;]+?)' + close_paren + r'?\)'`r'\BesselPoly{\2}@{\3}{\4}'`Bessel polynomial~?~
+\BesselPoly{n}@{x}{a}`BPy`r'y_(?P<open>{)?([^=_ ]+?)(?(open)})' + open_paren + r'?\(([^=;,|$]+?);([^=;,|$]+?)' + close_paren + r'?\)'`r'\BesselPoly{\2}@{\3}{\4}'`Bessel polynomial~?~
+
+\BesselPolyIIparam{n}@{x}{a}{b}`BP2y`r'y_(?P<open>{)?([^=_ ]+?)(?(open)})' + open_paren + r'?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?)' + close_paren + r'?\)'`r'\BesselPolyIIparam{\2}@{\3}{\4}{\5}'`PLACEHOLDER~?~
+
+\BesselPolyTheta{n}@{x}{a}{b}`BPT`r'\\theta_(?P<open>{)?([^=_ ]+?)(?(open)})' + open_paren + r'?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?)' + close_paren + r'?\)'`r'\BesselPolyTheta{\2}@{\3}{\4}{\5}'`PLACEHOLDER~?~
 
 \qCharlier{n}@{x}{c}{q}`qC`r'C_(?P<open>{)?([^= _{},;|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^_=;,|$\n]+?);([^=;,|$\n]+?)(?(open_2)' + close_paren + r')\)'`r'\qCharlier{\2}@{\4}{\5}{\6}'`$q$-Charlier polynomial~?~
 
