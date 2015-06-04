@@ -210,7 +210,7 @@ continuous $q$-Jacobi polynomial~?~
 \ctsqJacobiRahman{\alpha}{\beta}{n}@{x}{q}`CqJR`
 r'P_(?P<open>{)?([\w+-]+)(?(open)})\^{\(([^=;,|$]+?),([^=;,|$]+?)\)}(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`
 r'\\ctsqJacobiRahman{\3}{\4}{\2}@{\6}{\7}'`
-PLACEHOLDER~?~
+continuous $q$-Jacobi-Rahman-polynomial~?~
 
 %% P_n^{(\alpha,\beta)}(x) --> \Jacobi{\alpha}{\beta}{n}@{x}
 \Jacobi{\alpha}{\beta}{n}@{x}`JP`
@@ -252,7 +252,7 @@ Racah polynomial~?~
 \GottliebLaguerre{n}@{x}`GbL`
 r'l_(?P<open>{)?([^{}()=,;|$]+)(?(open)})(?<!\mu)(?P<open_2>' + open_paren + r')?\(([^=();_|]+?)(?(open_2)' + close_paren + r')\)'`
 r'\GottliebLaguerre{\2}@{\4}'`
-PLACEHOLDER~?~
+Gottlieb-Laguerre polynomial~?~
 
 %% H_n(x) --> \Hermite{n}@{x}
 \Hermite{n}@{x}`H`
@@ -508,13 +508,13 @@ Bessel polynomial~?~
 \BesselPolyIIparam{n}@{x}{a}{b}`BP2y`
 r'y_(?P<open>{)?([^=_ ]+?)(?(open)})' + open_paren + r'?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?)' + close_paren + r'?\)'`
 r'\BesselPolyIIparam{\2}@{\3}{\4}{\5}'`
-PLACEHOLDER~?~
+Bessel polynomial with two parameters $y_n$~?~
 
 %% \theta_n(x;a,b) --> \BesselPolyTheta{n}@{x}{a}{b}
 \BesselPolyTheta{n}@{x}{a}{b}`BPT`
 r'\\theta_(?P<open>{)?([^=_ ]+?)(?(open)})' + open_paren + r'?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?)' + close_paren + r'?\)'`
 r'\BesselPolyTheta{\2}@{\3}{\4}{\5}'`
-PLACEHOLDER~?~
+Bessel polynomial with two parameters $\theta_n$~?~
 
 %% C_n(x;c;q) --> \qCharlier{n}@{x}{c}{q}
 \qCharlier{n}@{x}{c}{q}`qC`
@@ -552,7 +552,7 @@ q derivative~?~
 \CiglerqChebyT{n}@{x}{s}{q}`CqCT`
 r'T_(?P<open>{)?([^=;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(\s*([^=_;,|$]+?),([^=_;,|$]+?),([^=_;,|$]+?)\s*(?(open_2)' + close_paren + r')\)'`
 r'\CiglerqChebyT{\2}@{\4}{\5}{\6}'`
-PLACEHOLDER~?~
+Cigler $q$-Chebyshev polynomial $T$~?~
 
 %% T_n(x) --> \ChebyT{n}@{x}
 \ChebyT{n}@{x}`CT`
@@ -564,7 +564,7 @@ Chebyshev polynomial of the first kind~?~
 \CiglerqChebyU{n}@{x}`CqCU`
 r'U_(?P<open>{)?([^=;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(\s*([^=_;,|$]+?),([^=_;,|$]+?),([^=_;,|$]+?)\s*(?(open_2)' + close_paren + r')\)'`
 r'\CiglerqChebyU{\2}@{\4}{\5}{\6}'`
-PLACEHOLDER~?~
+Cigler $q$-Chebyshev polynomial $U$~?~
 
 %% U_n(x) --> \ChebyU{n}@{x}
 \ChebyU{n}@{x}`CU`
@@ -578,7 +578,7 @@ Chebyshev polynomial of the second kind~?~
 \AlSalamIsmail{n}@{x}{a}{b}`ASIs`
 r'U_(?P<open>{)?([^=;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(\s*([^=_;,|$]+?);([^=_;,|$]+?),([^=_;,|$]+?)\s*(?(open_2)' + close_paren + r')\)'`
 r'\AlSalamIsmail{\2}@{\4}{\5}{\6}'`
-PLACEHOLDER~?~
+Al-Salam Ismail polynomial~?~
 
 %% V_n(x) --> \ChebyV{n}@{x}
 \ChebyV{n}@{x}`CV`
@@ -612,7 +612,7 @@ continuous $q$-Legendre polynomial~?~
 \ctsqLegendreRahman{n}@{x}{q}`CqLR`
 r'P_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`
 r'\ctsqLegendreRahman{\2}@{\4}{\5}'`
-PLACEHOLDER~?~
+continuous $q$-Legendre-Rahman polynomial~?~
 
 %% p_n(x|q) --> \littleqLegendre{n}@{x}{q}
 \littleqLegendre{n}@{x}{q}`qLep`
@@ -718,25 +718,25 @@ normalized continuous dual Hahn polynomial~?~
 \normAskeyWilsonptilde{n}@{x}{a}{b}{c}{d}{q}`nAW`
 r'{\\tilde p}_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`
 r'\\normAskeyWilsonptilde{\2}@{\4}{\5}{\6}{\7}{\8}{\9}'`
-PLACEHOLDER~?~
+normalized Askey-Wilson polynomial ${\tilde p}$~?~
 
 %% {\tilde p}_n(x;a,b,c|q) --> \normctsdualqHahnptilde{n}@{x}{a}{b}{c}{q}
 \normctsdualqHahnptilde{n}@{x}{a}{b}{c}{q}`ncdqH`
 r'{\\tilde p}_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?)\|([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`
 r'\\normctsdualqHahnptilde{\2}@{\4}{\5}{\6}{\7}{\8}'`
-PLACEHOLDER~?~
+normalized continuous dual $q$-Hahn polynomial ${\tilde p}$~?~
 
 %% {\tilde p}_n(x;a,b,c,d;q) --> \normctsqHahnptilde{n}@{x}{a}{b}{c}{d}{q}
 \normctsqHahnptilde{n}@{x}{a}{b}{c}{d}{q}`ncqH`
 r'{\\tilde p}_(?P<open>{)?([^=_^;,|$]+?)(?(open)})(?P<open_2>' + open_paren + r')?\(([^=;,|$]+?);([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?),([^=;,|$]+?);([^=;,|$]+?)(?(open_2)' + close_paren + r')\)'`
 r'\\normctsqHahnptilde{\2}@{\4}{\5}{\6}{\7}{\8}{\9}'`
-PLACEHOLDER~?~
+normalized continuous $q$-Hahn polynomial ${\tilde p}$~?~
 
 %% {\tilde P}_n^{(\alpha,\beta)}(x|q) --> \normctsqJacobiPtilde{\alpha}{\beta}{n}@{x}{q}
 \normctsqJacobiPtilde{\alpha}{\beta}{n}@{x}{q}`nCqJ`
 r'{\\tilde P}_(?P<open>{)?([^=_^;,|$]+?)(?(open)})\^{\(([^=_^;,|$]+?),([^=_^;,|$]+?)\)}\(([^=_^;,|$]+?)\|([^=_^;,|$]+?)\)'`
 r'\\normctsqJacobiPtilde{\3}{\4}{\2}@{\5}{\6}'`
-PLACEHOLDER~?~
+normalized continuous $q$-Jacobi polynomial ${\tilde P}$~?~
 
 %% J_{\nu}^{(1)}(z;q) --> \JacksonqBesselI{n}@{z}{q}
 \JacksonqBesselI{n}@{z}{q}`JqB1`
