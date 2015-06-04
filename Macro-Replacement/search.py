@@ -2,7 +2,7 @@
 """This module contains the code for the 'search' functionality of the DRMF seeding program."""
 
 from collections import defaultdict
-from replace import replacemid
+from replace import replace_basic
 
 def run(inputfile, outputfile, all_funcs):
     """Reads in the content from inputfile, counts the occurences of each macro on each line, and writes the result in a log format to outputfile."""
@@ -31,7 +31,7 @@ def run(inputfile, outputfile, all_funcs):
 
     frequencies = [[] for i in range(len(line_lengths))]
 
-    content = replacemid(content)
+    content = replace_basic(content)
    
     seen = set()
 

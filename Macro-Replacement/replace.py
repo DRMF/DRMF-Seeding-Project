@@ -13,9 +13,12 @@ from monics import replace_monics
 from normalized import replace_normalized
 import parentheses
 
-#Changes the '\mid ' to '|'
-def replacemid(content):
+#Changes the '\mid ' to '|' and '\half' to '\frac{1}{2}'
+def replace_basic(content):
+
     content = content.replace(r'\mid q', '|q')
+    content = content.replace(r'\half', r'\frac{1}{2}')
+    
     return content
 
 #go through input file and make replacements specified
@@ -37,8 +40,8 @@ def run(inputfile, outputfile, all_funcs):
 
     #Header replacements
     content = content.replace(r'\usepackage{amssymb}', '\\usepackage{amsfonts}\n%\\usepackage{breqn}\n\\usepackage{DLMFmath}\n\\usepackage{DRMFfcns}\n\\usepackage{amssymb}')
-    content = replacemid(content)
-    content = identifiers.LabelAll(content, all_funcs)
+    content = replace_basic(content)
+    #content = identifiers.LabelAll(content, all_funcs)
 
     #Makes replacements
     content = replace_all(content, all_funcs)

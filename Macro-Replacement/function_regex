@@ -123,7 +123,7 @@ r'\AlSalamCarlitzI{\3}{\2}@{\5}{\6}'`
 $q$-Al-Salam-Carlitz I polynomial~?~
 
 %% V_n^{(a)}(x;q) --> \AlSalamCarlitzII{a}{n}@{x}{q}
-\AlSalamCarlitzII{a}{n}@{x}{q}`ASC2`\
+\AlSalamCarlitzII{a}{n}@{x}{q}`ASC2`
 r'V_(?P<open>{)?([^=;,|$]+?)(?(open)})\^{\(([^=;,|$]+?)\)}(?P<open_2>' + open_paren + r')?\(([^=_;\|$]+?);([^=_;\|$]+?)(?(open_2)' + close_paren + r')\)'`
 r'\AlSalamCarlitzII{\3}{\2}@{\5}{\6}'`
 $q$-Al-Salam-Carlitz II polynomial~?~

@@ -21,11 +21,11 @@ class ConfigFile(object):
 
         offset = 0
         all_funcs = []
+        self._config_file.seek(offset)
 
         #read in whole file
         while offset < self._file_size:
 
-            self._config_file.seek(offset)
             chunk = ""
             in_line = ""
 
@@ -35,8 +35,8 @@ class ConfigFile(object):
                 in_line = self._config_file.readline().strip()
                 offset += len(in_line)
 
-	           #skip line if it's empty or a comment
-                if in_line == "" or in_line.startswith("#"):
+                #skip line if it's empty or a comment
+                if in_line == '' or in_line.startswith("%"):
                     in_line = ""
                     continue
 
