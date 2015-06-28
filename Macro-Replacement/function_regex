@@ -930,7 +930,7 @@ inverse tangent function~?~
 %% \Re(x) --> \realpart{x}
 \realpart{x}`rp`
 r'(?<!\\renewcommand)(?P<dollar>\$)Re' + whitespace + r'*(?P<open>' + open_paren + r'\()?(?P<open_2>\()?([^=_|]+?)(?(open_2)\))(?(open)' + close_paren + r'\))'~-~
-r'(?<!\\renewcommand)\\Re' + whitespace + r'*(?P<open>' + open_paren + r'\()?(?P<open_2>\()?([^=_|]+?)(?(open_2)\))(?(open)' + close_paren + r'\))'~-~
+r'(?<!\\renewcommand)\\Re(?!al)' + whitespace + r'*(?P<open>' + open_paren + r'\()?(?P<open_2>\()?([^=_|]+?)(?(open_2)\))(?(open)' + close_paren + r'\))'~-~
 r'\\textrm{Re}\(([^=_^;,|$]+?)\)'~-~
 r'\\textrm{Re}' + whitespace + r'*([A-Za-z0-9])'`
 r'\g<dollar>\\realpart{\4}'~-~

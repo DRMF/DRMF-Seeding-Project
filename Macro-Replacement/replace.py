@@ -11,7 +11,7 @@ from function import Function
 from replace_special import remove_special
 from monics import replace_monics
 from normalized import replace_normalized
-import parentheses
+#import parentheses
 
 #Changes the '\mid ' to '|' and '\half' to '\frac{1}{2}'
 def replace_basic(content):

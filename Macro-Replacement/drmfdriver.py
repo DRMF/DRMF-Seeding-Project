@@ -1,4 +1,6 @@
 #Driver file for the DRMF seeding program
+import os
+import cosSubstitution
 
 from optparse import OptionParser, OptionValueError
 import replace
@@ -57,8 +59,9 @@ def main():
     func_list = ConfigFile(options.config_file_name, verbose=options.verbose).all_funcs    
 
     to_run.run(in_file, out_file, func_list)
+    cosSubstitution.main(in_file,out_file)
+    os.system("cp "+out_file+"MOD "+out_file)
 
 #call main function when this file is run directly
 if __name__ == "__main__":
     main() 
-
