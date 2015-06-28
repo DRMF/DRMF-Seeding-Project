@@ -107,8 +107,12 @@ def make_monic(match):
 
     before_m = fullmacro.split('@')[0]
     before_m = before_m[:before_m.rfind('{')]
-    after_m = fullmacro.split('@')[1]
-    after_m = after_m[after_m.find('}{') + 1:]
+    after_m = fullmacro.split('@')[1]    
+    
+    if after_m.find('}{') != -1:
+        after_m = after_m[after_m.find('}{') + 1:]
+    else:
+        after_m = ""
 
     output = before_m + '{' + match.group(2) + '}@@{' + match.group(3) + '}' + after_m
     return output
