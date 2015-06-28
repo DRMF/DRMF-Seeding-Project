@@ -2,7 +2,6 @@
 """This module contains the code for the 'replace' functionality of the DRMF seeding program."""
 
 import identifiers
-#import Common
 import sys
 import re
 import os
@@ -11,7 +10,7 @@ from function import Function
 from replace_special import remove_special
 from monics import replace_monics
 from normalized import replace_normalized
-#import parentheses
+from cosSubstitution import cos_substitution
 
 #Changes the '\mid ' to '|' and '\half' to '\frac{1}{2}'
 def replace_basic(content):
@@ -36,8 +35,6 @@ def run(inputfile, outputfile, all_funcs):
     file = open(inputfile,"r")
     content = file.read()
 
-#    content = parentheses.remove_parentheses(content)
-
     #Header replacements
     content = content.replace(r'\usepackage{amssymb}', '\\usepackage{amsfonts}\n%\\usepackage{breqn}\n\\usepackage{DLMFmath}\n\\usepackage{DRMFfcns}\n\\usepackage{amssymb}')
     content = replace_basic(content)
@@ -48,8 +45,7 @@ def run(inputfile, outputfile, all_funcs):
     content = replace_monics(content)
     content = replace_normalized(content)
     content = remove_special(content)
-
-#    content = parentheses.insert_parentheses(content)
+    content = cos_substitution(content)
 
     #Writes the converted string into the output file
     file2 = open(outputfile,"w")
