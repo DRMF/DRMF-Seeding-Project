@@ -28,7 +28,7 @@ The project consists of several program files:
 * `identifiers.py`     - inserts identifiers of functions to be replaced
 * `monics.py`          - makes replacements for monic functions
 * `normalized.py`      - makes replacements for normalized functions
-* `parenthese.py`      - contains methods called by other files for convenience
+* `parentheses.py`      - contains methods called by other files for convenience
 * `replace.py`         - makes main body of function replacements
 * `replace_special.py` - modifiers certain special symbols such as \pi and i
 * `search.py`          - searches for functions to be replaced
