@@ -21,12 +21,14 @@ Flags:
 ## Files
 
 The project consists of several program files:
+* `cosSubstitution.py` - resolves disparities with cosine formatting
 * `drmfconfig.py`      - used to configure initial settings of program
 * `drmfdriver.py`      - driver file
 * `function.py`        - creates function objects and provides methods to search and replace functions
 * `identifiers.py`     - inserts identifiers of functions to be replaced
 * `monics.py`          - makes replacements for monic functions
 * `normalized.py`      - makes replacements for normalized functions
+* `parenthese.py`      - contains methods called by other files for convenience
 * `replace.py`         - makes main body of function replacements
 * `replace_special.py` - modifiers certain special symbols such as \pi and i
 * `search.py`          - searches for functions to be replaced
