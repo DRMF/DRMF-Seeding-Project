@@ -1,26 +1,29 @@
 def checkEq(equation):
-	   theta=False
-	   phi=False
-	   x=False
-	   if "\\theta" in equation:
-			 theta=True
-	   if "\\phi" in equation:
-			 phi=True
-	   mac=False
-	   for c in equation:
-			 if c=="\\":
-				    mac=True
-			 if not c.isalpha():
-				    mac=False
-			 if not mac and c=="x":
-				    x=True
-				    break
-	   if x and theta and not phi:
-			 return("$x=\\cos@@{\\theta}$ ")
-	   elif x and theta and phi:
-			 return("$x=\\cos@{\\theta+\\phi}$ ")
-	   else:
-			 return("")
+    
+    theta=False
+    phi=False
+    x=False
+    if "\\theta" in equation:
+        theta=True
+    if "\\phi" in equation:
+        phi=True
+	mac=False
+    
+    for c in equation:
+        if c=="\\":
+            mac=True
+        if not c.isalpha():
+		    mac=False
+        if not mac and c=="x":
+		    x=True
+		    break
+            
+    if x and theta and not phi:
+        return("$x=\\cos@@{\\theta}$ ")
+    elif x and theta and phi:
+        return("$x=\\cos@{\\theta+\\phi}$ ")
+    else:
+        return("")
 
 def cos_substitution(input):
     
