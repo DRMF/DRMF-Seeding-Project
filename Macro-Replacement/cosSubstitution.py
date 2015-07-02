@@ -41,6 +41,7 @@ def cos_substitution(input):
             subLine=""
             
         if "\\end{equation}" in line:
+                
             math=False
             substitution=False
             p=checkEq(equation)
@@ -53,8 +54,8 @@ def cos_substitution(input):
                     subLine=subLine.strip("}")+"\n"
                     toWrite+=subLine+"%     "+p+"}\n"
             else:
-                toWrite+=subLine + '\n'
-                
+                #toWrite+=subLine + '\n'    #CHERRY CHANGE
+                toWrite += subLine      #CHERRY CHANGE
                 
         if "\\substitution" in line:
             substitution=True
