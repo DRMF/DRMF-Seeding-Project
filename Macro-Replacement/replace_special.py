@@ -78,7 +78,7 @@ def remove_special(content):
     omega_pat = re.compile(r'\\om(?!ega)')
     alpha_pat = re.compile(r'\\al(?!low|pha)')
     lambda_pat = re.compile(r'\\la(?!bel|mbda)')
-    const_pat = re.compile(r'\\const')
+    const_pat = re.compile(r'\\const!r') #AZEEM CHANGE
     infty_pat = re.compile(r'\\iy')
     widetilde_pat = re.compile(r'\\wt')
     Zpos_pat = re.compile(r'\\Zpos')
@@ -150,11 +150,11 @@ def remove_special(content):
             in_ind = False
 
             #add a preceding newline if one is not already present
-            if previous.strip() != "":
+            #if previous.strip() != "": AZEEM CHANGE
                 #print ("first if: {0}".format(ind_str))
-                if ("}" in ind_str):
-                        ind_str+= "\n"
-                ind_str = "\n" + ind_str
+                #if ("}" in ind_str): AZEEM CHANGE
+                        #ind_str+= "\n" AZEEM CHANGE
+                #ind_str = "\n" + ind_str AZEEM CHANGE
 
             fullsplit = ind_str.split("\n")
 
