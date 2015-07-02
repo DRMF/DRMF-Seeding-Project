@@ -21,9 +21,9 @@ To achieve the desired result, one should execute the progams in the following o
 2. replace_special.py
 3. prepare_annotations.py
 
-## DLMF Seeding Project
-
 ## eCF Seeding Project
+
+## DLMF Seeding Project
 
 ## BMP Seeding Project
 
