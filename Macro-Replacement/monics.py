@@ -37,8 +37,8 @@ def replace_monics(content):
             list = name_pat.findall(line)[0]
             names[list[0]] = (list[1]).strip()
                 
-    drmf = open('./sources/DRMFfcns.sty', 'r').read()
-    dlmf = open('./sources/DLMFfcns.sty', 'r').read()
+    drmf = open('./DRMFfcns.sty', 'r').read()
+    dlmf = open('./DLMFfcns.sty', 'r').read()
     
     global drmfdlmf
     drmfdlmf = drmf + dlmf
