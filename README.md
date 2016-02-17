@@ -35,4 +35,4 @@ Edits the DRMF chapter files to include the relevant KLS addendum additions. Add
 Left to do in updateChapters.py:
 import over the necessary files to make the pdf work, change all instances of "section" to "paragraph" and add "\large\bf" to make font large and bold like the other chapter headings. Also necessary to add initials of programmer wherever the new additions were added (ex. "%RS added, %RS end") 
 
-Also: rewrite code for "smarter" edits (ex. add new limit relations straight to the) 
+Also: rewrite code for "smarter" edits (ex. add new limit relations straight to the limit relations section in the section itself, not at the end) 
