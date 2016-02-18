@@ -12,6 +12,14 @@ for the online repository, updated via the KLSadd addendum file which only affec
 NOTE! AS OF 2/18/16 THIS FILE IS NOT YET UPDATED TO THE FULL CAPACITY OF THE PREVIOUS FILE. IF FURTHER DEVELOPMENT IS NEEDED, REFER TO THE
 linetest.py FILE IF THIS FILE DOES NOT ADDRESS THE NEW/EXTRA GOALS. This means that XCITE PARSE etc HAS NOT BEEN ADDED
 
+Additional goals (already addressed in linetest.py):
+-insert correct usepackages
+-insert correct commands found in KLSadd.tex to chapter files
+-insert editor's initials into sections (ie %RS: begin addition, %RS: end addition)
+
+Additional goals (not already addressed in linetest.py):
+-rewrite for "smarter" edits (ex. add new limit relations straight to the limit relations section in the section itself, not at the end)
+
 Current update status: incomplete
 
 Goals:change the book chapter files to include paragraphs from the addendum, and after that insert some edits so they are intelligently integrated into the chapter
@@ -28,7 +36,6 @@ chapNums = []
 paras = []
 mathPeople = []
 
-
 #2/18/16 this method addresses the goal of hardcoding in the necessary packages to let the chapter files run as pdf's. Currently only works with chapter 9, ask Dr. Cohl to help port your chapter 14 output file into a pdf
 
 def prepareForPDF(str):
@@ -43,6 +50,27 @@ def prepareForPDF(str):
         
         #not sure if needed, but I passed anyway
         pass
+
+#2/18/16 this method reads in relevant commands that are in KLSadd.tex and returns them as a list and also adds 
+
+def getCommands(kls):
+        newCommands = []
+        for word in kls:
+               index+=1
+               if("smallskipamount" in word):
+                        newCommands.append(index-1)
+               if("mybibitem[1]" in word):
+                        newCommands.append(index)
+
+               #add \large\bf KLSadd: to make KLSadd additions appear like the other paragraphs
+               if("paragraph{" in word):
+                        temp = word[0:word.find("{")+ 1] + "\large\\bf KLSadd: " + word[word.find("{")+ 1: word.find("}")+1]
+                         
+#2/18/16 this method addresses the goal of hardcoding in the necessary commands to let the chapter files run as pdf's. Currently only works with chapter 9
+
+def insertCommands(kls, str):
+        #reads in from KLSadd.tex, finds appropriate commands, and puts them in str
+
 
 #method to find the indices of the reference paragraphs
 def findReferences(str):
