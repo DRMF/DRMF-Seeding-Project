@@ -9,3 +9,7 @@ The linetest.py program is the original program file fully updated. It is much h
 NOTE: Both the updateChapters.py and linetest.py lack a pdf version of their chapter 14 output. One must be generated to view results. 
 
 NOTE: The KLSadd.tex file only deals with chapters 9 and 14, as stated in the document itself.
+
+NOTE: when you run updateChapters.py or linetest.py you need the KLSadd.tex file, tempchap9.tex, and tempchap14.tex in order to run the program. The program *generates* updated9.tex and updated14.tex files. 
+
+**THIS MEANS YOU SHOULD NOT RUN updateChapters.py OR linetest.py FROM YOUR GIT DIRECTORY. THE CHAPTER FILES ARE NOT PUBLIC DOMAIN, DO NOT COMMIT THEM! COPY THE FILES OVER INTO A SEPERATE DIRECTORY AND THEN COPY THEM BACK OVER WHEN YOU ARE READY TO COMMIT** 
