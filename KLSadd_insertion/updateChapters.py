@@ -9,7 +9,7 @@ for the online repository, updated via the KLSadd addendum file which only affec
 9 and 14
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-NOTE! AS OF 2/8/16 THIS FILE IS NOT YET UPDATED TO THE FULL CAPACITY OF THE PREVIOUS FILE. IF FURTHER DEVELOPMENT IS NEEDED, REFER TO THE
+NOTE! AS OF 2/18/16 THIS FILE IS NOT YET UPDATED TO THE FULL CAPACITY OF THE PREVIOUS FILE. IF FURTHER DEVELOPMENT IS NEEDED, REFER TO THE
 linetest.py FILE IF THIS FILE DOES NOT ADDRESS THE NEW/EXTRA GOALS. This means that XCITE PARSE etc HAS NOT BEEN ADDED
 
 Current update status: incomplete
@@ -27,6 +27,22 @@ Goals:change the book chapter files to include paragraphs from the addendum, and
 chapNums = []
 paras = []
 mathPeople = []
+
+
+#2/18/16 this method addresses the goal of hardcoding in the necessary packages to let the chapter files run as pdf's. Currently only works with chapter 9, ask Dr. Cohl to help port your chapter 14 output file into a pdf
+
+def prepareForPDF(str):
+        footmiscIndex = 0
+        index = 0
+        for word in str:
+                index+=1
+                if("footmisc" in word):
+                        footmiscIndex+= index
+        #edits the chapter string sent to include hyperref, xparse, and cite packages
+        str[footmiscIndex] += "\\usepackage[pdftex]{hyperref} \n\\usepackage {xparse} \n\\usepackage{cite} \n"
+        
+        #not sure if needed, but I passed anyway
+        pass
 
 #method to find the indices of the reference paragraphs
 def findReferences(str):
@@ -48,7 +64,7 @@ def findReferences(str):
 #method to change file string(actually a list right now), returns string to be written to file
 def fixChapter(str, references, p):
         #str is the file string, references is the specific references for the file, and p is the paras variable(not sure if needed)
-        #TODO: OPTIMIZE
+        #TODO: OPTIMIZE(?)
         count = 0 #count is used to represent the values in count
         for i in references:
                 #add
@@ -106,7 +122,7 @@ with open("KLSadd.tex", "r") as add:
         str9 = ''.join(fixChapter(entire9, references9, paras))
         str14 = ''.join(fixChapter(entire14, references14, paras))
 
-        #write to file
+        #write to files  
         #new output files for safety
         with open("updated9.tex","w") as temp9:
                 temp9.write(str9)
