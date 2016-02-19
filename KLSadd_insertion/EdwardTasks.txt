@@ -1,0 +1,21 @@
+Fix your github;
+
+If I'm not here Monday, https://help.github.com/categories/ssh/
+go there and try to work out your issue, rm your git directory and try git clone again.
+
+This is what updateChapters.py currently does:
+
+-rips paragraphs from KLSadd and puts them after the References paragraphs. 
+TESTED: WORKING
+
+This is what has been written but not implemented/tested:
+
+-method to add relevant usepackages from KLSadd (cite, hyperref, xparse)
+-method to add relevant new commands from KLSadd
+-method to add "\large\bf KLSadd:" after every "paragraph{" inserted from KLSadd so everything looks neat
+
+This is what needs to be written:
+-method that inserts limit relations straight into the limit relations paragraph in relevant sections instead of just at the end of the section
+
+keep checking back here every time I've commited to see what's left, and you can change stuff around here just add a comment saying what you did and the date you did it
+
