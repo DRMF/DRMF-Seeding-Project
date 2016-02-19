@@ -13,3 +13,7 @@ NOTE: The KLSadd.tex file only deals with chapters 9 and 14, as stated in the do
 NOTE: when you run updateChapters.py or linetest.py you need the KLSadd.tex file, tempchap9.tex, and tempchap14.tex in order to run the program. The program *generates* updated9.tex and updated14.tex files. 
 
 **THIS MEANS YOU SHOULD NOT RUN updateChapters.py OR linetest.py FROM YOUR GIT DIRECTORY. THE CHAPTER FILES ARE NOT PUBLIC DOMAIN, DO NOT COMMIT THEM! COPY THE FILES OVER INTO A SEPERATE DIRECTORY AND THEN COPY THEM BACK OVER WHEN YOU ARE READY TO COMMIT** 
+
+
+**Edward, check the EdwardTasks.txt file to check what's done and what needs work, if your github is still down just try to write out what the method should be like in a seperate file**
+
