@@ -7,7 +7,7 @@ Re-write of linetest.py so people other than me can read it
 This project was/is being written to streamline the update process of the book used
 for the online repository, updated via the KLSadd addendum file which only affects chapters
 9 and 14
-#Edward test commit
+#Edward test 2 commit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 NOTE! AS OF 2/22/16 THIS FILE IS NOT YET UPDATED TO THE FULL CAPACITY OF THE PREVIOUS FILE. IF FURTHER DEVELOPMENT IS NEEDED, REFER TO THE
 linetest.py FILE IF THIS FILE DOES NOT ADDRESS THE NEW/EXTRA GOALS. This means that XCITE PARSE etc HAS NOT BEEN ADDED
