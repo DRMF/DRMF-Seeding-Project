@@ -5,6 +5,8 @@ go there and try to work out your issue, rm your git directory and try git clone
 
 
 If all else fails, try ssh -vT git@github.com
+              ^
+ABOVE IS DONE |
 
 This is what updateChapters.py currently does:
 
