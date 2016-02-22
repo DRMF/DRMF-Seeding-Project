@@ -9,7 +9,7 @@ for the online repository, updated via the KLSadd addendum file which only affec
 9 and 14
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-NOTE! AS OF 2/19/16 THIS FILE IS NOT YET UPDATED TO THE FULL CAPACITY OF THE PREVIOUS FILE. IF FURTHER DEVELOPMENT IS NEEDED, REFER TO THE
+NOTE! AS OF 2/22/16 THIS FILE IS NOT YET UPDATED TO THE FULL CAPACITY OF THE PREVIOUS FILE. IF FURTHER DEVELOPMENT IS NEEDED, REFER TO THE
 linetest.py FILE IF THIS FILE DOES NOT ADDRESS THE NEW/EXTRA GOALS. This means that XCITE PARSE etc HAS NOT BEEN ADDED
 
 Additional goals (already addressed in linetest.py):
@@ -36,7 +36,8 @@ chapNums = []
 paras = []
 mathPeople = []
 newCommands = [] #used to hold extra commands that need to be inserted from KLSadd to the chapter files
-#2/18/16 this method addresses the goal of hardcoding in the necessary packages to let the chapter files run as pdf's. Currently only works with chapter 9, ask Dr. Cohl to help port your chapter 14 output file into a pdf
+#2/18/16 this method addresses the goal of hardcoding in the necessary packages to let the chapter files run as pdf's.
+#Currently only works with chapter 9, ask Dr. Cohl to help port your chapter 14 output file into a pdf
 
 def prepareForPDF(str):
         footmiscIndex = 0
@@ -47,9 +48,8 @@ def prepareForPDF(str):
                         footmiscIndex+= index
         #edits the chapter string sent to include hyperref, xparse, and cite packages
         str[footmiscIndex] += "\\usepackage[pdftex]{hyperref} \n\\usepackage {xparse} \n\\usepackage{cite} \n"
-        
-        #not sure if needed, but I passed anyway
-        pass
+
+        return str
 
 #2/18/16 this method reads in relevant commands that are in KLSadd.tex and returns them as a list and also adds 
 
@@ -99,16 +99,22 @@ def findReferences(str):
         return references
 
 #method to change file string(actually a list right now), returns string to be written to file
-def fixChapter(str, references, p):
-        #str is the file string, references is the specific references for the file, and p is the paras variable(not sure if needed)
+#If you write a method that changes something, it is preffered that you call the method in here
+def fixChapter(str, references, p, kls):
+        #str is the file string(actually a list), references is the specific references for the file, and p is the paras variable(not sure if needed) kls is the KLSadd.tex as a list
         #TODO: OPTIMIZE(?)
         count = 0 #count is used to represent the values in count
         for i in references:
-                #add
+                #add the paragraphs before the Reference paragraphs start
                 str[i-3] += p[count] 
                 count+=1
-        #I actually don't remember why I had to do this but I think you need it
         str[i-1] += p[count]
+
+        #I actually don't remember why I had to do this but I think you need it ^^^^^^^^^^^^^^^^^^^ 
+        str = prepareForPDF(str)
+        getCommands(kls)
+        str = insertCommands(kls,str)
+        #probably won't work because I don't know how anything works
         return str
 
 #open the KLSadd file to do things with 
@@ -155,12 +161,16 @@ with open("KLSadd.tex", "r") as add:
         references9 = findReferences(entire9)
         references14 = findReferences(entire14)
 
-       
         
         #call the fixChapter method to get a list with the addendum paragraphs added in
         str9 = ''.join(fixChapter(entire9, references9, paras))
         str14 = ''.join(fixChapter(entire14, references14, paras))
 
+"""
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If you are writing something that will make a change to the chapter files, write it BEFORE this line, this part is where the lists representing the words/strings in the chapter are joined together and updated as a string!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""
         #write to files  
         #new output files for safety
         with open("updated9.tex","w") as temp9:
