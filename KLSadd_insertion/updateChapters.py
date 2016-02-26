@@ -7,7 +7,7 @@ Re-write of linetest.py so people other than me can read it
 This project was/is being written to streamline the update process of the book used
 for the online repository, updated via the KLSadd addendum file which only affects chapters
 9 and 14
-#Edward test 2 commit
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 NOTE! AS OF 2/26/16 THIS FILE IS NOT YET UPDATED TO THE FULL CAPACITY OF THE PREVIOUS FILE. IF FURTHER DEVELOPMENT IS NEEDED, REFER TO THE
 linetest.py FILE IF THIS FILE DOES NOT ADDRESS THE NEW/EXTRA GOALS. This means that XCITE PARSE etc HAS NOT BEEN ADDED
@@ -40,7 +40,6 @@ newCommands = [] #used to hold extra commands that need to be inserted from KLSa
 #Currently only works with chapter 9, ask Dr. Cohl to help port your chapter 14 output file into a pdf
 
 def prepareForPDF(chap):
-        print(type(chap))
         footmiscIndex = 0
         index = 0
         for word in chap:
@@ -168,7 +167,8 @@ with open("KLSadd.tex", "r") as add:
         references9 = findReferences(entire9)
         references14 = findReferences(entire14)
 
-        
+        #ERROR! entire9 sometimes contains lists, must only contain strings. Should be fixed by next week. Check the 
+        #getCommands method, I suspect that is the problem
         #call the fixChapter method to get a list with the addendum paragraphs added in
         str9 = ''.join(fixChapter(entire9, references9, paras, addendum))
         str14 = ''.join(fixChapter(entire14, references14, paras, addendum))
