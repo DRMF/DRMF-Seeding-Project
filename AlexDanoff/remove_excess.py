@@ -22,7 +22,7 @@ STD_REGEX = r'.*?###open_(\d+)###.*?###close_\1###'
 def main():
     if len(sys.argv) != 3:
 
-        fname = "ZE.tex"
+        fname = "data/ZE.tex"
         dot_ind = fname.index(".") + 1
         ofname = fname[:dot_ind] + "1." + fname[dot_ind:]
 
