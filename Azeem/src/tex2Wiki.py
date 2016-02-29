@@ -4,6 +4,7 @@ import csv  # imported for using csv format
 import sys  # imported for getting args
 import os  # imported for copying file
 
+global wiki
 
 def isnumber(char):
     return char[0] in "0123456789"
@@ -217,6 +218,9 @@ def modLabel(label):
         newlabel += "0" + num
     return (newlabel)
 
+def appendText(text):
+    wiki.write(text)
+
 def main():
     # try:
     for jsahlfkjsd in range(0, 1):
@@ -301,7 +305,7 @@ def main():
                 # mainPrepend+=stringWrite
                 chapter = getString(line)
                 mainPrepend += (
-                "\n== Sections in " + chapter + " ==\n\n<div style=\"-moz-column-count:2; column-count:2;\">\n")
+                    "\n== Sections in " + chapter + " ==\n\n<div style=\"-moz-column-count:2; column-count:2;\">\n")
             elif "\\part" in line:
                 if getString(line) == "BOF":
                     parse = False
@@ -356,7 +360,8 @@ def main():
                 wiki.write("{{headSection}}\n")
                 head = True
                 wiki.write("== " + getString(line) + " ==\n")
-            elif ("\\section" in lines[(i + 1) % len(lines)] or "\\end{document}" in lines[(i + 1) % len(lines)]) and parse:
+            elif ("\\section" in lines[(i + 1) % len(lines)] or "\\end{document}" in lines[
+                    (i + 1) % len(lines)]) and parse:
                 # wiki.write("<div id=\"drmf_foot\">\n")
                 # wiki.write("<div id=\"alignleft\"> << [["+secLabel(sections[secCounter-1][0])+"|"+secLabel(sections[secCounter-1][0])+"]] </div>\n")
                 # wiki.write("<div id=\"aligncenter\"> [[Orthogonal_Polynomials#"+secLabel(sections[secCounter][0])+"|"+secLabel(sections[secCounter][0])+"]] </div>\n")
@@ -433,8 +438,9 @@ def main():
                 flagM = True
                 eqs[len(eqs) - 1] += line
 
-                if "\\end{equation}" in lines[i + 1] and not "\\subsection" in lines[i + 3] and not "\\section" in lines[
-                            i + 3] and not "\\part" in lines[i + 3]:
+                if "\\end{equation}" in lines[i + 1] and not "\\subsection" in lines[i + 3] and not "\\section" in \
+                        lines[
+                                    i + 3] and not "\\part" in lines[i + 3]:
                     u = i
                     flagM2 = False
                     while flagM:
@@ -546,8 +552,10 @@ def main():
                         sections[secCount + 1][0]) + "]] </div>\n")
                     if eqS == sections[secCount][1]:
                         wiki.write(
-                            "<div id=\"alignright\"> [[" + secLabel(sections[(secCount + 1) % len(sections)][0]).replace(
-                                " ", "_") + "|" + secLabel(sections[(secCount + 1) % len(sections)][0]) + "]] >> </div>\n")
+                            "<div id=\"alignright\"> [[" + secLabel(
+                                sections[(secCount + 1) % len(sections)][0]).replace(
+                                " ", "_") + "|" + secLabel(
+                                sections[(secCount + 1) % len(sections)][0]) + "]] >> </div>\n")
                     else:
                         wiki.write(
                             "<div id=\"alignright\"> [[" + secLabel(labels[(eqCounter + 1) % (endNum + 1)]).replace(" ",
@@ -796,21 +804,21 @@ def main():
                             break
                             # gFlag=True
                             # if not symF:
-                        #	symF=True
-                        #	wiki.write("<span class=\"plainlinks\">[")
-                        # else:
-                        #	wiki.write("<br />\n")
-                        #	wiki.write("<span class=\"plainlinks\">[")
-                        # wiki.write(g[g.find("http://"):].strip("\n"))
-                        # wiki.write(" ")
-                        # wiki.write(getEq(g[g.find("{$"):]).strip("\n").replace("\\\\","\\"))
-                        # wiki.write("]</span> : ")
-                        # wiki.write(g[g.find(" {")+2:g.find("} ",g.find(" {")+1)])
-                        # wiki.write(" : [")
-                        # wiki.write(g[g.find("http://"):].strip("\n"))
-                        # wiki.write(" ")
-                        # wiki.write(g[g.find("http://"):].strip("\n"))
-                        # wiki.write("] ")'''
+                            #	symF=True
+                            #	wiki.write("<span class=\"plainlinks\">[")
+                            # else:
+                            #	wiki.write("<br />\n")
+                            #	wiki.write("<span class=\"plainlinks\">[")
+                            # wiki.write(g[g.find("http://"):].strip("\n"))
+                            # wiki.write(" ")
+                            # wiki.write(getEq(g[g.find("{$"):]).strip("\n").replace("\\\\","\\"))
+                            # wiki.write("]</span> : ")
+                            # wiki.write(g[g.find(" {")+2:g.find("} ",g.find(" {")+1)])
+                            # wiki.write(" : [")
+                            # wiki.write(g[g.find("http://"):].strip("\n"))
+                            # wiki.write(" ")
+                            # wiki.write(g[g.find("http://"):].strip("\n"))
+                            # wiki.write("] ")'''
 
                     # preG=S
                     if not gFlag:
@@ -860,9 +868,10 @@ def main():
                         labels[eqCounter][len("Formula:"):]) + "|formula in " + secLabel(
                         sections[secCount + 1][0]) + "]] </div>\n")
                     if eqS == sections[secCount][1]:
-                        wiki.write("<div id=\"alignright\"> [[" + sections[(secCount + 1) % len(sections)][0].replace(" ",
-                                                                                                                      "_") + "|" +
-                                   sections[(secCount + 1) % len(sections)][0] + "]] >> </div>\n")
+                        wiki.write(
+                            "<div id=\"alignright\"> [[" + sections[(secCount + 1) % len(sections)][0].replace(" ",
+                                                                                                               "_") + "|" +
+                            sections[(secCount + 1) % len(sections)][0] + "]] >> </div>\n")
                     else:
                         wiki.write(
                             "<div id=\"alignright\"> [[" + secLabel(labels[(eqCounter + 1) % (endNum + 1)]).replace(" ",
@@ -891,7 +900,7 @@ def main():
                     constraint = True
                     math = False
                     conLine = ""
-                # wiki.write("<div align=\"left\">"+getEq(line)+"</div><br />\n")
+                    # wiki.write("<div align=\"left\">"+getEq(line)+"</div><br />\n")
             elif "\\substitution" in line and parse:
                 # symbols=symbols+getSym(line)
                 symLine = line.strip("\n")
@@ -947,10 +956,12 @@ def main():
                         else:
                             if z == "}":
                                 proofLine += (
-                                "<br /> \n<math id=\"" + label + "\">{\displaystyle \n" + refEqs[eInd] + "}</math><br />")
+                                    "<br /> \n<math id=\"" + label + "\">{\displaystyle \n" + refEqs[
+                                        eInd] + "}</math><br />")
                             else:
                                 proofLine += (
-                                "<br /> \n<math id=\"" + label + "\">{\displaystyle \n" + refEqs[eInd] + "}</math><br />\n")
+                                    "<br /> \n<math id=\"" + label + "\">{\displaystyle \n" + refEqs[
+                                        eInd] + "}</math><br />\n")
 
 
                     else:
@@ -971,7 +982,7 @@ def main():
                     symbols = symbols + getSym(symLine)
                     symLine = ""
 
-                # wiki.write(line)
+                    # wiki.write(line)
 
             elif proof:
                 symLine += line.strip("\n")
@@ -998,7 +1009,8 @@ def main():
                                 eInd] + "}</math>" + z + "<br />\n")
                         else:
                             proofLine += (
-                            "<br /> \n<math id=\"" + label + "\">{\displaystyle \n" + refEqs[eInd] + "}</math><br />\n")
+                                "<br /> \n<math id=\"" + label + "\">{\displaystyle \n" + refEqs[
+                                    eInd] + "}</math><br />\n")
 
                     else:
                         if pause:
@@ -1021,8 +1033,9 @@ def main():
 
             elif math:
                 if "\\end{equation}" in lines[i + 1] or "\\constraint" in lines[i + 1] or "\\substitution" in lines[
-                            i + 1] or "\\proof" in lines[i + 1] or "\\drmfnote" in lines[i + 1] or "\\drmfname" in lines[
-                            i + 1]:
+                            i + 1] or "\\proof" in lines[i + 1] or "\\drmfnote" in lines[i + 1] or "\\drmfname" in \
+                        lines[
+                                    i + 1]:
                     wiki.write(line.rstrip("\n"))
                     symLine += line.strip("\n")
                     symbols = symbols + getSym(symLine)
@@ -1063,7 +1076,10 @@ def main():
                     symLine = ""
                     wiki.write(comToWrite + "<div align=\"left\">" + getEq(subLine) + "</div><br />\n")
                     comToWrite = ""
-    # except Exception as detail: #If exception occured
-    #	   print("Exception",detail) #print details of error
-    # except: #If anythin else occured...
-    #	 print ("ERROR",sys.exc_info()[0])#ERROR with basic info
+                    # except Exception as detail: #If exception occured
+                    #	   print("Exception",detail) #print details of error
+                    # except: #If anythin else occured...
+                    #	 print ("ERROR",sys.exc_info()[0])#ERROR with basic info
+
+if __name__ == "__main__":
+    main()

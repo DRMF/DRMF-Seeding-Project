@@ -23,7 +23,7 @@ def main():
     if len(sys.argv) != 3:
 
         fname = "../../data/ZE.tex"
-        dot_ind = fname.index(".") + 1
+        dot_ind = fname.rfind(".") + 1
         ofname = fname[:dot_ind] + "1." + fname[dot_ind:]
 
     else:
