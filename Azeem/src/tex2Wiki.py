@@ -2,7 +2,6 @@
 # Convert tex to wikiText
 import csv  # imported for using csv format
 import sys  # imported for getting args
-import os  # imported for copying file
 from shutil import copyfile
 
 global wiki
@@ -38,10 +37,10 @@ def getG(line):  # gets equation for symbols list
     final = ""
     for c in line:
         if c == "$" and start:
-            final += "<math>{\\displaystyle "
+            final += "<math> "
             start = False
         elif c == "$":
-            final += "}</math>"
+            final += "</math>"
             start = True
         else:
             final += c
@@ -71,9 +70,9 @@ def getEq(line):  # Gets all data within constraints,substitutions
         elif c == "$" and per == 0:  # either begin or end equation
             fEq = not (fEq)  # toggle fEq flag to know if begin or end equation
             if fEq:  # if begin
-                stringWrite += "<math>{\\displaystyle "
+                stringWrite += "<math>"
             else:  # if end
-                stringWrite += "}</math>"
+                stringWrite += "</math>"
         elif c == "\n" and per == 0:  # if newline
             stringWrite = stringWrite.strip()  # remove all leading and trailing whitespace
 
@@ -116,12 +115,12 @@ def getEqP(line, Flag):  # Gets all data within proofs
         elif c == "$" and per == 0:
             fEq = not (fEq)
             if fEq:
-                stringWrite += "<math>{\\displaystyle "
+                stringWrite += "<math> "
             else:
                 if length < 10:
-                    stringWrite += "}</math>"
+                    stringWrite += "</math>"
                 else:
-                    stringWrite += "}</math>" + "<br />"
+                    stringWrite += "</math>" + "<br />"
                 length = 0
         elif c == "\n" and per == 0:
             stringWrite = stringWrite.strip()
@@ -397,7 +396,7 @@ def main():
                 labels.append(label)
                 eqs.append("")
                 # append_text("\n<span id=\""+label.lstrip("Formula:")+"\"></span>\n")
-                append_text("<math id=\"" + label.lstrip("Formula:") + "\">{\displaystyle \n")
+                append_text("<math id=\"" + label.lstrip("Formula:") + "\">")
                 math = True
             elif "\\begin{equation}" in line and not parse:
                 sLabel = line.find("\\formula{") + 9
@@ -450,16 +449,16 @@ def main():
                     if not (flagM2):
 
                         append_text(line.rstrip("\n"))
-                        append_text("\n}</math><br />\n")
+                        append_text("\n</math><br />\n")
                     else:
                         append_text(line.rstrip("\n"))
-                        append_text("\n}</math>\n")
+                        append_text("\n</math>\n")
                 elif "\\end{equation}" in lines[i + 1]:
                     append_text(line.rstrip("\n"))
-                    append_text("\n}</math>\n")
+                    append_text("\n</math>\n")
                 elif "\\constraint" in lines[i + 1] or "\\substitution" in lines[i + 1] or "\\drmfn" in lines[i + 1]:
                     append_text(line.rstrip("\n"))
-                    append_text("\n}</math>\n")
+                    append_text("\n</math>\n")
                 else:
                     append_text(line)
             elif math and not parse:
@@ -578,7 +577,7 @@ def main():
                         labels[(eqCounter + 1) % (endNum + 1)]) + "]] </div>\n")
                     append_text("</div>\n\n")
 
-                append_text("<br /><div align=\"center\"><math>{\displaystyle \n")
+                append_text("<br /><div align=\"center\"><math> \n")
                 math = True
             elif "\\end{equation}" in line:
                 append_text(comToWrite)
@@ -759,7 +758,7 @@ def main():
                                     # if Q.find("@")!=-1:
                                     # p1=Q[:Q.find("@")]
                             p1 = G[4].strip("$")
-                            p1 = "<math>{\\displaystyle " + p1 + "}</math>"
+                            p1 = "<math>" + p1 + "</math>"
                             # if checkFlag:
                             new1 = ""
                             new2 = ""
@@ -768,9 +767,9 @@ def main():
                             '''for k in range(0,len(p1)):
                                    if p1[k]=="$":
                                          if mathF:
-                                                new1+="<math>{\\displaystyle "
+                                                new1+="<math>"
                                          else:
-                                                new1+="}</math>"
+                                                new1+="</math>"
                                          mathF=not mathF
 
                                    elif p1[k]=="#" and p1[k+1].isdigit():
@@ -788,9 +787,9 @@ def main():
                             for k in range(0, len(p2)):
                                 if p2[k] == "$":
                                     if mathF:
-                                        new2 += "<math>{\\displaystyle "
+                                        new2 += "<math> "
                                     else:
-                                        new2 += "}</math>"
+                                        new2 += "</math>"
                                     mathF = not mathF
                                 else:
                                     new2 += p2[k]
@@ -947,17 +946,17 @@ def main():
                         z = line[line.find("}", ind + 7) + 1]
                         if z == "." or z == ",":
                             pauseP = True
-                            proofLine += ("<br /> \n<math id=\"" + label + "\">{\displaystyle \n" + refEqs[
-                                eInd] + "}</math>" + z + "<br />\n")
+                            proofLine += ("<br /> \n<math id=\"" + label + "\">" + refEqs[
+                                eInd] + "</math>" + z + "<br />\n")
                         else:
                             if z == "}":
                                 proofLine += (
-                                    "<br /> \n<math id=\"" + label + "\">{\displaystyle \n" + refEqs[
-                                        eInd] + "}</math><br />")
+                                    "<br /> \n<math id=\"" + label + "\">" + refEqs[
+                                        eInd] + "</math><br />")
                             else:
                                 proofLine += (
-                                    "<br /> \n<math id=\"" + label + "\">{\displaystyle \n" + refEqs[
-                                        eInd] + "}</math><br />\n")
+                                    "<br /> \n<math id=\"" + label + "\"> \n" + refEqs[
+                                        eInd] + "</math><br />\n")
 
 
                     else:
@@ -1001,12 +1000,12 @@ def main():
                         z = line[line.find("}", ind + 7) + 1]
                         if z == "." or z == ",":
                             pauseP = True
-                            proofLine += ("<br /> \n<math id=\"" + label + "\">{\displaystyle \n" + refEqs[
-                                eInd] + "}</math>" + z + "<br />\n")
+                            proofLine += ("<br /> \n<math id=\"" + label + "\">" + refEqs[
+                                eInd] + "</math>" + z + "<br />\n")
                         else:
                             proofLine += (
-                                "<br /> \n<math id=\"" + label + "\">{\displaystyle \n" + refEqs[
-                                    eInd] + "}</math><br />\n")
+                                "<br /> \n<math id=\"" + label + "\">" + refEqs[
+                                    eInd] + "</math><br />\n")
 
                     else:
                         if pause:
@@ -1036,7 +1035,7 @@ def main():
                     symLine += line.strip("\n")
                     symbols = symbols + getSym(symLine)
                     symLine = ""
-                    append_text("\n}</math></div>\n")
+                    append_text("\n</math></div>\n")
                 else:
                     symLine += line.strip("\n")
                     append_text(line)
