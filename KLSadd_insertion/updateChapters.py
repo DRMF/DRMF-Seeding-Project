@@ -35,7 +35,8 @@ Goals:change the book chapter files to include paragraphs from the addendum, and
 chapNums = []
 paras = []
 mathPeople = []
-newCommands = [] #used to hold extra commands that need to be inserted from KLSadd to the chapter files
+newCommands = [] #used to hold the indexes of the commands 
+comms = "" #holds the ACTUAL STRINGS of the commands 
 #2/18/16 this method addresses the goal of hardcoding in the necessary packages to let the chapter files run as pdf's.
 #Currently only works with chapter 9, ask Dr. Cohl to help port your chapter 14 output file into a pdf
 
@@ -68,11 +69,13 @@ def getCommands(kls):
                         temp = word[0:word.find("{")+ 1] + "\large\\bf KLSadd: " + word[word.find("{")+ 1: word.find("}")+1]
 
         #pretty sure I had to do something here but I forgot, so pass?
-        pass
+        #duh, obviously I need to store the commands somewhere!
+        comms = kls[newCommands[0]:newCommands[1]]
+        return comms
 
 #2/18/16 this method addresses the goal of hardcoding in the necessary commands to let the chapter files run as pdf's. Currently only works with chapter 9
 
-def insertCommands(kls, chap):
+def insertCommands(kls, chap, cms):
         #reads in the newCommands[] and puts them in chap 
         beginIndex = -1 #the index of the "begin document" keyphrase, this is where the new commands need to be inserted.
 
@@ -82,8 +85,11 @@ def insertCommands(kls, chap):
                 index+=1
                 if("begin{document}" in word):
                         beginIndex += index
-        #chap[beginIndex] += newCommands
-        chap.insert(beginIndex, newCommands)
+        tempIndex = 0
+        #D'OH FOUND THE PROBLEM newCommands stores just the integer value of the indexes of the commands. we need to get the actual commands. easy fix, do next time
+        for i in cms:
+                chap.insert(beginIndex+tempIndex,i)
+                tempIndex +=1
         return chap
 
 #method to find the indices of the reference paragraphs
@@ -118,8 +124,8 @@ def fixChapter(chap, references, p, kls):
 
         #I actually don't remember why I had to do this but I think you need it ^^^^^^^^^^^^^^^^^^^ 
         chap = prepareForPDF(chap)
-        getCommands(kls)
-        chap = insertCommands(kls,chap)
+        cms = getCommands(kls)
+        chap = insertCommands(kls,chap, cms)
         #probably won't work because I don't know how anything works
         return chap
 
