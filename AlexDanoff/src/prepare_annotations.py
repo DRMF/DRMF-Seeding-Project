@@ -37,8 +37,8 @@ def main():
     # get the names of the input and output files
     if len(sys.argv) != 3:
 
-        fname = "data/ZE.2.tex"
-        ofname = "data/ZE.3.tex"
+        fname = "../../data/ZE.2.tex"
+        ofname = "../../data/ZE.3.tex"
 
     else:
 

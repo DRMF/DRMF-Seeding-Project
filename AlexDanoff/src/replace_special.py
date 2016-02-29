@@ -33,8 +33,8 @@ STD_REGEX = r'.*?###open_(\d+)###.*?###close_\1###'
 def main():
     if len(sys.argv) != 3:
 
-        fname = "data/ZE.1.tex"
-        ofname = "data/ZE.2.tex"
+        fname = "../../data/ZE.1.tex"
+        ofname = "../../data/ZE.2.tex"
 
     else:
 
