@@ -196,8 +196,13 @@ def secLabel(label):
     return (label.replace("\'\'", ""))
 
 
-def modLabel(label):
+def modLabel(line):
     # label.replace("Formula:KLS:","KLS;")
+    start_label = line.find("\\formula{") + 9
+    if start_label == 8:
+        start_label = line.find("\\label{") + 7
+    end_label = line.find("}", start_label)
+    label = line[start_label:end_label]
     isNumer = False
     newlabel = ""
     num = ""
@@ -221,7 +226,7 @@ def modLabel(label):
         newlabel += num
     elif len(num) == 1:
         newlabel += "0" + num
-    return (newlabel)
+    return newlabel
 
 
 def append_text(text):
@@ -300,15 +305,7 @@ def readin(ofname):
         for i in range(0, len(refLines)):
             line = refLines[i]
             if "\\begin{equation}" in line:
-                sLabel = line.find("\\formula{") + 9
-                eLabel = line.find("}", sLabel)
-                label = modLabel(line[sLabel:eLabel])
-                '''for l in lLink:
-                       if l.find(label)!=-1 and l[len(label)+1]=="=":
-                             rlabel=l[l.find("=>")+3:l.find("\\n")]
-                             rlabel=rlabel.replace("/","")
-                             rlabel=rlabel.replace("#",":")
-                             break'''
+                label = modLabel(line)
                 refLabels.append(label)
                 refEqs.append("")
                 math = True
@@ -421,32 +418,15 @@ def readin(ofname):
                 if head:
                     append_text("\n")
                     head = False
-                sLabel = line.find("\\formula{") + 9
-                eLabel = line.find("}", sLabel)
-                label = modLabel(line[sLabel:eLabel])
+                label = modLabel(line)
                 eqCounter += 1
-                '''for l in lLink:
-                       if label==l[0:l.find("=")-1]:
-                             rlabel=l[l.find("=>")+3:l.find("\\n")]
-                             rlabel=rlabel.replace("/","")
-                             rlabel=rlabel.replace("#",":")
-                             rlabel=rlabel.replace("!",":")
-                             break'''
                 labels.append(label)
                 eqs.append("")
                 # append_text("\n<span id=\""+label.lstrip("Formula:")+"\"></span>\n")
                 append_text("<math id=\"" + label.lstrip("Formula:") + "\">")
                 math = True
             elif "\\begin{equation}" in line and not parse:
-                sLabel = line.find("\\formula{") + 9
-                eLabel = line.find("}", sLabel)
-                label = modLabel(line[sLabel:eLabel])
-                '''for l in lLink:
-                       if l.find(label)!=-1:
-                             rlabel=l[l.find("=>")+3:l.find("\\n")]
-                             rlabel=rlabel.replace("/","")
-                             rlabel=rlabel.replace("#",":")
-                             break'''
+                label = modLabel(line)
                 labels.append("*" + label)  # special marker
                 eqs.append("")
                 math = True
