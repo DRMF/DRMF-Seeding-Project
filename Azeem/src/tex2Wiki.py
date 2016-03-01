@@ -318,23 +318,20 @@ def readin(ofname):
         for i in range(0, len(lines)):
             line = lines[i]
             if "\\begin{document}" in line:
-                # append_text("drmf_bof\n")
                 parse = True
             elif "\\end{document}" in line and parse:
                 # append_text("</div>\n")
                 mainPrepend += "</div>\n"
                 mainText = mainPrepend + mainText
-                mainText = mainText.replace("drmf_bof\n", "")
-                mainText = mainText.replace("drmf_eof\n", "")
                 mainText = mainText.replace("\'\'\'Orthogonal Polynomials\'\'\'\n", "")
                 mainText = mainText.replace("{{#set:Section=0}}\n", "")
                 mainText = mainText[0:mainText.rfind("== Sections ")]
-                mainText = "drmf_bof\n\'\'\'Orthogonal Polynomials\'\'\'\n{{#set:Section=0}}\n" + mainText + "\ndrmf_eof\n"
+                append_revision('Orthogonal Polynomials')
+                mainText = "{{#set:Section=0}}\n" + mainText
                 mainWrite.write(mainText)
                 mainWrite.close()
                 main.close()
                 copyfile('OrthogonalPolynomials.mmd', 'OrthogonalPolynomials.mmd.new')
-                # append_text("\ndrmf_eof\n")
                 parse = False
             elif "\\title" in line and parse:
                 stringWrite = "\'\'\'"
@@ -362,34 +359,10 @@ def readin(ofname):
         eqCounter = 0
         for i in range(0, len(lines)):
             line = lines[i]
-            # line.replace("\\begin{equation}","$")
-            # line.replace("\\end{equation},"$")
-            '''if "\\begin{document}" in line:
-                  append_text("drmf_bof\n")
-                  parse=True
-            elif "\\end{document}" in line and parse:
-                  append_text("\ndrmf_eof\n")
-                  parse=False
-            elif "\\title" in line and parse:
-                  stringWrite="\'\'\'"
-                  stringWrite+=getString(line)+"\'\'\'\n"
-                  labels.append("Orthogonal Polynomials")
-                    append_text(stringWrite\n)
-            elif "\\part" in line:
-                  if getString(line)=="BOF":
-                         parse=False
-                  elif getString(line)=="EOF":
-                         parse=True
-                  elif parse:
-                         append_text("\n<br />\n= "+getString(line)+" =\n")
-                         head=True
-            '''
             if "\\section" in line:
                 parse = True
                 secCounter += 1
                 append_revision(secLabel(getString(line)))
-                append_text("drmf_bof\n")
-                append_text("\'\'\'" + secLabel(getString(line)) + "\'\'\'\n")
                 append_text("{{DISPLAYTITLE:" + (sections[secCounter][0]) + "}}\n")
                 append_text("{{#set:Chapter=" + chapter + "}}\n")
                 append_text("{{#set:Section=" + str(secCounter) + "}}\n")
@@ -399,7 +372,6 @@ def readin(ofname):
             elif ("\\section" in lines[(i + 1) % len(lines)] or "\\end{document}" in lines[
                     (i + 1) % len(lines)]) and parse:
                 append_text("{{footSection}}\n")
-                append_text("drmf_eof\n")
                 sections[secCounter].append(eqCounter)
                 eqCounter = 0
 
@@ -548,8 +520,6 @@ def readin(ofname):
                 eqCounter += 1
                 label = labels[eqCounter]
                 append_revision(secLabel(label))
-                append_text("drmf_bof\n")
-                append_text("\'\'\'" + secLabel(label) + "\'\'\'\n")
                 append_text("{{DISPLAYTITLE:" + (labels[eqCounter]) + "}}\n")
                 if eqCounter < endNum:  # FOR ANYTHING THAT IS NOT THE EXTRA EQUATIONS
                     append_text("<div id=\"drmf_head\">\n")
@@ -892,7 +862,7 @@ def readin(ofname):
                             "<div id=\"alignright\"> [[" + secLabel(labels[(eqCounter + 1) % (endNum + 1)]).replace(" ",
                                                                                                                     "_") + "|" + secLabel(
                                 labels[(eqCounter + 1) % (endNum + 1)]) + "]] >> </div>\n")
-                    append_text("</div>\n\ndrmf_eof\n")
+                    append_text("</div>\n")
                 else:  # FOR EXTRA EQUATIONS
                     append_text("<br /><div id=\"drmf_foot\">\n")
                     append_text("<div id=\"alignleft\"> << [[" + labels[endNum - 1].replace(" ", "_") + "|" + labels[
@@ -902,7 +872,7 @@ def readin(ofname):
                                 labels[0] + "]] </div>\n")
                     append_text("<div id=\"alignright\"> [[" + labels[(0) % endNum].replace(" ", "_") + "|" + labels[
                         0 % endNum] + "]] </div>\n")
-                    append_text("</div>\n\ndrmf_eof\n")
+                    append_text("</div>\n")
 
 
 
