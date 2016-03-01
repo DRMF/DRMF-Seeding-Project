@@ -3,8 +3,12 @@
 import csv  # imported for using csv format
 import sys  # imported for getting args
 from shutil import copyfile
+import xml.etree.ElementTree as ET
+import datetime
 
-global wiki
+wiki = ''
+ET.register_namespace('', 'http://www.mediawiki.org/xml/export-0.10/')
+root = ET.Element('{http://www.mediawiki.org/xml/export-0.10/}mediawiki')
 
 
 def isnumber(char):
@@ -222,15 +226,49 @@ def modLabel(label):
 
 def append_text(text):
     global wiki
-    wiki.write(text)
+    wiki.text = wiki.text + text
+
+
+def append_revision(param):
+    global wiki
+    page = ET.SubElement(root, 'page')
+    title = ET.SubElement(page, 'title')
+    title.text = param
+    revision = ET.SubElement(page, 'revision')
+    timestamp = ET.SubElement(revision, 'timestamp')
+    timestamp.text = str(datetime.datetime.utcnow())
+    contributor = ET.SubElement(revision, 'contributor')
+    username = ET.SubElement(contributor, 'username')
+    username.text = 'SeedBot'
+    wiki = ET.SubElement(revision, 'text')
+    wiki.text = ''
+
+
+def writeout(ofname):
+    tree = ET.ElementTree(root)
+    tree.write(ofname, xml_declaration=True, encoding='utf-8', method='xml')
 
 
 def main():
+    if len(sys.argv) != 3:
+
+        fname = "../../data/ZE.3.tex"
+        ofname = "../../data/ZE.4.xml"
+
+    else:
+
+        fname = sys.argv[1]
+        ofname = sys.argv[2]
+
+    readin(fname)
+    writeout(ofname)
+
+
+def readin(ofname):
     # try:
     for jsahlfkjsd in range(0, 1):
         global wiki
-        tex = open(sys.argv[1], 'r')
-        wiki = open(sys.argv[2], 'w')
+        tex = open(ofname, 'r')
         main = open("OrthogonalPolynomials.mmd", "r")
         mainText = main.read()
         mainPrepend = ""
@@ -352,6 +390,7 @@ def main():
             if "\\section" in line:
                 parse = True
                 secCounter += 1
+                append_revision(secLabel(getString(line)))
                 append_text("drmf_bof\n")
                 append_text("\'\'\'" + secLabel(getString(line)) + "\'\'\'\n")
                 append_text("{{DISPLAYTITLE:" + (sections[secCounter][0]) + "}}\n")
@@ -527,8 +566,9 @@ def main():
                 parse = True
                 symbols = []
                 eqCounter += 1
-                append_text("drmf_bof\n")
                 label = labels[eqCounter]
+                append_revision(secLabel(label))
+                append_text("drmf_bof\n")
                 append_text("\'\'\'" + secLabel(label) + "\'\'\'\n")
                 append_text("{{DISPLAYTITLE:" + (labels[eqCounter]) + "}}\n")
                 if eqCounter < endNum:  # FOR ANYTHING THAT IS NOT THE EXTRA EQUATIONS
