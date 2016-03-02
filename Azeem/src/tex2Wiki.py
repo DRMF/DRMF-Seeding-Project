@@ -87,7 +87,7 @@ def getEq(line):  # Gets all data within constraints,substitutions
         elif count > 0 and per == 0:  # not special character
             stringWrite += c  # write the character
 
-    return (stringWrite.rstrip().lstrip())
+    return stringWrite.rstrip().lstrip()
 
 
 def getEqP(line, Flag):  # Gets all data within proofs
@@ -133,7 +133,7 @@ def getEqP(line, Flag):  # Gets all data within proofs
         elif count > 0 and per == 0:
             stringWrite += c
 
-    return (stringWrite.lstrip())
+    return stringWrite.lstrip()
 
 
 def getSym(line):  # Gets all symbols on a line for symbols list
@@ -197,7 +197,6 @@ def secLabel(label):
 
 
 def modLabel(line):
-    # label.replace("Formula:KLS:","KLS;")
     start_label = line.find("\\formula{") + 9
     if start_label == 8:
         start_label = line.find("\\label{") + 7
@@ -211,12 +210,10 @@ def modLabel(line):
         if isNumer and not isnumber(label[i]):
             if len(num) > 1:
                 newlabel += num
-                isNumer = False
                 num = ""
             else:
                 newlabel += "0" + str(num)
                 num = ""
-                isNumer = False
         if isnumber(label[i]):
             isNumer = True
             num += str(label[i])
@@ -279,13 +276,7 @@ def readin(ofname):
         mainText = main.read()
         mainPrepend = ""
         mainWrite = open("OrthogonalPolynomials.mmd.new", "w")
-        tester = open("testData.txt", 'w')
-        # glossary=open('Glossary', 'r')
         glossary = open('new.Glossary.csv', 'rb')
-        gCSV = csv.reader(glossary, delimiter=',', quotechar='\"')
-        # lLinks=open('BruceLabelLinks', 'r')
-        lGlos = glossary.readlines()
-        # lLink=lLinks.readlines()
         math = False
         constraint = False
         substitution = False
@@ -298,7 +289,6 @@ def readin(ofname):
         refEqs = []
         parse = False
         head = False
-        # chapRef=[("GA",open("GA.tex",'r')),("ZE",open("ZE.3.tex",'r'))]
         refLabels = []
         '''for c in chapRef:
            refLines=refLines+(c[1].readlines())
@@ -321,7 +311,6 @@ def readin(ofname):
             if "\\begin{document}" in line:
                 parse = True
             elif "\\end{document}" in line and parse:
-                # append_text("</div>\n")
                 mainPrepend += "</div>\n"
                 mainText = mainPrepend + mainText
                 mainText = mainText.replace("\'\'\'Orthogonal Polynomials\'\'\'\n", "")
@@ -339,8 +328,6 @@ def readin(ofname):
                 stringWrite += getString(line) + "\'\'\'\n"
                 labels.append("Orthogonal Polynomials")
                 sections.append(["Orthogonal Polynomials", 0])
-                # append_text(stringWrite)
-                # mainPrepend+=stringWrite
                 chapter = getString(line)
                 mainPrepend += (
                     "\n== Sections in " + chapter + " ==\n\n<div style=\"-moz-column-count:2; column-count:2;\">\n")
@@ -387,7 +374,6 @@ def readin(ofname):
                 head = True
 
             elif "\\begin{equation}" in line and parse:
-                #                                                                          symLine=""
                 if head:
                     append_text("\n")
                     head = False
@@ -395,8 +381,7 @@ def readin(ofname):
                 eqCounter += 1
                 labels.append(label)
                 eqs.append("")
-                # append_text("\n<span id=\""+label.lstrip("Formula:")+"\"></span>\n")
-                append_text("<math id=\"" + label.lstrip("Formula:") + "\">")
+                append_text("<math id=\"" + label + "\">")
                 math = True
             elif "\\begin{equation}" in line and not parse:
                 label = modLabel(line)
@@ -414,7 +399,6 @@ def readin(ofname):
                 substitution = True
                 math = False
                 subLine = ""
-            # append_text("<div align=\"right\">Substitution(s): "+getEq(line)+"</div><br />\n")
             elif "\\proof" in line and parse:
                 math = False
             elif "\\drmfn" in line and parse:
@@ -474,16 +458,6 @@ def readin(ofname):
 
         eqCounter = 0
         endNum = len(labels) - 1
-        '''for n in range(1,len(labels)):
-               if n+1!=len(labels) and labels[n+1][0]=="*" and labels[n][0]!="*":
-                 labels[n]=""+labels[n]
-                 endNum=n
-               elif labels[n][0]=="*":
-                 labels[n]=""+labels[n][1:]
-               else:
-                 labels[n]=""+labels[n]'''
-        '''for n in range(0,len(refLabels)):
-                 refLabels[n]=""+refLabels[n]'''
         parse = False
         constraint = False
         substitution = False
@@ -657,8 +631,6 @@ def readin(ofname):
                             symbol = symbolPar[0:symbolPar.find("{")]
                     else:
                         symbol = symbolPar
-                    numArg = parCx
-                    numPar = ArgCx
                     gFlag = False
                     checkFlag = False
                     get = False
@@ -723,31 +695,11 @@ def readin(ofname):
                                         ap = ""
                                     else:
                                         ap += Q[o]
-                            '''websiteU=g[g.find("http://"):].strip("\n")
-                            k=0
-                            websites=[]
-                            for r in range(0,len(websiteU)):
-                                if websiteU[r]==",":
-                                     if websiteU[k:r].find("http://")!=-1:
-                                         websites.append(websiteU[k:r+1].strip(" "))
-                                         k=r
-
-
-                            if websiteU[k:r].find("http://")!=-1:
-                                   websites.append(websiteU[k:r+1].strip(" "))
-                            websiteF=""
-                            for d in websites:
-                                   websiteF=websiteF+" ["+d+" "+d+"]"'''
-                            # websiteF=G[4].strip("\n")
                             websiteF = ""
                             web1 = G[5]
                             for t in range(5, len(G)):
                                 if G[t] != "":
                                     websiteF = websiteF + " [" + G[t] + " " + G[t] + "]"
-
-                                    # p1=Q
-                                    # if Q.find("@")!=-1:
-                                    # p1=Q[:Q.find("@")]
                             p1 = G[4].strip("$")
                             p1 = "<math>" + p1 + "</math>"
                             # if checkFlag:
@@ -755,25 +707,6 @@ def readin(ofname):
                             new2 = ""
                             pause = False
                             mathF = True
-                            '''for k in range(0,len(p1)):
-                                   if p1[k]=="$":
-                                         if mathF:
-                                                new1+="<math>"
-                                         else:
-                                                new1+="</math>"
-                                         mathF=not mathF
-
-                                   elif p1[k]=="#" and p1[k+1].isdigit():
-                                         pause=True
-                                   elif pause:
-                                         num=int(p1[k])
-                                         #letter=chr(num+96)
-                                         letter=listArgs[num-1]
-                                         new1+=letter
-                                         pause=False
-
-                                   else:
-                                         new1+=p1[k]'''
                             p2 = G[1]
                             for k in range(0, len(p2)):
                                 if p2[k] == "$":
@@ -788,30 +721,10 @@ def readin(ofname):
                             p2 = new2
                             finSym.append(web1 + " " + p1 + "]</span> : " + p2 + " :" + websiteF)
                             break
-                            # gFlag=True
-                            # if not symF:
-                            #	symF=True
-                            #	append_text("<span class=\"plainlinks\">[")
-                            # else:
-                            #	append_text("<br />\n")
-                            #	append_text("<span class=\"plainlinks\">[")
-                            # append_text(g[g.find("http://"):].strip("\n"))
-                            # append_text(" ")
-                            # append_text(getEq(g[g.find("{$"):]).strip("\n").replace("\\\\","\\"))
-                            # append_text("]</span> : ")
-                            # append_text(g[g.find(" {")+2:g.find("} ",g.find(" {")+1)])
-                            # append_text(" : [")
-                            # append_text(g[g.find("http://"):].strip("\n"))
-                            # append_text(" ")
-                            # append_text(g[g.find("http://"):].strip("\n"))
-                            # append_text("] ")'''
-
-                    # preG=S
                     if not gFlag:
                         del newSym[s]
 
                 gFlag = True
-                # finSym.reverse()
                 if ampFlag:
                     append_text("& : logical and")
                     gFlag = False
@@ -886,14 +799,12 @@ def readin(ofname):
                     constraint = True
                     math = False
                     conLine = ""
-                    # append_text("<div align=\"left\">"+getEq(line)+"</div><br />\n")
             elif "\\substitution" in line and parse:
                 # symbols=symbols+getSym(line)
                 symLine = line.strip("\n")
                 if hSub:
                     comToWrite = comToWrite + "\n== Substitution(s) ==\n\n"
                     hSub = False
-                # append_text("<div align=\"left\">"+getEq(line)+"</div><br />\n")
                 substitution = True
                 math = False
                 subLine = ""
@@ -962,13 +873,10 @@ def readin(ofname):
                             proofLine += (line[ind])
                 if "\\end{equation}" in lines[i + 1]:
                     proof = False
-                    # symLine+=line.strip("\n")
                     append_text(comToWrite + getEqP(proofLine, False) + "</div>\n<br />\n")
                     comToWrite = ""
                     symbols = symbols + getSym(symLine)
                     symLine = ""
-
-                    # append_text(line)
 
             elif proof:
                 symLine += line.strip("\n")
@@ -1011,7 +919,6 @@ def readin(ofname):
                             proofLine += (line[ind])
                 if "\\end{equation}" in lines[i + 1]:
                     proof = False
-                    # symLine+=line.strip("\n")
                     append_text(comToWrite + getEqP(proofLine, False).rstrip("\n") + "</div>\n<br />\n")
                     comToWrite = ""
                     symbols = symbols + getSym(symLine)
