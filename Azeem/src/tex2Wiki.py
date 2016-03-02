@@ -203,6 +203,7 @@ def modLabel(line):
         start_label = line.find("\\label{") + 7
     end_label = line.find("}", start_label)
     label = line[start_label:end_label]
+    label = label.replace('eq:', 'Formula:')
     isNumer = False
     newlabel = ""
     num = ""
