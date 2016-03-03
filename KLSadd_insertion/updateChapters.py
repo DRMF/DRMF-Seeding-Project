@@ -81,7 +81,7 @@ def insertCommands(kls, chap, cms):
 
         #find index of begin document in KLSadd
         index = 0
-        for w in kls:
+        for word in kls:
                 index+=1
                 if("begin{document}" in word):
                         beginIndex += index
