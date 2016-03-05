@@ -72,7 +72,9 @@ def remove_comments(content):
     oldest = content
     updated = _get_preamble()
     old = content
-
+def remove_macro(name, content):
+        pattern = re.compile(name+"{(.*?)}")
+        return pattern.sub(r'\1', content)
 
 def remove_excess(content):
     """Removes the excess pieces from the given content and returns the updated version as a string.
@@ -83,11 +85,14 @@ def remove_excess(content):
 
     updated = _get_preamble()
     old = content
-
+    content = remove_macro(r"\\lxID", content)
     # edit single lines
-    content = re.sub(r'\\bibliography{\.\./bib/DLMF}',
-                     r'\\bibliographystyle{plain}' + "\n" + r'\\bibliography{/home/hcohl/DRMF/DLMF/DLMF.bib}', content)
-    content = re.sub(r'\\acknowledgements{.*?}{.*?}', r' ', content)
+    #removed unecessary information that caused an error with pdflatex
+    pattern =  re.compile(r'\\acknowledgements{.*?}\n\n', re.DOTALL)
+    content = re.sub(pattern, r'', content)
+    content = re.sub(r'\\maketitle', r' ', content)
+    content = re.sub(r'\\bibliography{\.\./bib/DLMF}', r'\\bibliographystyle{plain}' + "\n" + r'\\bibliography{/home/hcohl/DRMF/DLMF/DLMF.bib}', content)
+    content = re.sub(r'\\acknowledgements{.*?}', r' ', content)
     content = re.sub(r'{math}', r'{equation}', content)
     content = re.sub(r'\\galleryitem{.*?}{.*?}', r' ', content)
     content = re.sub(r'\\origref{.*?}{.*?}', r' ', content)
