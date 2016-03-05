@@ -86,7 +86,7 @@ def remove_special(content):
         # if this line is an index start storing it, or write it if we're done with the indexes
         if IND_START in line:
             in_ind = True
-            ind_str += line
+            ind_str += line + "\n"
             continue
 
         elif in_ind:
@@ -95,9 +95,6 @@ def remove_special(content):
 
             # add a preceding newline if one is not already present
             if previous.strip() != "":
-                print ("first if: {0}".format(ind_str))
-                if ("}" in ind_str):
-                        ind_str+= "\n"
                 ind_str = "\n" + ind_str
 
             fullsplit = ind_str.split("\n")
