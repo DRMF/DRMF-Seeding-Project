@@ -23,7 +23,7 @@ def getString(line):  # Gets all data within curly braces on a line
     # ----------------------------
     for c in line:
         if c == "{" or c == "}":  # if there is a curly brace in the line
-            getStr = not (getStr)  # toggle the getStr flag
+            getStr = not getStr  # toggle the getStr flag
             if c == "}":  # no more info needed
                 break
         elif getStr:  # if within curly braces
@@ -33,7 +33,7 @@ def getString(line):  # Gets all data within curly braces on a line
                 else:  # replace $ with ''
                     stringWrite += "\'\'"  # add double '
             pW = c  # change last character for finding double dashes
-    return (stringWrite.rstrip('\n').lstrip())  # return the data without newlines and without leading spaces
+    return stringWrite.rstrip('\n').lstrip()  # return the data without newlines and without leading spaces
 
 
 def getG(line):  # gets equation for symbols list
@@ -48,7 +48,7 @@ def getG(line):  # gets equation for symbols list
             start = True
         else:
             final += c
-    return (final)
+    return final
 
 
 def getEq(line):  # Gets all data within constraints,substitutions
@@ -72,7 +72,7 @@ def getEq(line):  # Gets all data within constraints,substitutions
             if count > 0:
                 stringWrite += c
         elif c == "$" and per == 0:  # either begin or end equation
-            fEq = not (fEq)  # toggle fEq flag to know if begin or end equation
+            fEq = not fEq  # toggle fEq flag to know if begin or end equation
             if fEq:  # if begin
                 stringWrite += "<math>"
             else:  # if end
@@ -92,9 +92,9 @@ def getEq(line):  # Gets all data within constraints,substitutions
 
 def getEqP(line, Flag):  # Gets all data within proofs
     if Flag:
-        a = 1
+        pass
     else:
-        a = 0
+        pass
     per = 1
     stringWrite = ""
     fEq = False
@@ -117,7 +117,7 @@ def getEqP(line, Flag):  # Gets all data within proofs
             if count > 0:
                 stringWrite += c
         elif c == "$" and per == 0:
-            fEq = not (fEq)
+            fEq = not fEq
             if fEq:
                 stringWrite += "<math> "
             else:
@@ -183,17 +183,17 @@ def getSym(line):  # Gets all symbols on a line for symbols list
     # if "MeixnerPollaczek{\\lambda}{n}@{x}{\\phi}=\frac{\\pochhammer{2\\lambda}{n}}" in line:
     symList.append(symbol)
     symList += getSym(symbol)
-    return (symList)
+    return symList
 
 
 def unmodLabel(label):
     label = label.replace(".0", ".")
     label = label.replace(":0", ":")
-    return (label)
+    return label
 
 
 def secLabel(label):
-    return (label.replace("\'\'", ""))
+    return label.replace("\'\'", "")
 
 
 def modLabel(line):
@@ -276,7 +276,6 @@ def readin(ofname):
         mainText = main.read()
         mainPrepend = ""
         mainWrite = open("OrthogonalPolynomials.mmd.new", "w")
-        glossary = open('new.Glossary.csv', 'rb')
         math = False
         constraint = False
         substitution = False
@@ -381,7 +380,7 @@ def readin(ofname):
                 eqCounter += 1
                 labels.append(label)
                 eqs.append("")
-                append_text("<math id=\"" + label + "\">")
+                append_text("<math id=\"" + label.lstrip("Formula:") + "\">")
                 math = True
             elif "\\begin{equation}" in line and not parse:
                 label = modLabel(line)
@@ -422,7 +421,7 @@ def readin(ofname):
                             u] or "\\end{document}" in lines[u]:
                             flagM = False
                             flagM2 = True
-                    if not (flagM2):
+                    if not flagM2:
 
                         append_text(line.rstrip("\n"))
                         append_text("\n</math><br />\n")
@@ -443,14 +442,14 @@ def readin(ofname):
                             i + 1] or "\\drmfn" in lines[i + 1]:
                     math = False
             if substitution and parse:
-                subLine = subLine + line.replace("&", "&<br />")
+                subLine += line.replace("&", "&<br />")
                 if "\\end{equation}" in lines[i + 1] or "\\substitution" in lines[i + 1] or "\\constraint" in lines[
                             i + 1] or "\\drmfn" in lines[i + 1] or "\\proof" in lines[i + 1]:
                     substitution = False
                     append_text("<div align=\"right\">Substitution(s): " + getEq(subLine) + "</div><br />\n")
 
             if constraint and parse:
-                conLine = conLine + line.replace("&", "&<br />")
+                conLine += line.replace("&", "&<br />")
                 if "\\end{equation}" in lines[i + 1] or "\\substitution" in lines[i + 1] or "\\constraint" in lines[
                             i + 1] or "\\drmfn" in lines[i + 1] or "\\proof" in lines[i + 1]:
                     constraint = False
@@ -597,7 +596,6 @@ def readin(ofname):
                     if flagA:
                         newSym.append(x)
                 newSym.reverse()
-                symF = False
                 ampFlag = False
                 finSym = []
                 for s in range(len(newSym) - 1, -1, -1):
@@ -644,9 +642,6 @@ def readin(ofname):
                         parCx = 0
                         parFlag = False
                         cC = 0
-                        ind = G[0].find("@")
-                        if ind == -1:
-                            ind = len(G[0]) - 1
                         for z in G[0]:
                             if z == "@":
                                 parFlag = True
@@ -673,11 +668,9 @@ def readin(ofname):
                             get = True
                             checkFlag = False
 
-                        if (get):
+                        if get:
                             if get:
                                 G = preG
-                            get = False
-                            checkFlag = False
                             if True:
                                 if symbolPar.find("@") != -1:
                                     Q = symbolPar[:symbolPar.find("@")]
@@ -688,9 +681,8 @@ def readin(ofname):
                                 ap = ""
                                 for o in range(len(symbol), len(Q)):
                                     if Q[o] == "{" or z == "[":
-                                        argFlag = True
+                                        pass
                                     elif Q[o] == "}" or z == "]":
-                                        argFlag = False
                                         listArgs.append(ap)
                                         ap = ""
                                     else:
@@ -703,7 +695,6 @@ def readin(ofname):
                             p1 = G[4].strip("$")
                             p1 = "<math>" + p1 + "</math>"
                             # if checkFlag:
-                            new1 = ""
                             new2 = ""
                             pause = False
                             mathF = True
@@ -717,7 +708,6 @@ def readin(ofname):
                                     mathF = not mathF
                                 else:
                                     new2 += p2[k]
-                            # p1=new1
                             p2 = new2
                             finSym.append(web1 + " " + p1 + "]</span> : " + p2 + " :" + websiteF)
                             break
@@ -744,10 +734,6 @@ def readin(ofname):
                 q = r.find("KLS:") + 4
                 p = r.find(":", q)
                 section = r[q:p]
-                equation = r[p + 1:]
-                if equation.find(":") != -1:
-                    equation = equation[0:equation.find(":")]
-
                 append_text(
                     "<span class=\"plainlinks\">[http://homepage.tudelft.nl/11r49/askey/contents.html Equation in Section " + section + "]</span> of [[Bibliography#KLS|'''KLS''']].\n\n")  # Where should it link to?
                 append_text("== URL links ==\n\nWe ask users to provide relevant URL links in this space.\n\n")
@@ -784,7 +770,7 @@ def readin(ofname):
                     append_text("<div id=\"aligncenter\"> [[" + labels[0].replace(" ", "_") + "#" + labels[endNum][
                                                                                                     8:] + "|formula in " +
                                 labels[0] + "]] </div>\n")
-                    append_text("<div id=\"alignright\"> [[" + labels[(0) % endNum].replace(" ", "_") + "|" + labels[
+                    append_text("<div id=\"alignright\"> [[" + labels[0 % endNum].replace(" ", "_") + "|" + labels[
                         0 % endNum] + "]] </div>\n")
                     append_text("</div>\n")
 
@@ -835,7 +821,6 @@ def readin(ofname):
                     if line[ind:ind + 7] == "\\eqref{":
                         pause = True
                         eqR = line[ind:line.find("}", ind) + 1]
-                        rLab = getString(eqR)
                         '''for l in lLink:
                                            if rLab==l[0:l.find("=")-1]:
                                                rlabel=l[l.find("=>")+3:l.find("\\n")]
@@ -886,7 +871,6 @@ def readin(ofname):
                     if line[ind:ind + 7] == "\\eqref{":
                         pause = True
                         eqR = line[ind:line.find("}", ind) + 1]
-                        rLab = getString(eqR)
                         '''for l in lLink:
                                            if rLab==l[0:l.find("=")-1]:
                                                rlabel=l[l.find("=>")+3:l.find("\\n")]
