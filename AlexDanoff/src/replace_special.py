@@ -254,10 +254,9 @@ def _replace_i(words):
         ilocOld=iloc
         iloc = words.find("i", iloc + len(replacement))
         # print("Surrounding: {0} - replacement made: {1}".format(surrounding, replacement != "i"))
-        wl=len(words)
-        words = words[:ilocOld] + replacement + words[ilocOld + 1:]
         if ilocOld == -1:
             break
+        words = words[:ilocOld] + replacement + words[ilocOld + 1:]
 
     return words
 
