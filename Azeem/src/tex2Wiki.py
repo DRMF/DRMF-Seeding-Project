@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 import datetime
 
 wiki = ''
+next_formula_number = 0
 ET.register_namespace('', 'http://www.mediawiki.org/xml/export-0.10/')
 root = ET.Element('{http://www.mediawiki.org/xml/export-0.10/}mediawiki')
 
@@ -197,9 +198,17 @@ def secLabel(label):
 
 
 def modLabel(line):
-    start_label = line.find("\\formula{") + 9
-    if start_label == 8:
-        start_label = line.find("\\label{") + 7
+    start_label = line.find("\\formula{")
+    if start_label > 0:
+        start_label += len("\\formula{")
+    else:
+        start_label = line.find("\\label{")
+        if start_label > 0:
+            start_label += len("\\label{")
+        else:
+            global next_formula_number
+            next_formula_number += 1
+            return 'auto-number-' + str(next_formula_number)
     end_label = line.find("}", start_label)
     label = line[start_label:end_label]
     label = label.replace('eq:', 'Formula:')
