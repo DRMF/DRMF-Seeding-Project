@@ -8,6 +8,7 @@ import datetime
 
 wiki = ''
 next_formula_number = 0
+lLink = ''
 ET.register_namespace('', 'http://www.mediawiki.org/xml/export-0.10/')
 root = ET.Element('{http://www.mediawiki.org/xml/export-0.10/}mediawiki')
 
@@ -92,10 +93,6 @@ def getEq(line):  # Gets all data within constraints,substitutions
 
 
 def getEqP(line, Flag):  # Gets all data within proofs
-    if Flag:
-        pass
-    else:
-        pass
     per = 1
     stringWrite = ""
     fEq = False
@@ -198,6 +195,7 @@ def secLabel(label):
 
 
 def modLabel(line):
+    global lLink
     start_label = line.find("\\formula{")
     if start_label > 0:
         start_label += len("\\formula{")
@@ -211,6 +209,14 @@ def modLabel(line):
             return 'auto-number-' + str(next_formula_number)
     end_label = line.find("}", start_label)
     label = line[start_label:end_label]
+    rlabel = label
+    for l in lLink:
+        if l.find(label) != -1 and l[len(label) + 1] == "=":
+            rlabel = l[l.find("=>") + 3:l.find("\\n")]
+            rlabel = rlabel.replace("/", "")
+            rlabel = rlabel.replace("#", ":")
+            break
+    label = rlabel
     label = label.replace('eq:', 'Formula:')
     isNumer = False
     newlabel = ""
@@ -262,18 +268,26 @@ def writeout(ofname):
 
 
 def main():
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
 
         fname = "../../data/ZE.3.tex"
         ofname = "../../data/ZE.4.xml"
+        lname = "../../data/BruceLabelLinks"
 
     else:
 
         fname = sys.argv[1]
         ofname = sys.argv[2]
+        lname = sys.argv[3]
 
+    setup_label_links(lname)
     readin(fname)
     writeout(ofname)
+
+
+def setup_label_links(ofname):
+    global lLink
+    lLink = open(ofname, "r").readlines()
 
 
 def readin(ofname):
