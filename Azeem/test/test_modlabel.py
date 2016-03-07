@@ -11,6 +11,6 @@ class TestModLabel(TestCase):
         self.assertEqual('auto-number-2', modLabel('\\begin{equation}'))
 
     def test_modLabelsWithList(self):
-        setup_label_links('llinks')
-        self.assertEqual('Formula:EF.EX.TM', modLabel('\\begin{equation}\label{eq:EF.EX.TM}'))
-        self.assertEqual('Formula:EF.EX.TM', modLabel('\\begin{equation}\\formula{eq:EF.EX.TM}'))
+        setup_label_links('testdata/llinks')
+        self.assertEqual('DLMF:04.09:E', modLabel('\\begin{equation}\label{eq:EF.EX.TM}'))
+        self.assertEqual('DLMF:04.09:E', modLabel('\\begin{equation}\\formula{eq:EF.EX.TM}'))
