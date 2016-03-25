@@ -126,6 +126,30 @@ def fixChapter(chap, references, p, kls):
         chap = prepareForPDF(chap)
         cms = getCommands(kls)
         chap = insertCommands(kls,chap, cms)
+        commentticker = 0
+        for word in chap:
+                if ("\\newcommand\\half{\\frac12}" in word):
+                        wordtoadd = "%" + word
+                        chap[commentticker] = wordtoadd
+                elif ("\\newcommand{\\hyp}[5]{\\,\\mbox{}_{#1}F_{#2}\\!\\left(" in word):
+                        wordtoadd = "%" + word
+                        chap[commentticker] = wordtoadd
+                elif ("\\genfrac{}{}{0pt}{}{#3}{#4};#5\\right)}" in word):
+                        wordtoadd = "%" + word
+                        chap[commentticker] = wordtoadd
+                elif ("\\newcommand{\\qhyp}[5]{\\,\\mbox{}_{#1}\\phi_{#2}\\!\\left(" in word):
+                        wordtoadd = "%" + word
+                        chap[commentticker] = wordtoadd
+                elif ("\\genfrac{}{}{0pt}{}{#3}{#4};#5\\right)}" in word):
+                        wordtoadd = "%" + word
+                        chap[commentticker] = wordtoadd
+                commentticker += 1
+                # Hopefully this works
+        ticker1 = 0
+        while ticker1 < len(chap):
+                if ('\\myciteKLS' in chap[ticker1]):
+                        chap[ticker1] = chap[ticker1].replace('\\myciteKLS', '\\cite')
+                ticker1 += 1
         #probably won't work because I don't know how anything works
         return chap
 
@@ -160,12 +184,12 @@ with open("KLSadd.tex", "r") as add:
         #parse both files 9 and 14 as strings
 
         #chapter 9
-        with open("tempchap9.tex", "r") as ch9:
+        with open("chap09.tex", "r") as ch9:
                 entire9 = ch9.readlines() #reads in as a list of strings
         ch9.close()
         
         #chapter 14
-        with open("tempchap14.tex", "r") as ch14:
+        with open("chap14.tex", "r") as ch14:
                 entire14 = ch14.readlines()
         ch14.close()
         #call the findReferences method to find the index of the References paragraph in the two file strings 
