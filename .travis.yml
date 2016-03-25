@@ -1,2 +1,7 @@
 language: python
-script: nosetests AlexDanoff Azeem
+install:
+  - pip install coveralls
+script:
+  nosetests --with-coverage AlexDanoff Azeem
+after_success:
+  coveralls

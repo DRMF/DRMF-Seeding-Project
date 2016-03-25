@@ -34,6 +34,18 @@ def main():
     writeout(ofname, remove_excess(readin(fname)))
 
 
+def remove_group(name, content):
+    """Removes the group bounded by the group name and then curly braces.
+    :param content:
+    :param name:
+    """
+
+    str_pat = name + STD_REGEX
+    pattern = re.compile(str_pat, re.DOTALL)
+
+    return pattern.sub(r'', content)
+
+
 def remove_section(start, end, content):
     """Removes the section or part bounded by start and end.
     :param start:
@@ -59,6 +71,11 @@ def remove_begin_end(name, content):
     return pattern.sub(r'', content)
 
 
+def remove_macro(name, content):
+    pattern = re.compile(name + "{(.*?)}")
+    return pattern.sub(r'\1', content)
+
+
 def remove_excess(content):
     """Removes the excess pieces from the given content and returns the updated version as a string.
     :param content:
@@ -68,12 +85,31 @@ def remove_excess(content):
 
     updated = _get_preamble()
     old = content
-
+    content = remove_macro(r"\\lxID", content)
     # edit single lines
+    # removed unecessary information that caused an error with pdflatex
+    pattern = re.compile(r'\\acknowledgements{.*?}\n\n', re.DOTALL)
+    content = re.sub(pattern, r'', content)
+    content = re.sub(r'\\maketitle', r' ', content)
     content = re.sub(r'\\bibliography{\.\./bib/DLMF}',
                      r'\\bibliographystyle{plain}' + "\n" + r'\\bibliography{/home/hcohl/DRMF/DLMF/DLMF.bib}', content)
-    content = re.sub(r'\\author\[.*?\]{(.*?)}', r'\\author{\1}', content)
-    content = re.sub(r'\{math\}', r'{equation}', content)
+    content = re.sub(r'\\acknowledgements{.*?}', r' ', content)
+    content = re.sub(r'\{math}', r'{equation}', content)
+    content = re.sub(r'\\galleryitem{.*?}{.*?}', r' ', content)
+    content = re.sub(r'\\origref{.*?}{.*?}', r' ', content)
+    content = re.sub(r'\\onlyelectronic{.*?{.*?}.*?}', r' ', content)
+    content = re.sub(r'\\onlyelectronic{.*?}', r' ', content)
+    content = re.sub(r'\\printonly{.*?}', r' ', content)
+    pattern = re.compile(r'\\onlyprint{.*?}', re.DOTALL)
+    content = re.sub(pattern, r' ', content)
+    pattern = re.compile(r'\\origref\[.*?\]{.*?}', re.DOTALL)
+    content = re.sub(pattern, r' ', content)
+    content = re.sub(r'\\begin\{electroniconly}', r' ', content)
+    content = re.sub(r'\\end\{electroniconly}', r' ', content)
+    content = re.sub(r'\\end\{printonly}', r' ', content)
+    content = re.sub(r'\\begin\{printonly}', r' ', content)
+    content = re.sub(r'\\DLMF\[.*?\]', r' ', content)
+    content = re.sub(r'\\author\[.*?\]{.*?}', r' ', content)
 
     # modify labels, etc
     content = re.sub(r'\\begin\{equation\}\[.*?\]+', r'\\begin{equation}', content, re.DOTALL)
@@ -117,7 +153,12 @@ def remove_excess(content):
     content = remove_begin_end("comment", content)
     content = remove_begin_end("figure", content)
     content = remove_begin_end("errata", content)
+    content = remove_begin_end("table", content)
+    content = remove_begin_end("table", content)
 
+    content = remove_begin_end("%", content)
+
+    content = remove_begin_end("sidebar", content)
     content = parentheses.remove(content, curly=True)
 
     to_remove = [
@@ -286,7 +327,8 @@ def remove_excess(content):
 
 # returns the preamble as a list of it's lines
 def _get_preamble():
-    preamble = ['\\documentclass{article}', '\\usepackage{amsmath}', '\\usepackage{amsfonts}', '\\usepackage{breqn}',
+    preamble = ['\\documentclass{article}', '\\usepackage{amsmath}', '\\usepackage{amsfonts}',
+                '\\usepackage{DLMFbreqn}',
                 '\\usepackage{DLMFmath}', '\\usepackage{DRMFfcns}', '', '\\oddsidemargin -0.7cm', '\\textwidth 18.3cm',
                 '\\textheight 26.0cm', '\\topmargin -2.0cm', '', '%  \constraint{', '%  \substitution{',
                 '%  \drmfnote{', '%  \drmfname{', '']
