@@ -63,11 +63,7 @@ def getCommands(kls):
                         newCommands.append(index-1)
                if("mybibitem[1]" in word):
                         newCommands.append(index)
-               #add \large\bf KLSadd: to make KLSadd additions appear like the other paragraphs
-               if("paragraph{" in word):
-                        #not sure if this works, needs testing!
-                        temp = word[0:word.find("{")+ 1] + "\large\\bf KLSadd: " + word[word.find("{")+ 1: word.find("}")+1]
-
+                        
         #pretty sure I had to do something here but I forgot, so pass?
         #duh, obviously I need to store the commands somewhere!
         comms = kls[newCommands[0]:newCommands[1]]
@@ -154,6 +150,7 @@ def fixChapter(chap, references, p, kls):
 
 #open the KLSadd file to do things with 
 with open("KLSadd.tex", "r") as add:
+
         #store the file as a string
         addendum = add.readlines()
         index = 0
@@ -199,6 +196,8 @@ with open("KLSadd.tex", "r") as add:
         str9 = ''.join(fixChapter(entire9, references9, paras, addendum))
         str14 = ''.join(fixChapter(entire14, references14, paras, addendum))
 
+        print(len(references9) + len(references14))
+        print(len(paras))
 """
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 If you are writing something that will make a change to the chapter files, write it BEFORE this line, this part
