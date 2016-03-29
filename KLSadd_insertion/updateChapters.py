@@ -64,10 +64,6 @@ def getCommands(kls):
                if("mybibitem[1]" in word):
                         newCommands.append(index)
                #add \large\bf KLSadd: to make KLSadd additions appear like the other paragraphs
-               if("paragraph{" in word):
-                        #not sure if this works, needs testing!
-                        temp = word[0:word.find("{")+ 1] + "\large\\bf KLSadd: " + word[word.find("{")+ 1: word.find("}")+1]
-
         #pretty sure I had to do something here but I forgot, so pass?
         #duh, obviously I need to store the commands somewhere!
         comms = kls[newCommands[0]:newCommands[1]]
@@ -116,9 +112,9 @@ def fixChapter(chap, references, p, kls):
         count = 0 #count is used to represent the values in count
         for i in references:
                 #Place before References paragraph
-                chap[i-2] += "%KLS insert begin"
+                chap[i-2] += "\\large\\bf KLSadd additions: "
                 chap[i-2] += p[count] 
-                chap[i-2] += "%KLS insert end"
+                chap[i-2] += "\\large\\bf End of KLSadd additions"
                 count+=1
         chap[i-1] += p[count]
 
