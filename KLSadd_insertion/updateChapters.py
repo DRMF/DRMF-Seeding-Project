@@ -99,7 +99,7 @@ def findReferences(str):
                         w = word[word.find("{")+1: word.find("}")]
                         if(w not in mathPeople):
                                 canAdd = True
-                if("\\subsection*{References}" in word and canAdd == True):
+                if(("\\subsection*{References}" in word or "subsubsection*{References" in word )and canAdd == True):
                         references.append(index)
                         canAdd = False
         return references
