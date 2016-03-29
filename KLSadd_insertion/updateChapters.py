@@ -86,7 +86,6 @@ def insertCommands(kls, chap, cms):
                 if("begin{document}" in word):
                         beginIndex += index
         tempIndex = 0
-        #D'OH FOUND THE PROBLEM newCommands stores just the integer value of the indexes of the commands. we need to get the actual commands. easy fix, do next time
         for i in cms:
                 chap.insert(beginIndex+tempIndex,i)
                 tempIndex +=1
@@ -114,15 +113,15 @@ def findReferences(str):
 def fixChapter(chap, references, p, kls):
         #chap is the file string(actually a list), references is the specific references for the file,
         #and p is the paras variable(not sure if needed) kls is the KLSadd.tex as a list
-        #TODO: OPTIMIZE(?)
         count = 0 #count is used to represent the values in count
         for i in references:
-                #add the paragraphs before the Reference paragraphs start
-                chap[i-3] += p[count] 
+                #Place before References paragraph
+                chap[i-2] += "%KLS insert begin"
+                chap[i-2] += p[count] 
+                chap[i-2] += "%KLS insert end"
                 count+=1
         chap[i-1] += p[count]
 
-        #I actually don't remember why I had to do this but I think you need it ^^^^^^^^^^^^^^^^^^^ 
         chap = prepareForPDF(chap)
         cms = getCommands(kls)
         chap = insertCommands(kls,chap, cms)
@@ -175,7 +174,6 @@ with open("KLSadd.tex", "r") as add:
         for i in range(len(indexes)-1):
                 str = ''.join(addendum[indexes[i]: indexes[i+1]-1])
                 paras.append(str)
-
         #paras now holds the paragraphs that need to go into the chapter files, but they need to go in the appropriate
         #section(like Wilson, Racah, Hahn, etc.) so we use the mathPeople variable
         #we can use the section names to place the relevant paragraphs in the right place
@@ -197,8 +195,6 @@ with open("KLSadd.tex", "r") as add:
         references9 = findReferences(entire9)
         references14 = findReferences(entire14)
 
-        #ERROR! entire9 sometimes contains lists, must only contain strings. Should be fixed by next week. Check the 
-        #getCommands method, I suspect that is the problem
         #call the fixChapter method to get a list with the addendum paragraphs added in
         str9 = ''.join(fixChapter(entire9, references9, paras, addendum))
         str14 = ''.join(fixChapter(entire14, references14, paras, addendum))
