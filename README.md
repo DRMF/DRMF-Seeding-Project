@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/DRMF/DRMF-Seeding-Project.svg?branch=master)](https://travis-ci.org/DRMF/DRMF-Seeding-Project)
 [![Coverage Status](https://coveralls.io/repos/github/DRMF/DRMF-Seeding-Project/badge.svg?branch=master)](https://coveralls.io/github/DRMF/DRMF-Seeding-Project?branch=master)
+[![Code Issues](https://www.quantifiedcode.com/api/v1/project/b097e91550e147b2b02e345ffb1c5162/badge.svg)](https://www.quantifiedcode.com/app/project/b097e91550e147b2b02e345ffb1c5162)
+[![Code Health](https://landscape.io/github/DRMF/DRMF-Seeding-Project/master/landscape.svg?style=flat)](https://landscape.io/github/DRMF/DRMF-Seeding-Project/master)
 
 This project is meant to convert different designated source formats to semantic LaTeX for the
 DRMF project. One major aspect of this conversion is the inclusion, insertion, and replacement 
