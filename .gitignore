@@ -116,6 +116,8 @@ crashlytics-build.properties
 
 ### TeX template
 ## Core latex/pdflatex auxiliary files:
+*.sty
+*.cls
 *.aux
 *.lof
 *.lot
