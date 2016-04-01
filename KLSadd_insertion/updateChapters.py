@@ -52,10 +52,10 @@ def prepareForPDF(chap):
 def getCommands(kls):
     index = 0
     for word in kls:
-           index+=1
-           if("smallskipamount" in word):
+        index+=1
+        if("smallskipamount" in word):
             newCommands.append(index-1)
-           if("mybibitem[1]" in word):
+        if("mybibitem[1]" in word):
             newCommands.append(index)
            #add \large\bf KLSadd: to make KLSadd additions appear like the other paragraphs
     #pretty sure I had to do something here but I forgot, so pass?
@@ -82,11 +82,11 @@ def insertCommands(kls, chap, cms):
     return chap
 
 #method to find the indices of the reference paragraphs
-def findReferences(str):
+def findReferences(chapter):
     references = []
     index = -1
     canAdd = False
-    for word in str:
+    for word in chapter:
         index+=1
         #check sections and subsections
         if("section{" in word or "subsection*{" in word):
@@ -110,7 +110,6 @@ def fixChapter(chap, references, p, kls):
         chap[i-2] += p[count]
         chap[i-2] += "%End of KLSadd additions"
         count+=1
-    chap[i-1] += p[count]
 
     chap = prepareForPDF(chap)
     cms = getCommands(kls)
@@ -166,8 +165,8 @@ with open("KLSadd.tex", "r") as add:
     #now indexes holds all of the places there is a section
     #using these indexes, get all of the words in between and add that to the paras[]
     for i in range(len(indexes)-1):
-        str = ''.join(addendum[indexes[i]: indexes[i+1]-1])
-        paras.append(str)
+        box = ''.join(addendum[indexes[i]: indexes[i+1]-1])
+        paras.append(box)
     #paras now holds the paragraphs that need to go into the chapter files, but they need to go in the appropriate
     #section(like Wilson, Racah, Hahn, etc.) so we use the mathPeople variable
     #we can use the section names to place the relevant paragraphs in the right place
