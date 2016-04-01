@@ -91,9 +91,11 @@ def findReferences(chapter):
         #check sections and subsections
         if("section{" in word or "subsection*{" in word):
             w = word[word.find("{")+1: word.find("}")]
-            if(w not in mathPeople):
-                canAdd = True
-        if("\\subsection*{References}" in word and canAdd == True):
+            for unit in mathPeople:
+                if (w in unit):
+                    canAdd = True
+
+        if("\\subsection*{References}" in word) and (canAdd == True):
             references.append(index)
             canAdd = False
     return references
@@ -106,7 +108,7 @@ def fixChapter(chap, references, p, kls):
     count = 0 #count is used to represent the values in count
     for i in references:
         #Place before References paragraph
-        chap[i-2] += "%KLSadd additions:"
+        chap[i-2] += "%Begin KLSadd additions"
         chap[i-2] += p[count]
         chap[i-2] += "%End of KLSadd additions"
         count+=1
@@ -159,7 +161,7 @@ with open("KLSadd.tex", "r") as add:
             if("9." in word):
                 chapNums.append(9)
             if("14." in word):
-                chapNums.append(9)
+                chapNums.append(14)
             #get the index
             indexes.append(index-1)
     #now indexes holds all of the places there is a section
@@ -206,4 +208,4 @@ with open("updated9.tex","w") as temp9:
     temp9.write(str9)
 
 with open("updated14.tex", "w") as temp14:
-    temp14.write(str9)
+    temp14.write(str14)
