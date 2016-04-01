@@ -82,11 +82,11 @@ def insertCommands(kls, chap, cms):
     return chap
 
 #method to find the indices of the reference paragraphs
-def findReferences(str):
+def findReferences(chapter):
     references = []
     index = -1
     canAdd = False
-    for word in str:
+    for word in chapter:
         index+=1
         #check sections and subsections
         if("section{" in word or "subsection*{" in word):
