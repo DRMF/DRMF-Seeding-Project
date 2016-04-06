@@ -268,20 +268,21 @@ def writeout(ofname):
 
 
 def main():
-    if len(sys.argv) != 4:
-
+    if len(sys.argv) != 6:
         fname = "../../data/ZE.3.tex"
         ofname = "../../data/ZE.4.xml"
         lname = "../../data/BruceLabelLinks"
+        glossary =  "../../data/new.Glossary.csv"
+        mmd =  "../../data/OrthogonalPolynomials.mmd"
 
     else:
-
         fname = sys.argv[1]
         ofname = sys.argv[2]
         lname = sys.argv[3]
-
+        glossary = sys.argv[4]
+        mmd = sys.argv[5]
     setup_label_links(lname)
-    readin(fname)
+    readin(fname,glossary,mmd)
     writeout(ofname)
 
 
@@ -290,12 +291,12 @@ def setup_label_links(ofname):
     lLink = open(ofname, "r").readlines()
 
 
-def readin(ofname):
+def readin(ofname,glossary,mmd):
     # try:
     for jsahlfkjsd in range(0, 1):
         global wiki
         tex = open(ofname, 'r')
-        main_file = open("OrthogonalPolynomials.mmd", "r")
+        main_file = open(mmd, "r")
         mainText = main_file.read()
         mainPrepend = ""
         mainWrite = open("OrthogonalPolynomials.mmd.new", "w")
@@ -341,7 +342,7 @@ def readin(ofname):
                 mainWrite.write(mainText)
                 mainWrite.close()
                 main_file.close()
-                copyfile('OrthogonalPolynomials.mmd', 'OrthogonalPolynomials.mmd.new')
+                copyfile(mmd, 'OrthogonalPolynomials.mmd.new')
                 parse = False
             elif "\\title" in line and parse:
                 stringWrite = "\'\'\'"
@@ -652,7 +653,7 @@ def readin(ofname):
                     gFlag = False
                     checkFlag = False
                     get = False
-                    gCSV = csv.reader(open('new.Glossary.csv', 'rb'), delimiter=',', quotechar='\"')
+                    gCSV = csv.reader(open(glossary, 'rb'), delimiter=',', quotechar='\"')
                     preG = ""
                     if symbol == "\\&":
                         ampFlag = True
