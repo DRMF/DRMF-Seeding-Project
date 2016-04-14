@@ -85,19 +85,26 @@ def insertCommands(kls, chap, cms):
 def findReferences(chapter):
     references = []
     index = -1
+    chaptercheck = 0
+    if chapticker == 0:
+        chaptercheck = str(9)
+    elif chapticker == 1:
+        chaptercheck = str(14)
     canAdd = False
     for word in chapter:
         index+=1
         #check sections and subsections
-        if("section{" in word or "subsection*{" in word):
+        if("section{" in word or "subsection*{" in word) and ("subsubsection*{" not in word):
             w = word[word.find("{")+1: word.find("}")]
+            ws = word[word.find("{")+1: word.find("~")]
             for unit in mathPeople:
-                if (w in unit):
+                subunit = unit[unit.find(" ")+1: unit.find("#")]
+                if ((w in subunit) or (ws in subunit)) and (chaptercheck in unit) and (len(w) == len(subunit)) or (("Pseudo Jacobi" in w) and ("Pseudo Jacobi (or Routh-Romanovski)" in subunit)):
                     canAdd = True
-
         if("\\subsection*{References}" in word) and (canAdd == True):
             references.append(index)
             canAdd = False
+
     return references
 
 #method to change file string(actually a list right now), returns string to be written to file
@@ -106,33 +113,53 @@ def fixChapter(chap, references, p, kls):
     #chap is the file string(actually a list), references is the specific references for the file,
     #and p is the paras variable(not sure if needed) kls is the KLSadd.tex as a list
     count = 0 #count is used to represent the values in count
+    designator = 0 #Tells which chapter it's on
+    if chapticker2 == 0:
+        designator = "9."
+    elif chapticker2 == 1:
+        designator = "14."
+    designator = str(designator)
     for i in references:
         #Place before References paragraph
-        chap[i-2] += "%Begin KLSadd additions"
-        chap[i-2] += p[count]
-        chap[i-2] += "%End of KLSadd additions"
-        count+=1
+        if count > 34:
+            word1 = "14. Banana"
+        else:
+            word1 = str(p[count])
+        if (designator in word1[word1.find("\\subsection*{") + 1: word1.find("}") ]):
+            chap[i-2] += "%Begin KLSadd additions"
+            chap[i-2] += p[count]
+            chap[i-2] += "%End of KLSadd additions"
+            count += 1
+        else:
+            while (designator not in word1[word1.find("\\subsection*{") + 1: word1.find("}") ]):
+                word1 = str(p[count])
+                if (designator in word1[word1.find("\\subsection*{") + 1: word1.find("}") ]):
+                    chap[i - 2] += "%Begin KLSadd additions"
+                    chap[i - 2] += p[count]
+                    chap[i - 2] += "%End of KLSadd additions"
+                    count += 1
+                else:
 
+                    count+=1
     chap = prepareForPDF(chap)
     cms = getCommands(kls)
     chap = insertCommands(kls,chap, cms)
     commentticker = 0
     for word in chap:
-        if ("\\newcommand\\half{\\frac12}" in word):
-            wordtoadd = "%" + word
-            chap[commentticker] = wordtoadd
-        elif ("\\newcommand{\\hyp}[5]{\\,\\mbox{}_{#1}F_{#2}\\!\\left(" in word):
-            wordtoadd = "%" + word
-            chap[commentticker] = wordtoadd
-        elif ("\\genfrac{}{}{0pt}{}{#3}{#4};#5\\right)}" in word):
-            wordtoadd = "%" + word
-            chap[commentticker] = wordtoadd
-        elif ("\\newcommand{\\qhyp}[5]{\\,\\mbox{}_{#1}\\phi_{#2}\\!\\left(" in word):
-            wordtoadd = "%" + word
-            chap[commentticker] = wordtoadd
-        elif ("\\genfrac{}{}{0pt}{}{#3}{#4};#5\\right)}" in word):
-            wordtoadd = "%" + word
-            chap[commentticker] = wordtoadd
+        word2 = chap[chap.index(word)-1]
+        if ("\\newcommand{\qhypK}[5]{\,\mbox{}_{#1}\phi_{#2}\!\left(" not in word2):
+            if ("\\newcommand\\half{\\frac12}" in word):
+                wordtoadd = "%" + word
+                chap[commentticker] = wordtoadd
+            elif ("\\newcommand{\\hyp}[5]{\\,\\mbox{}_{#1}F_{#2}\\!\\left(" in word):
+                wordtoadd = "%" + word
+                chap[commentticker] = wordtoadd
+            elif ("\\genfrac{}{}{0pt}{}{#3}{#4};#5\\right)}" in word):
+                wordtoadd = "%" + word
+                chap[commentticker] = wordtoadd
+            elif ("\\newcommand{\\qhyp}[5]{\\,\\mbox{}_{#1}\\phi_{#2}\\!\\left(" in word):
+                wordtoadd = "%" + word
+                chap[commentticker] = wordtoadd
         commentticker += 1
         # Hopefully this works
     ticker1 = 0
@@ -149,19 +176,25 @@ with open("KLSadd.tex", "r") as add:
     addendum = add.readlines()
     for word in addendum:
         if ("paragraph{" in word):
-            temp = word[0:word.find("{") + 1] + "\large\\bf KLSadd: " + word[word.find("{") + 1: word.find("}") + 1]
-            addendum[addendum.index(word): addendum.index(word) + 1] = temp
+            lenword = len(word) - 1
+            temp = word[0:word.find("{") + 1] + "\large\\bf KLSadd: " + word[word.find("{") + 1: lenword]
+            addendum[addendum.index(word)] = temp
+        if ("subsubsection*{" in word):
+            lenword = len(word) - 1
+            addendum[addendum.index(word)] = word[0:word.find("{") + 1] + "\large\\bf KLSadd: " + word[word.find("{") + 1: lenword]
     index = 0
     indexes = []
     for word in addendum:
         index+=1
         if("." in word and "\\subsection*{" in word):
-            name = word[word.find(" "): word.find("}")]
-            mathPeople.append(name)
-            if("9." in word):
+            if ("9." in word):
                 chapNums.append(9)
+                name = word[word.find("{") + 1: word.find("}") ]
+                mathPeople.append(name + "#")
             if("14." in word):
                 chapNums.append(14)
+                name = word[word.find("{") + 1: word.find("}") ]
+                mathPeople.append(name + "#")
             #get the index
             indexes.append(index-1)
     #now indexes holds all of the places there is a section
@@ -169,6 +202,7 @@ with open("KLSadd.tex", "r") as add:
     for i in range(len(indexes)-1):
         box = ''.join(addendum[indexes[i]: indexes[i+1]-1])
         paras.append(box)
+    paras.append("% This is a test")
     #paras now holds the paragraphs that need to go into the chapter files, but they need to go in the appropriate
     #section(like Wilson, Racah, Hahn, etc.) so we use the mathPeople variable
     #we can use the section names to place the relevant paragraphs in the right place
@@ -187,11 +221,14 @@ with open("KLSadd.tex", "r") as add:
     ch14.close()
     #call the findReferences method to find the index of the References paragraph in the two file strings
     #two variables for the references lists one for chapter 9 one for chapter 14
+    chapticker = 0
     references9 = findReferences(entire9)
+    chapticker += 1
     references14 = findReferences(entire14)
-
     #call the fixChapter method to get a list with the addendum paragraphs added in
+    chapticker2 = 0
     str9 = ''.join(fixChapter(entire9, references9, paras, addendum))
+    chapticker2 += 1
     str14 = ''.join(fixChapter(entire14, references14, paras, addendum))
 
 """
