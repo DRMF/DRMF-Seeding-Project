@@ -60,5 +60,5 @@ with open("KLSadd.tex", "rb") as file:
 
          
 
-                        file.close()
+                file.close()
 #end of FileChangerLatex.py

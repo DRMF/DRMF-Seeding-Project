@@ -327,7 +327,7 @@ def markup(file):
         if location==-1:
             location=len(equation)
 
-        newFile=newFile+"\\begin{equation} \n" + equation[1:location] + "%  \\constraint{\n"
+        newFile=newFile+"\\begin{equation} \n" + equation[1:location] + "%  \\constraints{\n"
 
 	#find constraints
         c=findArgs(equation,"Element")
@@ -340,7 +340,7 @@ def markup(file):
                 z=element[1:location].strip()
             elif element.count("|") >0:
                 for index in range(element.count("|")+1):
-                    #if it is the first constraint then it is from beginning to the first location of the |, the loc is increased each time to get through all of the constraints
+                    #if it is the first constraints then it is from beginning to the first location of the |, the loc is increased each time to get through all of the constraints
                     if index==0:
                         loc=element.find("|")
                         constraints.append(element[1:loc])
@@ -353,23 +353,23 @@ def markup(file):
         print(var)	
 	    
         for index in range(len(constraints)):
-            print(constraint)
+            print(constraints)
             if (var=="Complexes"):
-                newFile="%      "+ newFile+ consraint+ "\in \Complex"
+                newFile="%      "+ newFile+ constraints+ "\in \Complex"
             elif (var=="Wholes"):
-                newFile="%      "+ newFile+ consraint+ "\in \\NonNegInteger"
+                newFile="%      "+ newFile+ constraints+ "\in \\NonNegInteger"
             elif (var=="Naturals"):
-                newFile="%      "+ newFile+ consraint+ "\in \\NatNumber"
+                newFile="%      "+ newFile+ constraints+ "\in \\NatNumber"
             elif (var=="Integers"):
-                newFile="%      "+ newFile+ consraint+ "\in \Integer"
+                newFile="%      "+ newFile+ constraints+ "\in \Integer"
             elif (var=="Irrationals"):
-                newFile="%      "+ newFile+ consraint+ "\in \Irrationals"
+                newFile="%      "+ newFile+ constraints+ "\in \Irrationals"
             elif (var=="Reals"):
-                newFile="%      "+ newFile+ consraint+ "\in \Real"
+                newFile="%      "+ newFile+ constraints+ "\in \Real"
             elif (var=="Rational"):
-                newFile="%      "+ newFile+ consraint+ "\in \Rational"
+                newFile="%      "+ newFile+ constraints+ "\in \Rational"
             elif (var=="Primes"):
-                newFile="%      "+ newFile+ consraint+ "\in \Prime"
+                newFile="%      "+ newFile+ constraints+ "\in \Prime"
     return newFile
 
 def equationSetUp(s):
@@ -383,7 +383,7 @@ def equationSetUp(s):
     constraints=[]
     if (s.find("Element["))>0:
         elements=s[s.find("Element[",end)+ len("Element["): len(s)-1]
-        newFile=newFile+"%  \constraint{\n"
+        newFile=newFile+"%  \constraints{\n"
         numCon=elements.count("|")+1
         location=0
         for index in range(numCon):

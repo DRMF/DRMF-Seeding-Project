@@ -830,6 +830,7 @@ def readin(ofname,glossary,mmd):
                 pauseP = False
                 for ind in range(0, len(line)):
                     if line[ind:ind + 7] == "\\eqref{":
+                        rLab = getString(eqR)
                         pause = True
                         eInd = refLabels.index("" + label)
                         z = line[line.find("}", ind + 7) + 1]
