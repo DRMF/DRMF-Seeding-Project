@@ -299,13 +299,7 @@ def readin(ofname,glossary,mmd):
         mainText = main_file.read()
         mainPrepend = ""
         mainWrite = open("OrthogonalPolynomials.mmd.new", "w")
-        tester = open("testData.txt", 'w')
-        # glossary=open('Glossary', 'r')
         glossary = open('new.Glossary.csv', 'rb')
-        gCSV = csv.reader(glossary, delimiter=',', quotechar='\"')
-        # lLinks=open('BruceLabelLinks', 'r')
-        lGlos = glossary.readlines()
-        # lLink=lLinks.readlines()
         math = False
         constraint = False
         substitution = False
@@ -844,7 +838,6 @@ def readin(ofname,glossary,mmd):
                 proofLine = ""
                 pause = False
                 pauseP = False
-                eqR = ''
                 for ind in range(0, len(line)):
                     if line[ind:ind + 7] == "\\eqref{":
                         # TODO: figure out how eqR is defined
@@ -888,8 +881,9 @@ def readin(ofname,glossary,mmd):
                 for ind in range(0, len(line)):
                     if line[ind:ind + 7] == "\\eqref{":
                         pause = True
-                        eqR = line[ind:line.find("}", ind) + 1]
-                        rLab = getString(eqR)
+                        # TODO: Figure out how this is used
+                        # eqR = line[ind:line.find("}", ind) + 1]
+                        # rLab = getString(eqR)
                         eInd = refLabels.index("" + label)
                         z = line[line.find("}", ind + 7) + 1]
                         if z == "." or z == ",":
