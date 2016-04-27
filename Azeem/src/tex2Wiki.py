@@ -1,4 +1,4 @@
-# Version 14: Templates
+# Version 15: Minor Fixes
 # Convert tex to wikiText
 import csv  # imported for using csv format
 import sys  # imported for getting args
@@ -13,7 +13,7 @@ ET.register_namespace('', 'http://www.mediawiki.org/xml/export-0.10/')
 root = ET.Element('{http://www.mediawiki.org/xml/export-0.10/}mediawiki')
 
 
-def isnumber(char):
+def isnumber(char):  # Function to check if char is a number (assuming 1 character)
     return char[0] in "0123456789"
 
 
@@ -165,7 +165,7 @@ def getSym(line):  # Gets all symbols on a line for symbols list
                     p = ""
                 else:
                     p = line[i + 1]
-                if cC == 0 and p != "{" and p != "[" and p != "@":
+                if cC <= 0 and p != "{" and p != "[" and p != "@":
                     symFlag = False
                     # if "monicAskeyWilson{n+1}@{x}{a}{b}{c}{d}{q}+\\frac{1}{2}" in line:
                     symList.append(symbol)
@@ -175,7 +175,7 @@ def getSym(line):  # Gets all symbols on a line for symbols list
 
         elif c == "\\":
             symFlag = True
-        elif c == "&":
+        elif c == "&" and not (i > line.find("\\begin{array}") and i < line.find("\\end{array}")):
             symList.append("&")
 
     # if "MeixnerPollaczek{\\lambda}{n}@{x}{\\phi}=\frac{\\pochhammer{2\\lambda}{n}}" in line:
@@ -294,12 +294,12 @@ def setup_label_links(ofname):
 def readin(ofname,glossary,mmd):
     # try:
     for jsahlfkjsd in range(0, 1):
-        global wiki
         tex = open(ofname, 'r')
         main_file = open(mmd, "r")
         mainText = main_file.read()
         mainPrepend = ""
         mainWrite = open("OrthogonalPolynomials.mmd.new", "w")
+        glossary = open('new.Glossary.csv', 'rb')
         math = False
         constraint = False
         substitution = False
@@ -351,7 +351,7 @@ def readin(ofname,glossary,mmd):
                 sections.append(["Orthogonal Polynomials", 0])
                 chapter = getString(line)
                 mainPrepend += (
-                    "\n== Sections in " + chapter + " ==\n\n<div style=\"-moz-column-count:2; column-count:2;\">\n")
+                "\n== Sections in " + chapter + " ==\n\n<div style=\"-moz-column-count:2; column-count:2;-webkit-column-count:2\">\n")
             elif "\\part" in line:
                 if getString(line) == "BOF":
                     parse = False
@@ -468,6 +468,13 @@ def readin(ofname,glossary,mmd):
                 subLine += line.replace("&", "&<br />")
                 if "\\end{equation}" in lines[i + 1] or "\\substitution" in lines[i + 1] or "\\constraint" in lines[
                             i + 1] or "\\drmfn" in lines[i + 1] or "\\proof" in lines[i + 1]:
+                    lineR = ""
+                    for i in range(0, len(subLine)):
+                        if subLine[i] == "&" and not (
+                                i > subLine.find("\\begin{array}") and i < subLine.find("\\end{array}")):
+                            lineR += "&<br />"
+                        else:
+                            lineR += subLine[i]
                     substitution = False
                     append_text("<div align=\"right\">Substitution(s): " + getEq(subLine) + "</div><br />\n")
 
@@ -663,6 +670,9 @@ def readin(ofname,glossary,mmd):
                         parCx = 0
                         parFlag = False
                         cC = 0
+                        ind = G[0].find("@")
+                        if ind == -1:
+                            ind = len(G[0]) - 1
                         for z in G[0]:
                             if z == "@":
                                 parFlag = True
@@ -697,9 +707,7 @@ def readin(ofname,glossary,mmd):
                             if len(Q) > len(symbol) and (Q[len(symbol)] == "{" or Q[len(symbol)] == "["):
                                 ap = ""
                                 for o in range(len(symbol), len(Q)):
-                                    if Q[o] == "{" or z == "[":
-                                        pass
-                                    elif Q[o] == "}" or z == "]":
+                                    if Q[o] == "}" or z == "]":
                                         listArgs.append(ap)
                                         ap = ""
                                     else:
@@ -751,7 +759,9 @@ def readin(ofname,glossary,mmd):
                 q = r.find("KLS:") + 4
                 p = r.find(":", q)
                 section = r[q:p]
-                # Where should it link to?
+                equation = r[p + 1:]
+                if equation.find(":") != -1:
+                    equation = equation[0:equation.find(":")]
                 append_text("<span class=\"plainlinks\">[http://homepage.tudelft.nl/11r49/askey/contents.html "
                             "Equation in Section " + section + "]</span> of [[Bibliography#KLS|'''KLS''']].\n\n")
                 append_text("== URL links ==\n\nWe ask users to provide relevant URL links in this space.\n\n")
@@ -830,9 +840,10 @@ def readin(ofname,glossary,mmd):
                 pauseP = False
                 for ind in range(0, len(line)):
                     if line[ind:ind + 7] == "\\eqref{":
-                        rLab = getString(eqR)
+                        # TODO: figure out how eqR is defined
+                        # rLab = getString(eqR)
                         pause = True
-                        eInd = refLabels.index("" + label)
+                        eInd = refLabels.index("" + label) # This should be rLab
                         z = line[line.find("}", ind + 7) + 1]
                         if z == "." or z == ",":
                             pauseP = True
@@ -870,6 +881,9 @@ def readin(ofname,glossary,mmd):
                 for ind in range(0, len(line)):
                     if line[ind:ind + 7] == "\\eqref{":
                         pause = True
+                        # TODO: Figure out how this is used
+                        # eqR = line[ind:line.find("}", ind) + 1]
+                        # rLab = getString(eqR)
                         eInd = refLabels.index("" + label)
                         z = line[line.find("}", ind + 7) + 1]
                         if z == "." or z == ",":
@@ -918,6 +932,14 @@ def readin(ofname,glossary,mmd):
                 if "\\end{equation}" in lines[i + 1] or "\\drmfn" in lines[i + 1] or "\\constraint" in lines[
                             i + 1] or "\\substitution" in lines[i + 1] or "\\proof" in lines[i + 1]:
                     note = False
+                    if "\\emph" in noteLine:
+                        noteLine = noteLine[0:noteLine.find("\\emph{")] + "\'\'" + noteLine[noteLine.find("\\emph{") + len(
+                            "\\emph{"):noteLine.find("}", noteLine.find("\\emph{") + len("\\emph{"))] + "\'\'" + noteLine[
+                                                                                                                 noteLine.find(
+                                                                                                                     "}",
+                                                                                                                     noteLine.find(
+                                                                                                                         "\\emph{") + len(
+                                                                                                                         "\\emph{")) + 1:]
                     comToWrite = comToWrite + "<div align=\"left\">" + getEq(noteLine) + "</div><br />\n"
 
             if constraint and parse:
@@ -933,15 +955,21 @@ def readin(ofname,glossary,mmd):
                     append_text(comToWrite + "<div align=\"left\">" + getEq(conLine) + "</div><br />\n")
                     comToWrite = ""
             if substitution and parse:
-                subLine += line.replace("&", "&<br />")
+                subLine += line.replace("&", "&<br />") #TODO: Figure out if .replace is needed
 
                 symLine += line.strip("\n")
-                # symbols=symbols+getSym(line)
                 if "\\end{equation}" in lines[i + 1] or "\\drmfn" in lines[i + 1] or "\\substitution" in lines[
                             i + 1] or "\\constraint" in lines[i + 1] or "\\proof" in lines[i + 1]:
                     substitution = False
                     symbols = symbols + getSym(symLine)
                     symLine = ""
+                    lineR = ""
+                    for i in range(0, len(subLine)):
+                        if subLine[i] == "&" and not (
+                                i > subLine.find("\\begin{array}") and i < subLine.find("\\end{array}")):
+                            lineR += "&<br />"
+                        else:
+                            lineR += subLine[i]
                     append_text(comToWrite + "<div align=\"left\">" + getEq(subLine) + "</div><br />\n")
                     comToWrite = ""
 
