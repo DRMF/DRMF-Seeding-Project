@@ -1,0 +1,4 @@
+5/4/16
+- Make sure asymptotic functions always work
+- Even/odd handling (what do they mean? significance?)
+
