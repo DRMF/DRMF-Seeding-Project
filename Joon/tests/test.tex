@@ -1,0 +1,149 @@
+\documentclass[11pt]{article}
+\usepackage[pdftex]{hyperref}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{DLMFmath}
+\usepackage{DRMFfcns}
+\usepackage{amssymb}
+\usepackage{xparse}
+\usepackage{cite}
+\usepackage{forloop}
+
+\setlength{\textwidth}{16cm}
+\setlength{\textheight}{21cm}
+\setlength{\topmargin}{0cm}
+\setlength{\oddsidemargin}{0.2mm}
+\setlength{\evensidemargin}{0.2mm}
+
+\newcommand\sa{\smallskipamount}
+\newcommand\sLP{\\[\sa]}
+\newcommand\sPP{\\[\sa]\indent}
+\newcommand\ba{\bigskipamount}
+\newcommand\bLP{\\[\ba]}
+\newcommand\CC{\mathbb{C}}
+\newcommand\RR{\mathbb{R}}
+\newcommand\ZZ{\mathbb{Z}}
+\newcommand\al\alpha
+\newcommand\be\beta
+\newcommand\ga\gamma
+\newcommand\de\delta
+\newcommand\tha\theta
+\newcommand\la\lambda
+\newcommand\om\omega
+\newcommand\Ga{\Gamma}
+\newcommand\thalf{\tfrac12}
+\newcommand\iy\infty
+\newcommand\wt{\widetilde}
+\newcommand\const{{\rm const.} }
+\newcommand\Zpos{\ZZ_{>0}}
+\newcommand\Znonneg{\ZZ_{\ge0}}
+\newcommand{\hyp}[5]{ \mbox{}_{#1}F_{#2}\!\left(
+  \genfrac{}{}{0pt}{}{#3}{#4};#5\right)}
+\newcommand{\qhypK}[5]{ \mbox{}_{#1}\phi_{#2}\!\left(
+  \genfrac{}{}{0pt}{}{#3}{#4};#5\right)}
+\newcommand\LHS{left-hand side}
+\newcommand\RHS{right-hand side}
+\renewcommand\Re{{\rm Re} }
+\renewcommand\Im{{\rm Im} }
+
+\begin{document}
+
+\begin{equation*}\tag{17.1.2a}
+  \BesselJ{\nu}@{z}
+  = \left(\frac{z}{2}\right)^{\nu} \sum_{k=0}^\infty \frac{\left(-1\right)^{k}}{k!\EulerGamma@{\nu+k+1}}\left(\frac{z}{2}\right)^{2 k}
+  %  \constraint{$\lvert\arg{z}\rvert<\pi$}
+  %  \category{power series}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.12a}
+  \SphBesselJ{n}@{z}
+  = \sqrt{\frac{\pi}{2 z}}\left(\frac{z}{2}\right)^{n+\frac{1}{2}} \sum_{k=0}^\infty \frac{\left(-1\right)^{k}}{k!\EulerGamma@{\left(n+\frac{1}{2}\right)+k+1}}\left(\frac{z}{2}\right)^{2 k}
+  %  \constraint{$n\in\mathbb{Z}$}
+  %  \category{power series}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.22}
+  \BesselJ{\nu}@{z}
+  = \frac{e^{-i z}\left(\frac{z}{2}\right)^{\nu}}{\EulerGamma@{\nu+1}} \sum_{k=0}^\infty \frac{\pochhammer{\nu+\frac{1}{2}}{k}\left(2 i\right)^{k}z^{k}}{\pochhammer{2\nu+1}{k}k!}
+  %  \constraint{$\lvert\arg{z}\rvert<\pi$}
+  %  \category{power series}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.25}
+  \SphBesselJ{n}@{z}
+  = \frac{\sqrt{\pi}}{\left(2 n+1\right)\EulerGamma@{n+\frac{1}{2}}}\left(\frac{z}{2}\right)^{n} \sum_{k=0}^\infty \frac{\frac{1}{\pochhammer{n+\frac{3}{2}}{k}}\left(-\frac{z^{2}}{4}\right)^{k}}{k!}
+  %  \constraint{$n\in\mathbb{Z}$}
+  %  \category{power series}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.26}
+  \SphBesselJ{n}@{z}
+  = \frac{\sqrt{\pi}e^{-i z}}{\left(2 n+1\right)\EulerGamma@{n+\frac{1}{2}}}\left(\frac{z}{2}\right)^{n} \sum_{k=0}^\infty \frac{\frac{\pochhammer{n+1}{k}}{\pochhammer{2 n+2}{k}}\left(2 i z\right)^{k}}{k!}
+  %  \constraint{$n\in\mathbb{Z}$}
+  %  \category{power series}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.28}
+  \BesselJ{\nu}@{z}
+  = \sqrt{\frac{2}{\pi z}} \sum_{k=0}^\infty \left(\frac{\left(-1\right)^{k}\HankelSym{\nu}{2 k}}{\left(2 z\right)^{2 k}}\cos\left(z-\left(\frac{\nu}{2}+\frac{1}{4}\right)\pi\right)-\frac{\left(-1\right)^{k}\HankelSym{\nu}{2 k+1}}{\left(2 z\right)^{2 k+1}}\sin\left(z-\left(\frac{\nu}{2}+\frac{1}{4}\right)\pi\right)\right)
+  %  \constraint{$\lvert\arg{z}\rvert<\pi$}
+  %  \category{asymptotic series}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.29}
+  \BesselY{\nu}@{z}
+  = \sqrt{\frac{2}{\pi z}} \sum_{k=0}^\infty \left(\frac{\left(-1\right)^{k}\HankelSym{\nu}{2 k}}{\left(2 z\right)^{2 k}}\sin\left(z-\left(\frac{\nu}{2}+\frac{1}{4}\right)\pi\right)+\frac{\left(-1\right)^{k}\HankelSym{\nu}{2 k+1}}{\left(2 z\right)^{2 k+1}}\cos\left(z-\left(\frac{\nu}{2}+\frac{1}{4}\right)\pi\right)\right)
+  %  \constraint{$\lvert\arg{z}\rvert<\pi$}
+  %  \category{asymptotic series}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.38}
+  \frac{\BesselJ{\nu+1}@{z}}{\BesselJ{\nu}@{z}}
+  = \frac{\frac{z}{2\nu+2}}{1}+\CFK{m}{2}{\infty}@{\frac{\left(i z\right)^{2}}{4 \left(\nu+m-1\right)\left(\nu+m\right)}}{1}
+  %  \constraint{$\nu\in\geq0ative$}
+  %  \category{S-fraction}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.39}
+  \frac{\SphBesselJ{n+1}@{z}}{\SphBesselJ{n}@{z}}
+  = \frac{\frac{z}{2 n+3}}{1}+\CFK{m}{2}{\infty}@{\frac{\left(i z\right)^{2}}{4 \left(n+\frac{1}{2}+m-1\right)\left(n+\frac{1}{2}+m\right)}}{1}
+  %  \constraint{$n\in\mathbb{Z^{+}}$}
+  %  \category{S-fraction}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.40}
+  \frac{\BesselJ{\nu+1}@{z}}{\BesselJ{\nu}@{z}}
+  = -\CFK{m}{1}{\infty}@{-1}{\frac{2 \left(\nu+m\right)}{z}}
+  %  \constraint{$\nu\in\mathbb{Z^{+}}$}
+  %  \category{S-fraction}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.44}
+  \frac{\HankelHi{\nu+1}@{z}}{\HankelHi{\nu}@{z}}
+  = \frac{-1}{1}+\CFK{m}{2}{\infty}@{\frac{m-3-2\nu}{-2 i z}}{1}
+  %  \constraint{$\lvert\arg{i z}\rvert<\pi$}
+  %  \category{C-fraction}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.48}
+  \frac{\BesselJ{\nu+1}@{z}}{\BesselJ{\nu}@{z}}
+  = \frac{z}{2\nu+2-i z}+\CFK{m}{2}{\infty}@{\left(2\nu+2 m-1\right)i z}{2\nu+m+1-\left(2 i\right)z}
+  %  \constraint{$\nu\in\mathbb{C}\\\mathbb{Z^{-}}$}
+  %  \category{T-fraction}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.49}
+  \frac{\SphBesselJ{n+1}@{z}}{\SphBesselJ{n}@{z}}
+  = \frac{z}{2 n+3-i z}+\CFK{m}{2}{\infty}@{2 \left(n+m\right)i z}{2 n+m+2-\left(2 i\right)z}
+  %  \constraint{$n\in\mathbb{Z^{+}}$}
+  %  \category{T-fraction}
+\end{equation*}
+
+\begin{equation*}\tag{17.1.51}
+  \frac{\HankelHi{\nu+1}@{z}}{\HankelHi{\nu}@{z}}
+  = \frac{2\nu+1-2 i z}{2 z}-\frac{1}{z} \CFK{m}{0}{\infty}@{\nu^{2}-\frac{\left(2 m-1\right)^{2}}{4}}{2 \left(i z-m\right)}
+  %  \constraint{$\lvert\arg{-i z}\rvert<\pi$}
+  %  \category{J-fraction}
+\end{equation*}
+
+\end{document}

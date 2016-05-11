@@ -2,9 +2,9 @@
 
 import sys
 
-filename = "mpl/modbessel.mpl"
+filename = "mpl/bessel.mpl"
 
-
+# Declarations
 def make_list(name):
     return list(line.split(" || ") for line in open(name).read().split("\n")
                 if line != "" and "%" not in line)
@@ -16,18 +16,30 @@ spacing = list((line, " "+line+" ") for line in open("keys/spacing").read().spli
 symbols = make_list("keys/symbols")
 special = make_list("keys/special")
 parentheses = [["(", "\\left("], [")", "\\right)"]]
-
+numbers = "0123456789"
 
 def format_text(string, li):
     for key in li:
         string = string.replace(key[0], key[1])
     return string
 
-
 def usage():
     print "Usage: python converter.py"
     return sys.exit(0)
 
+def parse_brackets(exp):
+    """
+    Translates the contents between a set of square brackets
+    """
+
+    return [[translate(p) for p in piece.split(", ")] for piece in exp[1:-1].split("], [")]
+
+def make_frac(n, d):
+    """
+    Generate a LaTeX frac from numerator and denominator
+    """
+
+    return "\\frac{"+n+"}{"+d+"}"
 
 def basic_translate(exp):
     """
@@ -51,10 +63,8 @@ def basic_translate(exp):
 
             elif exp[i] == "*" and order == 1:
                 # rules for nicer spacing
-                if exp[i-1][-1] in "0123456789" and exp[i+1][0] not in "0123456789" or exp[i-1][-1] not in "0123456789"\
-                        and exp[i+1][0] in "0123456789" or exp[i+1][0] == "\\":
-                    pass
-                elif exp[i-1][-1] not in "})" and exp[i+1][0] != "\\":
+                if exp[i-1][-1] not in "})" and exp[i+1][0] != "\\"\
+                        or exp[i-1][-1] in numbers and exp[i+1] in numbers:
                     exp[i-1] += " "
                 exp[i-1] += exp.pop(i+1)
                 modified = True
@@ -74,7 +84,6 @@ def basic_translate(exp):
                 i += 1
 
     return ''.join(exp)
-
 
 def translate(exp):
     """
@@ -112,7 +121,6 @@ def translate(exp):
         i += 1
 
     return format_text(basic_translate(exp), parentheses)
-
 
 def convert(info):
     """
@@ -180,27 +188,18 @@ def convert(info):
         start = 1  # in case the value of start isn't assigned
 
         if "even" in info:
-            general = even.split("], [")
-            print "this is odd "+odd+" vs even "+even+". Fix?"
+            general = parse_brackets(even)
         else:
-            general = general[1:-1].split("], [")
+            general = parse_brackets(general)
 
-        if len(general) == 2:
-            general[1] = general[1].split(", ")
-
-        general[0] = general[0].split(", ")
-
-        for i, pieces in enumerate(general):
-            general[i] = [translate(piece) for piece in pieces]
-
-        general = general[0]
+        if isinstance(general[0], list):
+            general = general[0]
 
         if "begin" in info:
-            begin = begin[1:-1].split("], [")
+            begin = parse_brackets(begin)
 
             for piece in begin:
-                piece = piece.split(", ")
-                result += "\\frac{"+translate(piece[0])+"}{"+translate(piece[1])+"}+"
+                result += make_frac(piece[0], piece[1])+"+"
                 start += 1
 
         elif "front" in info:
@@ -222,7 +221,6 @@ def convert(info):
 
     return format_text(result, special)
 
-
 def parse(inp):
     inp = inp.split("\n")
     exp = dict()
@@ -237,17 +235,16 @@ def parse(inp):
                 line[1] = line[1][1:-1].strip()
 
             elif line[0] in ["booklabel", "parameters", "general",
-                             "label", "constraints", "begin",
-                             "even", "odd"]:
+                             "label", "constraints", "begin"]:
                 line[1] = line[1][1:-2].strip()
 
-            elif line[0] in ["function", "lhs", "factor", "front"]:
+            elif line[0] in ["function", "lhs", "factor", "front",
+                             "even", "odd"]:
                 line[1] = line[1][:-1].strip()
 
             exp[line[0]] = line[1]
 
     return exp
-
 
 def main():
     if len(sys.argv) != 1:
@@ -263,8 +260,8 @@ def main():
 
     print text
 
-    with open("testing/test.tex", "w") as f:
-        text = open("testing/primer").read() + text + "\\end{document}"
+    with open("tests/test.tex", "w") as f:
+        text = open("tests/primer").read() + text + "\\end{document}"
         f.write(text)
 
 if __name__ == '__main__':
