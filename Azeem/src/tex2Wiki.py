@@ -293,7 +293,7 @@ def setup_label_links(ofname):
 
 def readin(ofname,glossary,mmd):
     # try:
-    for jsahlfkjsd in range(0, 1):
+    for iterations in range(0, 1):
         tex = open(ofname, 'r')
         main_file = open(mmd, "r")
         mainText = main_file.read()

@@ -3,181 +3,22 @@
 import csv #imported for using csv format
 import sys #imported for getting args
 import os #imported for copying file
+import tex2Wiki as KLS
  #Change Accordingly based on project directory.
-def isnumber(char): #Function to check if char is a number (assuming 1 character)
-    return char[0] in "0123456789"
 def is_number(char):
     try:
         "".join(["0"+str(float(char)) if float(char) < 10 else float(char)])
         return True
     except ValueError:
         return False
-def getString(line): #Gets all data within curly braces on a line
-    #-------Initialization-------
-    stringWrite=""
-    getStr=False
-    pW=""
-    #----------------------------
-    for c in line:
-        if c=="{" or c=="}": #if there is a curly brace in the line
-            getStr=not(getStr) #toggle the getStr flag
-            if c=="}": #no more info needed
-                break
-        elif getStr: #if within curly braces
-            if not(pW==c and c=="-"): #if there is no double dash (makes single dash)
-                if c!="$": #if not a $ sign
-                    stringWrite+=c #this character is part of the data
-                else: #replace $ with ''
-                    stringWrite+="\'\'" #add double '
-            pW=c #change last character for finding double dashes
-    return (stringWrite.rstrip('\n').lstrip()) #return the data without newlines and without leading spaces
-def getG(line): #gets equation for symbols list
-    start=True
-    final=""
-    for c in line:
-        if c=="$" and start:
-            final+="<math>{\\displaystyle "
-            start=False
-        elif c=="$":
-            final+="}</math>"
-            start=True
-        else:
-            final+=c
-    return(final)
-def getEq(line): #Gets all data within constraints,substitutions
-    #-------Initialization-------
-    per=1
-    stringWrite=""
-    fEq=False
-    count=0
-    #----------------------------
-    for c in line: #read each character
-        if count>=0 and per!=0:
-            per+=1
-            if c!=" " and c!="%":
-                per=0
-        if c=="{" and per==0:
-            if count>0:
-                stringWrite+=c
-            count+=1
-        elif c=="}" and per==0:
-            count-=1
-            if count>0:
-                stringWrite+=c
-        elif c=="$" and per==0: #either begin or end equation
-            fEq=not(fEq)#toggle fEq flag to know if begin or end equation
-            if fEq:#if begin
-                stringWrite+="<math>{\\displaystyle "
-            else:#if end
-                stringWrite+="}</math>"
-        elif c=="\n" and per==0:#if newline
-            stringWrite=stringWrite.strip()#remove all leading and trailing whitespace
 
-            #should above be rstrip?<-------------------------------------------------------------------CHECK THIS
-
-            stringWrite+=c#add the newline character
-            per+=1 #watch for % signs
-        elif count>0 and per==0: #not special character
-            stringWrite+=c #write the character
-
-    return (stringWrite.rstrip().lstrip())
-def getEqP(line): #Gets all data within proofs
-    per=1
-    stringWrite=""
-    fEq=False
-    count=0
-    length=0
-    for c in line:
-        if fEq and c!=" " and c!="$" and c!="{" and c!="}" and not c.isalpha():
-            length+=1
-        if count>=0 and per!=0:
-            per+=1
-            if c!=" " and c!="%":
-            #if c!="%":
-                per=0
-        if c=="{" and per==0:
-            if count>0:
-                stringWrite+=c
-            count+=1
-        elif c=="}" and per==0:
-            count-=1
-            if count>0:
-                stringWrite+=c
-        elif c=="$" and per==0:
-            fEq=not(fEq)
-            if fEq:
-                stringWrite+="<math>{\\displaystyle "
-            else:
-                if length<10:
-                    stringWrite+="}</math>"
-                else:
-                    stringWrite+="}</math>"+"<br />"
-                length=0
-        elif c=="\n" and per==0:
-            stringWrite=stringWrite.strip()
-            stringWrite+=c
-            per+=1
-        elif count>0 and per==0:
-            stringWrite+=c
-
-    return (stringWrite.lstrip())
-def getSym(line): #Gets all symbols on a line for symbols list
-    symList=[]
-    if line=="":
-        return symList
-    symbol=""
-    symFlag=False
-    cC=0
-    for i in range(0,len(line)):
-        #if "MeixnerPollaczek{\\lambda}{n}@{x}{\\phi}=\frac{\\pochhammer{2\\lambda}{n}}" in line:
-        c=line[i]
-        if symFlag:
-            if c=="{" or c=="[":
-                cC+=1
-            if c!="}" and c!="]":
-                if c.isalpha():
-                    symbol+=c
-                else:
-                    symFlag=False
-                    symList.append(symbol)
-                    symList+=(getSym(symbol))
-                    symbol=""
-            else:
-                cC-=1
-                symbol+=c
-                if i+1==len(line):
-                    p=""
-                else:
-                    p=line[i+1]
-                if cC<=0 and p!="{" and p!="[" and p!="@":
-                    symFlag=False
-                    #if "monicAskeyWilson{n+1}@{x}{a}{b}{c}{d}{q}+\\frac{1}{2}" in line:
-                    symList.append(symbol)
-                    symList+=(getSym(symbol))
-                    symbol=""
-
-        elif c=="\\":
-            symFlag=True
-        elif c=="&" and not (i>line.find("\\begin{array}") and i<line.find("\\end{array}")):
-            symList.append("&")
-
-    #if "MeixnerPollaczek{\\lambda}{n}@{x}{\\phi}=\frac{\\pochhammer{2\\lambda}{n}}" in line:
-    symList.append(symbol)
-    symList+=getSym(symbol)
-    return(symList)
-def unmodLabel(label):
-    label=label.replace(".0",".")
-    label=label.replace(":0",":")
-    return(label)
-def secLabel(label):
-    return(label.replace("\'\'",""))
 def modLabel(label):
     #label.replace("Formula:KLS:","KLS;")
     isNumer=False
     newlabel=""
     num=""
     for i in range(0,len(label)):
-        if isNumer and not isnumber(label[i]):
+        if isNumer and not is_number(label[i]):
             if len(num)>1:
                 newlabel+=num
                 isNumer=False
@@ -186,7 +27,7 @@ def modLabel(label):
                 newlabel+="0"+str(num)
                 num=""
                 isNumer=False
-        if isnumber(label[i]):
+        if is_number(label[i]):
             isNumer=True
             num+=str(label[i])
         else:
@@ -197,6 +38,7 @@ def modLabel(label):
     elif len(num)==1:
         newlabel+="0"+num
     return(newlabel)
+
 def DLMF(n):
     for iterations in range(0,1):
         try:
@@ -288,14 +130,14 @@ def DLMF(n):
                 labels.append("Zeta and Related Functions")
                 sections.append(["Zeta and Related Functions",0])
             elif "\\part" in line:
-                if getString(line)=="BOF":
+                if KLS.getString(line)=="BOF":
                     parse=False
-                elif getString(line)=="EOF":
+                elif KLS.getString(line)=="EOF":
                     parse=True
                 elif parse:
                     stringWrite="\'\'\'"
-                    stringWrite+=getString(line)+"\'\'\'\n"
-                    chapter=getString(line)
+                    stringWrite+=KLS.getString(line)+"\'\'\'\n"
+                    chapter=KLS.getString(line)
                     if startFlag:
                         mainPrepend+=("\n== Sections in "+chapter+" ==\n\n<div style=\"-moz-column-count:2; column-count:2;-webkit-column-count:2\">\n")
                         startFlag=False
@@ -304,8 +146,8 @@ def DLMF(n):
                                                                           "column-count:2;-webkit-column-count:2\">\n")
                     head=True
             elif "\\section" in line:
-                mainPrepend+=("* [["+secLabel(getString(line))+"|"+getString(line)+"]]\n")
-                sections.append([getString(line)])
+                mainPrepend+=("* [["+KLS.secLabel(KLS.getString(line))+"|"+KLS.getString(line)+"]]\n")
+                sections.append([KLS.getString(line)])
 
         secCounter=0
         eqCounter=0
@@ -315,35 +157,35 @@ def DLMF(n):
                 parse=True
                 secCounter+=1
                 wiki.write("drmf_bof\n")
-                wiki.write("\'\'\'"+secLabel(getString(line))+"\'\'\'\n")
+                wiki.write("\'\'\'"+KLS.secLabel(KLS.getString(line))+"\'\'\'\n")
                 wiki.write("{{DISPLAYTITLE:"+(sections[secCounter][0])+"}}\n")
                 wiki.write("<div id=\"drmf_head\">\n")
-                wiki.write("<div id=\"alignleft\"> << [["+secLabel(sections[secCounter-1][0])+"|"+secLabel(sections[secCounter-1][0])+"]] </div>\n")
+                wiki.write("<div id=\"alignleft\"> << [["+KLS.secLabel(sections[secCounter-1][0])+"|"+KLS.secLabel(sections[secCounter-1][0])+"]] </div>\n")
                 wiki.write("<div id=\"aligncenter\"> [[Zeta_and_Related_Functions#"+
-                           "Sections_in_"+chapter.replace(" ","_")+"|"+secLabel(sections[secCounter][0])+"]] </div>\n")
-                wiki.write("<div id=\"alignright\"> [["+secLabel(sections[(secCounter+1)%len(sections)][0])+
-                           "|"+secLabel(sections[(secCounter+1)%len(sections)][0])+"]] >> </div>\n</div>\n\n")
+                           "Sections_in_"+chapter.replace(" ","_")+"|"+KLS.secLabel(sections[secCounter][0])+"]] </div>\n")
+                wiki.write("<div id=\"alignright\"> [["+KLS.secLabel(sections[(secCounter+1)%len(sections)][0])+
+                           "|"+KLS.secLabel(sections[(secCounter+1)%len(sections)][0])+"]] >> </div>\n</div>\n\n")
                 head=True
-                wiki.write("== "+getString(line)+" ==\n")
+                wiki.write("== "+KLS.getString(line)+" ==\n")
             elif ("\\section" in lines[(i+1)%len(lines)] or "\\end{document}" in lines[(i+1)%len(lines)]) and parse:
                 wiki.write("<div id=\"drmf_foot\">\n")
-                wiki.write("<div id=\"alignleft\"> << [["+secLabel(sections[secCounter-1][0])+"|"+secLabel(sections[secCounter-1][0])+"]] </div>\n")
+                wiki.write("<div id=\"alignleft\"> << [["+KLS.secLabel(sections[secCounter-1][0])+"|"+KLS.secLabel(sections[secCounter-1][0])+"]] </div>\n")
                 wiki.write("<div id=\"aligncenter\"> [[Zeta_and_Related_Functions#"+"Sections_in_"
-                ""+chapter.replace(" ","_")+"|"+secLabel(sections[secCounter][0])+"]] </div>\n")
-                wiki.write("<div id=\"alignright\"> [["+secLabel(sections[(secCounter+1)%len(sections)][0])+
-                           "|"+secLabel(sections[(secCounter+1)%len(sections)][0])+"]] >> </div>\n</div>\n\n")
+                ""+chapter.replace(" ","_")+"|"+KLS.secLabel(sections[secCounter][0])+"]] </div>\n")
+                wiki.write("<div id=\"alignright\"> [["+KLS.secLabel(sections[(secCounter+1)%len(sections)][0])+
+                           "|"+KLS.secLabel(sections[(secCounter+1)%len(sections)][0])+"]] >> </div>\n</div>\n\n")
                 wiki.write("drmf_eof\n")
                 sections[secCounter].append(eqCounter)
                 eqCounter=0
 
             elif "\\subsection" in line and parse:
-                wiki.write("\n== "+getString(line)+" ==\n")
+                wiki.write("\n== "+KLS.getString(line)+" ==\n")
                 head=True
             elif "\\paragraph" in line and parse:
-                wiki.write("\n=== "+getString(line)+" ===\n")
+                wiki.write("\n=== "+KLS.getString(line)+" ===\n")
                 head=True
             elif "\\subsubsection" in line and parse:
-                wiki.write("\n=== "+getString(line)+" ===\n")
+                wiki.write("\n=== "+KLS.getString(line)+" ===\n")
                 head=True
 
             elif "\\begin{equation}" in line and parse:
@@ -362,7 +204,7 @@ def DLMF(n):
                         rlabel=rlabel.replace("#",":")
                         rlabel=rlabel.replace("!",":")
                         break
-                label=modLabel(rlabel)
+                label=KLS.modLabel(rlabel)
                 labels.append("Formula:"+rlabel)
                 eqs.append("")
                 #wiki.write("\n<span id=\""+rlabel.lstrip("Formula:")+"\"></span>\n")
@@ -371,7 +213,7 @@ def DLMF(n):
             elif "\\begin{equation}" in line and not parse:
                 sLabel=line.find("\\label{")+7
                 eLabel=line.find("}",sLabel)
-                label=modLabel(line[sLabel:eLabel])
+                label=KLS.modLabel(line[sLabel:eLabel])
                 labels.append("*"+label) #special marker
                 eqs.append("")
                 math=True
@@ -386,13 +228,13 @@ def DLMF(n):
                 substitution=True
                 math=False
                 subLine=""
-                #wiki.write("<div align=\"right\">Substitution(s): "+getEq(line)+"</div><br />\n")
+                #wiki.write("<div align=\"right\">Substitution(s): "+KLS.getEq(line)+"</div><br />\n")
             elif "\\proof" in line and parse:
                 math=False
             elif "\\drmfn" in line and parse:
                 math=False
                 if "\\drmfname" in line and parse:
-                    wiki.write("<div align=\"right\">This formula has the name: "+getString(line)+"</div><br />\n")
+                    wiki.write("<div align=\"right\">This formula has the name: "+KLS.getString(line)+"</div><br />\n")
             elif math and parse:
                 flagM=True
                 eqs[len(eqs)-1]+=line
@@ -431,14 +273,14 @@ def DLMF(n):
                 if "\\end{equation}" in lines[i+1] or "\\substitution" in lines[i+1]\
                         or "\\constraint" in lines[i+1] or "\\drmfn" in lines[i+1] or "\\proof" in lines[i+1]:
                     substitution=False
-                    wiki.write("<div align=\"right\">Substitution(s): "+getEq(subLine)+"</div><br />\n")
+                    wiki.write("<div align=\"right\">Substitution(s): "+KLS.getEq(subLine)+"</div><br />\n")
 
             if constraint and parse:
                 conLine=conLine+line.replace("&","&<br />")
                 if "\\end{equation}" in lines[i+1] or "\\substitution" \
                         in lines[i+1] or "\\constraint" in lines[i+1] or "\\drmfn" in lines[i+1] or "\\proof" in lines[i+1]:
                     constraint=False
-                    wiki.write("<div align=\"right\">Constraint(s): "+getEq(conLine)+"</div><br />\n")
+                    wiki.write("<div align=\"right\">Constraint(s): "+KLS.getEq(conLine)+"</div><br />\n")
 
         eqCounter=n
         endNum=len(labels)-1
@@ -481,7 +323,7 @@ def DLMF(n):
                 label=labels[eqCounter]
                 #if not "DLMF" in label:eqCounter+=1
                 label=labels[eqCounter]
-                wiki.write("\'\'\'"+secLabel(label)+"\'\'\'\n")
+                wiki.write("\'\'\'"+KLS.secLabel(label)+"\'\'\'\n")
                 wiki.write("{{DISPLAYTITLE:"+(labels[eqCounter])+"}}\n")
                 if eqCounter==len(labels)-1:
                     break
@@ -489,33 +331,33 @@ def DLMF(n):
                     wiki.write("<div id=\"drmf_head\">\n")
                     if newSec:
                         wiki.write("<div id=\"alignleft\"> "
-                                   "<< [["+secLabel(sections[secCount][0]).replace(" ","_")+"|"+secLabel(sections[secCount][0])+"]] </div>\n")
+                                   "<< [["+KLS.secLabel(sections[secCount][0]).replace(" ","_")+"|"+KLS.secLabel(sections[secCount][0])+"]] </div>\n")
                     else:
                         wiki.write("<div id=\"alignleft\"> "
-                                   "<< [["+secLabel(labels[eqCounter-1]).replace(" ","_")+"|"+secLabel(labels[eqCounter-1])+"]] </div>\n")
-                    wiki.write("<div id=\"aligncenter\"> [["+secLabel(sections[secCount+1][0]).replace(" ","_")+"#"+
-                               secLabel(labels[eqCounter][len("Formula:"):])+"|formula in "+secLabel(sections[secCount+1][0])+"]] </div>\n")
+                                   "<< [["+KLS.secLabel(labels[eqCounter-1]).replace(" ","_")+"|"+KLS.secLabel(labels[eqCounter-1])+"]] </div>\n")
+                    wiki.write("<div id=\"aligncenter\"> [["+KLS.secLabel(sections[secCount+1][0]).replace(" ","_")+"#"+
+                               KLS.secLabel(labels[eqCounter][len("Formula:"):])+"|formula in "+KLS.secLabel(sections[secCount+1][0])+"]] </div>\n")
                     #if eqS==sections[secCount][1]:
                     if True:
-                        wiki.write("<div id=\"alignright\"> [["+secLabel(labels[(eqCounter+1)%(endNum+1)]).replace(" ","_")+
-                                   "|"+secLabel(labels[(eqCounter+1)%(endNum+1)])+"]] >> </div>\n")
+                        wiki.write("<div id=\"alignright\"> [["+KLS.secLabel(labels[(eqCounter+1)%(endNum+1)]).replace(" ","_")+
+                                   "|"+KLS.secLabel(labels[(eqCounter+1)%(endNum+1)])+"]] >> </div>\n")
                     wiki.write("</div>\n\n")
                 elif eqCounter==endNum:
                     wiki.write("<div id=\"drmf_head\">\n")
                     if newSec:
                         newSec=False
-                        wiki.write("<div id=\"alignleft\"> << [["+secLabel(sections[secCount][0]).replace(" ","_")+"|"+
-                                   secLabel(sections[secCount][0])+"]] </div>\n")
+                        wiki.write("<div id=\"alignleft\"> << [["+KLS.secLabel(sections[secCount][0]).replace(" ","_")+"|"+
+                                   KLS.secLabel(sections[secCount][0])+"]] </div>\n")
                     else:
                         wiki.write("<div id=\"alignleft\"> "
-                                   "<< [["+secLabel(labels[eqCounter-1]).replace(" ","_")+"|"+secLabel(labels[eqCounter-1])+"]] </div>\n")
+                                   "<< [["+KLS.secLabel(labels[eqCounter-1]).replace(" ","_")+"|"+KLS.secLabel(labels[eqCounter-1])+"]] </div>\n")
                     wiki.write("<div id=\"aligncenter\"> [["+
-                               secLabel(sections[secCount+1][0]).replace(" ","_")+
-                               "#"+secLabel(labels[eqCounter][len("Formula:"):])+
-                               "|formula in "+secLabel(sections[secCount+1][0])+
+                               KLS.secLabel(sections[secCount+1][0]).replace(" ","_")+
+                               "#"+KLS.secLabel(labels[eqCounter][len("Formula:"):])+
+                               "|formula in "+KLS.secLabel(sections[secCount+1][0])+
                                "]] </div>\n")
-                    wiki.write("<div id=\"alignright\"> [["+secLabel(labels[(eqCounter+1)%(endNum+1)].replace(" ","_"))+
-                               "|"+secLabel(labels[(eqCounter+1)%(endNum+1)])+"]] </div>\n")
+                    wiki.write("<div id=\"alignright\"> [["+KLS.secLabel(labels[(eqCounter+1)%(endNum+1)].replace(" ","_"))+
+                               "|"+KLS.secLabel(labels[(eqCounter+1)%(endNum+1)])+"]] </div>\n")
                     wiki.write("</div>\n\n")
 
                 wiki.write("<br /><div align=\"center\"><math>{\displaystyle \n")
@@ -723,7 +565,7 @@ def DLMF(n):
                 wiki.write("\n<br />\n")
 
                 wiki.write("\n== Bibliography==\n\n")#should there be a space between bibliography and ==?
-                r=unmodLabel(labels[eqCounter])
+                r=KLS.unmodlabel(labels[eqCounter])
                 q=r.find("DLMF:")+5
                 p=r.find(":",q)
                 section=r[q:p]
@@ -741,18 +583,18 @@ def DLMF(n):
                     wiki.write("<br /><div id=\"drmf_foot\">\n")
                     if newSec:
                         newSec=False
-                        wiki.write("<div id=\"alignleft\"> << [["+secLabel(sections[secCount][0]).replace(" ","_")+
-                                   "|"+secLabel(sections[secCount][0])+"]] </div>\n")
+                        wiki.write("<div id=\"alignleft\"> << [["+KLS.secLabel(sections[secCount][0]).replace(" ","_")+
+                                   "|"+KLS.secLabel(sections[secCount][0])+"]] </div>\n")
                     else:
-                        wiki.write("<div id=\"alignleft\"> << [["+secLabel(labels[eqCounter-1]).replace(" ","_")+"|"+
-                                   secLabel(labels[eqCounter-1])+"]] </div>\n")
-                    wiki.write("<div id=\"aligncenter\"> [["+secLabel(sections[secCount+1][0]).replace(" ","_")+"#"+
-                               secLabel(labels[eqCounter][len("Formula:"):])+"|formula in "+secLabel(sections[secCount+1][0])+"]] </div>\n")
+                        wiki.write("<div id=\"alignleft\"> << [["+KLS.secLabel(labels[eqCounter-1]).replace(" ","_")+"|"+
+                                   KLS.secLabel(labels[eqCounter-1])+"]] </div>\n")
+                    wiki.write("<div id=\"aligncenter\"> [["+KLS.secLabel(sections[secCount+1][0]).replace(" ","_")+"#"+
+                               KLS.secLabel(labels[eqCounter][len("Formula:"):])+"|formula in "+KLS.secLabel(sections[secCount+1][0])+"]] </div>\n")
                     #if eqS==sections[secCount][1]:
                     #else:
                     if True:
-                        wiki.write("<div id=\"alignright\"> [["+secLabel(labels[(eqCounter+1)%
-                        (endNum+1)]).replace(" ","_")+"|"+secLabel(labels[(eqCounter+1)%(endNum+1)])+"]] >> </div>\n")
+                        wiki.write("<div id=\"alignright\"> [["+KLS.secLabel(labels[(eqCounter+1)%
+                        (endNum+1)]).replace(" ","_")+"|"+KLS.secLabel(labels[(eqCounter+1)%(endNum+1)])+"]] >> </div>\n")
                     wiki.write("</div>\n\ndrmf_eof\n")
                 else: #FOR EXTRA EQUATIONS
                     wiki.write("<br /><div id=\"drmf_foot\">\n")
@@ -764,7 +606,7 @@ def DLMF(n):
 
 
             elif "\\constraint" in line and parse:
-                #symbols=symbols+getSym(line)
+                #symbols=symbols+KLS.getSym(line)
                 symLine=line.strip("\n")
                 if hCon:
                     comToWrite=comToWrite+"\n== Constraint(s) ==\n\n"
@@ -772,23 +614,23 @@ def DLMF(n):
                     constraint=True
                     math=False
                     conLine=""
-                    #wiki.write("<div align=\"left\">"+getEq(line)+"</div><br />\n")
+                    #wiki.write("<div align=\"left\">"+KLS.getEq(line)+"</div><br />\n")
             elif "\\substitution" in line and parse:
-                    #symbols=symbols+getSym(line)
+                    #symbols=symbols+KLS.getSym(line)
                 symLine=line.strip("\n")
                 if hSub:
                     comToWrite=comToWrite+"\n== Substitution(s) ==\n\n"
                     hSub=False
-                    #wiki.write("<div align=\"left\">"+getEq(line)+"</div><br />\n")
+                    #wiki.write("<div align=\"left\">"+KLS.getEq(line)+"</div><br />\n")
                 substitution=True
                 math=False
                 subLine=""
             elif "\\drmfname" in line and parse:
                 math=False
-                comToWrite="\n== Name ==\n\n<div align=\"left\">"+getString(line)+"</div><br />\n"+comToWrite
+                comToWrite="\n== Name ==\n\n<div align=\"left\">"+KLS.getString(line)+"</div><br />\n"+comToWrite
 
             elif "\\drmfnote" in line and parse:
-                symbols=symbols+getSym(line)
+                symbols=symbols+KLS.getSym(line)
                 if hNote:
                     comToWrite=comToWrite+"\n== Note(s) ==\n\n"
                     hNote=False
@@ -797,7 +639,7 @@ def DLMF(n):
                 noteLine=""
 
             elif "\\proof" in line and parse:
-                    #symbols=symbols+getSym(line)
+                    #symbols=symbols+KLS.getSym(line)
                 symLine=line.strip("\n")
                 if hProof:
                     hProof=False
@@ -811,7 +653,7 @@ def DLMF(n):
                     if line[ind:ind+7]=="\\eqref{":
                         pause=True
                         eqR=line[ind:line.find("}",ind)+1]
-                        rLab=getString(eqR)
+                        rLab=KLS.getString(eqR)
                         for l in lLink:
                             if rLab==l[0:l.find("=")-1]:
                                 rlabel=l[l.find("=>")+3:l.find("\\n")]
@@ -845,9 +687,9 @@ def DLMF(n):
                 if "\\end{equation}" in lines[i+1]:
                     proof=False
                     #symLine+=line.strip("\n")
-                    wiki.write(comToWrite+getEqP(proofLine)+"</div>\n<br />\n")
+                    wiki.write(comToWrite+KLS.getEqP(proofLine)+"</div>\n<br />\n")
                     comToWrite=""
-                    symbols=symbols+getSym(symLine)
+                    symbols=symbols+KLS.getSym(symLine)
                     symLine=""
 
                 #wiki.write(line)
@@ -855,12 +697,12 @@ def DLMF(n):
             elif proof:
                 symLine+=line.strip("\n")
                 pauseP=False
-                #symbols=symbols+getSym(line)
+                #symbols=symbols+KLS.getSym(line)
                 for ind in range(0,len(line)):
                     if line[ind:ind+7]=="\\eqref{":
                         pause=True
                         eqR=line[ind:line.find("}",ind)+1]
-                        rLab=getString(eqR)
+                        rLab=KLS.getString(eqR)
                         for l in lLink:
                             if rLab==l[0:l.find("=")-1]:
                                 rlabel=l[l.find("=>")+3:l.find("\\n")]
@@ -891,9 +733,9 @@ def DLMF(n):
                 if "\\end{equation}" in lines[i+1]:
                     proof=False
                     #symLine+=line.strip("\n")
-                    wiki.write(comToWrite+getEqP(proofLine).rstrip("\n")+"</div>\n<br />\n")
+                    wiki.write(comToWrite+KLS.getEqP(proofLine).rstrip("\n")+"</div>\n<br />\n")
                     comToWrite=""
-                    symbols=symbols+getSym(symLine)
+                    symbols=symbols+KLS.getSym(symLine)
                     symLine=""
 
             elif math:
@@ -901,7 +743,7 @@ def DLMF(n):
                         or "\\substitution" in lines[i+1] or "\\proof" in lines[i+1] or "\\drmfnote" in lines[i+1] or "\\drmfname" in lines[i+1]:
                     wiki.write(line.rstrip("\n"))
                     symLine+=line.strip("\n")
-                    symbols=symbols+getSym(symLine)
+                    symbols=symbols+KLS.getSym(symLine)
                     symLine=""
                     wiki.write("\n}</math></div>\n")
                 else:
@@ -909,7 +751,7 @@ def DLMF(n):
                     wiki.write(line)
             if note and parse:
                 noteLine=noteLine+line
-                symbols=symbols+getSym(line)
+                symbols=symbols+KLS.getSym(line)
                 if "\\end{equation}" in lines[i+1] or "\\drmfn" in lines[i+1] \
                         or "\\constraint" in lines[i+1] \
                         or "\\substitution" in lines[i+1] \
@@ -919,31 +761,34 @@ def DLMF(n):
                         noteLine=noteLine[0:noteLine.find("\\emph{")]+"\'\'"+noteLine[noteLine.find("\\emph{")+len("\\emph{"):
                         noteLine.find("}",noteLine.find("\\emph{")+len("\\emph{"))]+"\'\'"+\
                         noteLine[noteLine.find("}",noteLine.find("\\emph{")+len("\\emph{"))+1:]
-                    comToWrite=comToWrite+"<div align=\"left\">"+getEq(noteLine)+"</div><br />\n"
+                    comToWrite=comToWrite+"<div align=\"left\">"+KLS.getEq(noteLine)+"</div><br />\n"
 
             if constraint and parse:
                 conLine=conLine+line.replace("&","&<br />")
 
                 symLine+=line.strip("\n")
-                #symbols=symbols+getSym(line)
+                #symbols=symbols+KLS.getSym(line)
                 if "\\end{equation}" in lines[i+1] or "\\drmfn" in lines[i+1] \
                         or "\\constraint" in lines[i+1]\
                         or "\\substitution" in lines[i+1] \
                         or "\\proof" in lines[i+1]:
                     constraint=False
-                    symbols=symbols+getSym(symLine)
+                    symbols=symbols+KLS.getSym(symLine)
                     symLine=""
-                    wiki.write(comToWrite+"<div align=\"left\">"+getEq(conLine)+"</div><br />\n")
+                    wiki.write(comToWrite+"<div align=\"left\">"+KLS.getEq(conLine)+"</div><br />\n")
                     comToWrite=""
             if substitution and parse:
                 subLine=subLine+line.replace("&","&<br />")
 
                 symLine+=line.strip("\n")
-                #symbols=symbols+getSym(line)
+                #symbols=symbols+KLS.getSym(line)
                 if "\\end{equation}" in lines[i+1] or "\\drmfn" in lines[i+1] or \
                                 "\\substitution" in lines[i+1] or "\\constraint" in lines[i+1] or "\\proof" in lines[i+1]:
                     substitution=False
-                    symbols=symbols+getSym(symLine)
+                    symbols=symbols+KLS.getSym(symLine)
                     symLine=""
-                    wiki.write(comToWrite+"<div align=\"left\">"+getEq(subLine)+"</div><br />\n")
+                    wiki.write(comToWrite+"<div align=\"left\">"+KLS.getEq(subLine)+"</div><br />\n")
                     comToWrite=""
+
+if __name__ == "__main__":
+    DLMF(0);
