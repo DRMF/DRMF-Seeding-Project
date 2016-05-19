@@ -1,0 +1,69 @@
+% section names of folder in functions/ directory, and actual meaning
+BS : Bessel functions
+bessel : Bessel functions
+modbessel : Modified Bessel functions
+
+CH : Confluent hypergeometric functions
+confluent : Confluent hypergeometric series $_2F_0$
+confluentlimit : Confluent hypergeometric limit function
+kummer : Kummer functions
+parabolic : Parabolic cylinder functions
+whittaker : Whittaker functions
+
+CN : Mathematical constants
+apery : Ap\'{e}ry's constant$\zeta$(3)
+archimedes : Archimedes' constant, symbol $\pi$
+catalan : Catalan's constant, symbol $C$
+eulersconstant : Euler's constant, symbol $\gamma$
+eulersnumber : Euler's number, base of the natural logarithm
+goldenratio : Golden ratio, symbol $\phi$
+gompertz : Gompertz' constant, symbol $G$
+naturallogarithm : The natural logarithm, $\ln(2)$
+powerandroot : Regular continued fractions
+pythagoras : Pythagoras' constant, the square root of two
+rabbit : The rabbit constant, symbol $\rho$
+
+EF : Elementary functions
+arccos : Inverse trigonometric functions
+arccosh : Inverse hyperbolic functions
+arcsin : Inverse trigonometric functions
+arcsinh : Inverse hyperbolic functions
+arctan : Inverse trigonometric functions
+arctanh : Inverse hyperbolic functions
+cos : Trigonometric functions
+cosh : Hyperbolic functions
+coth : Hyperbolic functions
+exp : The exponential function
+ln : The natural logarithm
+pow : The power function
+sin : Trigonometric functions
+sinh : Hyperbolic functions
+tan : Trigonometric functions
+tanh : Hyperbolic functions
+
+ER : Error function and related integrals
+error : Error function and Dawson's integral
+comperror : Complementary and complex error function
+repint : Repeated integrals
+fresnel : Fresnel integrals
+
+EX : Exponential integrals and related functions
+expintegrals : Exponential integrals
+related : Related functions
+
+GA : Gamma function and related functions
+binet : Binet function
+incompletegamma : Incomplete gamma functions
+polygamma : Polygamma functions
+tetragamma : Tetragamma function
+trigamma : Trigamma function
+
+HY : Hypergeometric functions
+
+QH : q-Hypergeometric function
+
+SM : Probability functions
+beta_f_t : Beta, F- and Student's $t$-distributions
+gamma_chisquare : Gamma and chi-square distribution
+normal : Normal and log-normal distributions
+repeated : Repeated integrals

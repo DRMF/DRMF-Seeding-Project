@@ -48,102 +48,90 @@
 
 \begin{document}
 
-\begin{equation*}\tag{17.1.2a}
-  \BesselJ{\nu}@{z}
-  = \left(\frac{z}{2}\right)^{\nu} \sum_{k=0}^\infty \frac{\left(-1\right)^{k}}{k!\EulerGamma@{\nu+k+1}}\left(\frac{z}{2}\right)^{2 k}
-  %  \constraint{$\lvert\arg{z}\rvert<\pi$}
-  %  \category{power series}
-\end{equation*}
+  \section{Bessel functions}
+    \subsection{Modified Bessel functions}
 
-\begin{equation*}\tag{17.1.12a}
-  \SphBesselJ{n}@{z}
-  = \sqrt{\frac{\pi}{2 z}}\left(\frac{z}{2}\right)^{n+\frac{1}{2}} \sum_{k=0}^\infty \frac{\left(-1\right)^{k}}{k!\EulerGamma@{\left(n+\frac{1}{2}\right)+k+1}}\left(\frac{z}{2}\right)^{2 k}
-  %  \constraint{$n\in\mathbb{Z}$}
-  %  \category{power series}
-\end{equation*}
+    \subsection{Bessel functions}
 
-\begin{equation*}\tag{17.1.22}
-  \BesselJ{\nu}@{z}
-  = \frac{e^{-i z}\left(\frac{z}{2}\right)^{\nu}}{\EulerGamma@{\nu+1}} \sum_{k=0}^\infty \frac{\pochhammer{\nu+\frac{1}{2}}{k}\left(2 i\right)^{k}z^{k}}{\pochhammer{2\nu+1}{k}k!}
-  %  \constraint{$\lvert\arg{z}\rvert<\pi$}
-  %  \category{power series}
-\end{equation*}
+  \section{Confluent hypergeometric functions}
+    \subsection{Confluent hypergeometric limit function}
 
-\begin{equation*}\tag{17.1.25}
-  \SphBesselJ{n}@{z}
-  = \frac{\sqrt{\pi}}{\left(2 n+1\right)\EulerGamma@{n+\frac{1}{2}}}\left(\frac{z}{2}\right)^{n} \sum_{k=0}^\infty \frac{\frac{1}{\pochhammer{n+\frac{3}{2}}{k}}\left(-\frac{z^{2}}{4}\right)^{k}}{k!}
-  %  \constraint{$n\in\mathbb{Z}$}
-  %  \category{power series}
-\end{equation*}
+    \subsection{Parabolic cylinder functions}
 
-\begin{equation*}\tag{17.1.26}
-  \SphBesselJ{n}@{z}
-  = \frac{\sqrt{\pi}e^{-i z}}{\left(2 n+1\right)\EulerGamma@{n+\frac{1}{2}}}\left(\frac{z}{2}\right)^{n} \sum_{k=0}^\infty \frac{\frac{\pochhammer{n+1}{k}}{\pochhammer{2 n+2}{k}}\left(2 i z\right)^{k}}{k!}
-  %  \constraint{$n\in\mathbb{Z}$}
-  %  \category{power series}
-\end{equation*}
+    \subsection{Whittaker functions}
 
-\begin{equation*}\tag{17.1.28}
-  \BesselJ{\nu}@{z}
-  = \sqrt{\frac{2}{\pi z}} \sum_{k=0}^\infty \left(\frac{\left(-1\right)^{k}\HankelSym{\nu}{2 k}}{\left(2 z\right)^{2 k}}\cos\left(z-\left(\frac{\nu}{2}+\frac{1}{4}\right)\pi\right)-\frac{\left(-1\right)^{k}\HankelSym{\nu}{2 k+1}}{\left(2 z\right)^{2 k+1}}\sin\left(z-\left(\frac{\nu}{2}+\frac{1}{4}\right)\pi\right)\right)
-  %  \constraint{$\lvert\arg{z}\rvert<\pi$}
-  %  \category{asymptotic series}
-\end{equation*}
+    \subsection{Kummer functions}
 
-\begin{equation*}\tag{17.1.29}
-  \BesselY{\nu}@{z}
-  = \sqrt{\frac{2}{\pi z}} \sum_{k=0}^\infty \left(\frac{\left(-1\right)^{k}\HankelSym{\nu}{2 k}}{\left(2 z\right)^{2 k}}\sin\left(z-\left(\frac{\nu}{2}+\frac{1}{4}\right)\pi\right)+\frac{\left(-1\right)^{k}\HankelSym{\nu}{2 k+1}}{\left(2 z\right)^{2 k+1}}\cos\left(z-\left(\frac{\nu}{2}+\frac{1}{4}\right)\pi\right)\right)
-  %  \constraint{$\lvert\arg{z}\rvert<\pi$}
-  %  \category{asymptotic series}
-\end{equation*}
+    \subsection{Confluent hypergeometric series $_2F_0$}
 
-\begin{equation*}\tag{17.1.38}
-  \frac{\BesselJ{\nu+1}@{z}}{\BesselJ{\nu}@{z}}
-  = \frac{\frac{z}{2\nu+2}}{1}+\CFK{m}{2}{\infty}@{\frac{\left(i z\right)^{2}}{4 \left(\nu+m-1\right)\left(\nu+m\right)}}{1}
-  %  \constraint{$\nu\in\geq0ative$}
-  %  \category{S-fraction}
-\end{equation*}
+  \section{Mathematical constants}
+    \subsection{Euler's number, base of the natural logarithm}
 
-\begin{equation*}\tag{17.1.39}
-  \frac{\SphBesselJ{n+1}@{z}}{\SphBesselJ{n}@{z}}
-  = \frac{\frac{z}{2 n+3}}{1}+\CFK{m}{2}{\infty}@{\frac{\left(i z\right)^{2}}{4 \left(n+\frac{1}{2}+m-1\right)\left(n+\frac{1}{2}+m\right)}}{1}
-  %  \constraint{$n\in\mathbb{Z^{+}}$}
-  %  \category{S-fraction}
-\end{equation*}
+    \subsection{Golden ratio, symbol $\phi$}
 
-\begin{equation*}\tag{17.1.40}
-  \frac{\BesselJ{\nu+1}@{z}}{\BesselJ{\nu}@{z}}
-  = -\CFK{m}{1}{\infty}@{-1}{\frac{2 \left(\nu+m\right)}{z}}
-  %  \constraint{$\nu\in\mathbb{Z^{+}}$}
-  %  \category{S-fraction}
-\end{equation*}
+    \subsection{Catalan's constant, symbol $C$}
 
-\begin{equation*}\tag{17.1.44}
-  \frac{\HankelHi{\nu+1}@{z}}{\HankelHi{\nu}@{z}}
-  = \frac{-1}{1}+\CFK{m}{2}{\infty}@{\frac{m-3-2\nu}{-2 i z}}{1}
-  %  \constraint{$\lvert\arg{i z}\rvert<\pi$}
-  %  \category{C-fraction}
-\end{equation*}
+    \subsection{Pythagoras' constant, the square root of two}
 
-\begin{equation*}\tag{17.1.48}
-  \frac{\BesselJ{\nu+1}@{z}}{\BesselJ{\nu}@{z}}
-  = \frac{z}{2\nu+2-i z}+\CFK{m}{2}{\infty}@{\left(2\nu+2 m-1\right)i z}{2\nu+m+1-\left(2 i\right)z}
-  %  \constraint{$\nu\in\mathbb{C}\\\mathbb{Z^{-}}$}
-  %  \category{T-fraction}
-\end{equation*}
+    \subsection{The natural logarithm, $\ln(2)$}
 
-\begin{equation*}\tag{17.1.49}
-  \frac{\SphBesselJ{n+1}@{z}}{\SphBesselJ{n}@{z}}
-  = \frac{z}{2 n+3-i z}+\CFK{m}{2}{\infty}@{2 \left(n+m\right)i z}{2 n+m+2-\left(2 i\right)z}
-  %  \constraint{$n\in\mathbb{Z^{+}}$}
-  %  \category{T-fraction}
-\end{equation*}
+    \subsection{Archimedes' constant, symbol $\pi$}
 
-\begin{equation*}\tag{17.1.51}
-  \frac{\HankelHi{\nu+1}@{z}}{\HankelHi{\nu}@{z}}
-  = \frac{2\nu+1-2 i z}{2 z}-\frac{1}{z} \CFK{m}{0}{\infty}@{\nu^{2}-\frac{\left(2 m-1\right)^{2}}{4}}{2 \left(i z-m\right)}
-  %  \constraint{$\lvert\arg{-i z}\rvert<\pi$}
-  %  \category{J-fraction}
-\end{equation*}
+    \subsection{Ap\'{e}ry's constant$\zeta$(3)}
 
+    \subsection{Euler's constant, symbol $\gamma$}
+
+    \subsection{Gompertz' constant, symbol $G$}
+
+    \subsection{The rabbit constant, symbol $\rho$}
+
+    \subsection{Regular continued fractions}
+
+  \section{Elementary functions}
+    \subsection{Inverse hyperbolic functions}
+
+    \subsection{The power function}
+
+    \subsection{Hyperbolic functions}
+
+    \subsection{Inverse trigonometric functions}
+
+    \subsection{The exponential function}
+
+    \subsection{Trigonometric functions}
+
+    \subsection{The natural logarithm}
+
+  \section{Error function and related integrals}
+    \subsection{Error function and Dawson's integral}
+
+    \subsection{Repeated integrals}
+
+    \subsection{Complementary and complex error function}
+
+    \subsection{Fresnel integrals}
+
+  \section{Exponential integrals and related functions}
+    \subsection{Exponential integrals}
+
+    \subsection{Related functions}
+
+  \section{Gamma function and related functions}
+    \subsection{Tetragamma function}
+
+    \subsection{Incomplete gamma functions}
+
+    \subsection{Trigamma function}
+
+    \subsection{Binet function}
+
+    \subsection{Polygamma functions}
+
+  \section{Hypergeometric functions}
+    \subsection{no-subsection}
+
+  \section{q-Hypergeometric function}
+    \subsection{no-subsection}
+
+  \section{Probability functions}
 \end{document}
