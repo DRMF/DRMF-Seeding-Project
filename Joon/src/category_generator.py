@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import os
 
+INDENT = "    "
+
 names = ["BS", "CH", "CN", "EF", "ER", "EX", "GA", "HY", "QH", "SM"]
 
 translate = dict(tuple(line.split(" : ")) for line in open("keys/section_names").read().split("\n")
@@ -43,8 +45,8 @@ def generate_categories():
 
     print text
 
-    with open("tests/test.tex", "w") as f:
-        text = open("tests/primers/primer").read() + text + "\\end{document}"
+    with open("output/test.tex", "w") as f:
+        text = open("output/primers/primer").read() + text + "\\end{document}"
         f.write(text)
 
 def main():

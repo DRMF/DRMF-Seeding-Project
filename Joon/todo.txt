@@ -1,2 +1,0 @@
-- Even/odd handling (what do they mean? significance?)
-
