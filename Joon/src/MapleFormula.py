@@ -67,7 +67,7 @@ class MapleFormula(object):
             if isinstance(self.general[0], list):
                 self.general = self.general[0]
 
-            if "begin" in globals():
+            if "begin" in self.fields:
                 self.begin = parse_brackets(self.begin)
 
     def translate_to_latex(self):
@@ -75,7 +75,7 @@ class MapleFormula(object):
 
         # translates the Maple information (with spacing)
         if self.eq_type == "series":
-            if "factor" in globals():
+            if "factor" in self.fields:
                 equation += self.factor + " "
             equation += "\\sum_{k=0}^\\infty "
 
@@ -87,16 +87,16 @@ class MapleFormula(object):
         elif self.eq_type == "contfrac":
             start = 1  # in case the value of start isn't assigned
 
-            if "begin" in globals():
+            if "begin" in self.fields:
                 for piece in self.begin:
                     equation += make_frac(piece[0], piece[1]) + "+"
                     start += 1
 
-            elif "front" in globals():
+            elif "front" in self.fields:
                 equation += self.front + "+"
-                start -= 1
+                start = 1
 
-            if "factor" in globals():
+            if "factor" in self.fields:
                 if self.factor == "-1":
                     equation += "-"
                 else:
@@ -105,7 +105,7 @@ class MapleFormula(object):
             equation += "\\CFK{m}{" + str(start) + "}{\\infty}@{" + self.general[0] + "}{" + self.general[1] + "}"
 
         # adds metadata
-        # equation += "\n  %  \\constraint{$" + self.constraints + "$}"  # fix constraints
+        # equation += "\n  %  \\constraint{$" + self.constraints + "$}"
         equation += "\n  %  \\category{" + self.category + "}"
         equation += "\n\\end{equation*}"
 

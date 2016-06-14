@@ -10,7 +10,7 @@ class MapleFile(object):
     def obtain_formulae(self):
         contents = open(self.filename).read()
 
-        return [MapleFormula(piece) for piece in contents.split("create(") if "):" in piece]
+        return [MapleFormula(piece) for piece in contents.split("create(") if "):" in piece or ");" in piece]
 
     def convert_formulae(self):
         text = ""
@@ -21,7 +21,9 @@ class MapleFile(object):
 
 def main():
     files = ["functions/BS/bessel/bessel.mpl", "functions/BS/modbessel/modbessel.mpl",
-             "functions/CH/confluent/confluent.mpl", "functions/CH/confluent/confluent.mpl"]
+             "functions/CH/confluent/confluent.mpl", "functions/CH/confluent/confluent.mpl",
+             "functions/CH/confluentlimit/confluentlimit.mpl", "functions/CH/kummer/kummer.mpl",
+             "functions/CH/parabolic/parabolic.mpl", "functions/CH/whittaker/whittaker.mpl"]
 
     text = ""
 
@@ -32,6 +34,7 @@ def main():
         text += "\n\n\n"
 
         print "Output for " + file_name + "\n"
+        # print [f.label for f in m_file.obtain_formulae()]
         print m_file.convert_formulae()
 
     with open("output/test.tex", "w") as f:

@@ -6,9 +6,7 @@ INDENT = "    "
 names = ["BS", "CH", "CN", "EF", "ER", "EX", "GA", "HY", "QH", "SM"]
 
 translate = dict(tuple(line.split(" : ")) for line in open("keys/section_names").read().split("\n")
-                       if line != "" and "%" not in line)
-
-print translate
+                 if line != "" and "%" not in line)
 
 def generate_categories():
     """
