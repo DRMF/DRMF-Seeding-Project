@@ -44,7 +44,7 @@ def generate_categories():
     print text
 
     with open("output/test.tex", "w") as f:
-        text = open("output/primers/primer").read() + text + "\\end{document}"
+        text = open("output/primer").read() + text + "\\end{document}"
         f.write(text)
 
 def main():

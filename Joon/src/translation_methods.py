@@ -7,6 +7,7 @@ SYMBOLS = list(line.split(" || ") for line in open("keys/symbols").read().split(
                if line != "" and "%" not in line)
 PARENTHESES = [["(", "\\left("], [")", "\\right)"]]
 SPACING = list((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ","])
+SPECIAL = [['+\\left(-', '-\\left('], ['+\\frac{-', '-\\frac{'], ['+-', '-'], ['--', '+']]
 NUMBERS = "0123456789"
 
 def replace_strings(string, li):
@@ -126,3 +127,68 @@ def translate(exp):
         i += 1
 
     return replace_strings(basic_translate(exp), PARENTHESES)
+
+def make_equation(eq):
+    """
+    :param eq: MapleEquation
+    """
+
+    eq.lhs = translate(eq.lhs)
+
+    if "factor" in eq.fields:
+        eq.factor = translate(eq.fields["factor"])
+
+    if "front" in eq.fields:
+        eq.front = translate(eq.fields["front"])
+
+    if eq.eq_type == "series":
+        eq.general = translate(eq.general[0])
+
+    elif eq.eq_type == "contfrac":
+        eq.general = parse_brackets(eq.general[0])  # add handling later for even and odd
+
+        if isinstance(eq.general[0], list):
+            eq.general = eq.general[0]
+
+        if "begin" in eq.fields:
+            eq.begin = parse_brackets(eq.begin)
+
+    equation = "\\begin{equation*}\\tag{" + eq.label + "}\n  " + eq.lhs + "\n  = "
+
+    # translates the Maple information (with spacing)
+    if eq.eq_type == "series":
+        if "factor" in eq.fields:
+            equation += eq.factor + " "
+        equation += "\\sum_{k=0}^\\infty "
+
+        if eq.category == "power series":
+            equation += eq.general
+        elif eq.category == "asymptotic series":  # make sure to fix asymptotic series
+            equation += "\\left(" + eq.general + "\\right)"
+
+    elif eq.eq_type == "contfrac":
+        start = 1  # in case the value of start isn't assigned
+
+        if "begin" in eq.fields:
+            for piece in eq.begin:
+                equation += make_frac(piece[0], piece[1]) + "+"
+                start += 1
+
+        elif "front" in eq.fields:
+            equation += eq.front + "+"
+            start = 1
+
+        if "factor" in eq.fields:
+            if eq.factor == "-1":
+                equation += "-"
+            else:
+                equation += eq.factor + " "
+
+        equation += "\\CFK{m}{" + str(start) + "}{\\infty}@{" + eq.general[0] + "}{" + eq.general[1] + "}"
+
+    # adds metadata
+    # equation += "\n  %  \\constraint{$" + eq.constraints + "$}"
+    equation += "\n  %  \\category{" + eq.category + "}"
+    equation += "\n\\end{equation*}"
+
+    return replace_strings(equation, SPECIAL)

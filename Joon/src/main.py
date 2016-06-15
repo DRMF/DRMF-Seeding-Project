@@ -1,23 +1,6 @@
 #!/usr/bin/env python
 
-from MapleFormula import MapleFormula
-
-class MapleFile(object):
-    def __init__(self, filename):
-        self.filename = filename
-        self.formulae = self.obtain_formulae()
-
-    def obtain_formulae(self):
-        contents = open(self.filename).read()
-
-        return [MapleFormula(piece) for piece in contents.split("create(") if "):" in piece or ");" in piece]
-
-    def convert_formulae(self):
-        text = ""
-        for formula in self.formulae:
-            text += formula.translate_to_latex() + "\n\n"
-
-        return text
+from math_wrappers import MapleFile
 
 def main():
     files = ["functions/BS/bessel/bessel.mpl", "functions/BS/modbessel/modbessel.mpl",
