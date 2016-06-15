@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from math_wrappers import MapleFile
+from category_generator import translate as section_headers
 
 def main():
     files = ["functions/BS/bessel/bessel.mpl", "functions/BS/modbessel/modbessel.mpl",
@@ -13,13 +14,13 @@ def main():
 
     for file_name in files:
         m_file = MapleFile(file_name)
-        text += "Output for " + file_name + "\n"
+        file_name = file_name.split("/")[-2]
+        section_name = section_headers[file_name]
+        text += "\\section{" + section_name + "}\n\n"
         text += m_file.convert_formulae()
-        text += "\n\n\n"
+        text += "\n\n"
 
-        print "Output for " + file_name + "\n"
-        # print [f.label for f in m_file.obtain_formulae()]
-        print m_file.convert_formulae()
+    print text
 
     with open("output/test.tex", "w") as f:
         text = open("output/primer").read() + text + "\\end{document}"
