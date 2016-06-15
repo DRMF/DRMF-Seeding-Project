@@ -23,7 +23,8 @@ def main():
     files = ["functions/BS/bessel/bessel.mpl", "functions/BS/modbessel/modbessel.mpl",
              "functions/CH/confluent/confluent.mpl", "functions/CH/confluent/confluent.mpl",
              "functions/CH/confluentlimit/confluentlimit.mpl", "functions/CH/kummer/kummer.mpl",
-             "functions/CH/parabolic/parabolic.mpl", "functions/CH/whittaker/whittaker.mpl"]
+             "functions/CH/parabolic/parabolic.mpl", "functions/CH/whittaker/whittaker.mpl",
+             "functions/CN/apery/apery.mpl"]
 
     text = ""
 
