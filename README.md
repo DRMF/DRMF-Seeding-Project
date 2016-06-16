@@ -33,11 +33,13 @@ To achieve the desired result, one should execute the progams in the following o
 ## BMP Seeding Project
 
 ## KLSadd Insertion Project
-linetest.py and updateChapters (mostly) written by Rahul Shah (ILIKEFUUD)
+linetest.py and updateChapters.py written by Rahul Shah and Edward Bian
 
-Edits the DRMF chapter files to include the relevant KLS addendum additions. Additions are (currently) only being added right before the "References" paragraphs in each section. The linetest.py file is the first working model of the code, but it is very messy and esoteric. Comments have been made to aid interpretation. The new project file, updateChapters.py is a more readable version, but not quite up to date. 
+Edits the DRMF chapter files to include the relevant KLS addendum additions. Additions are (currently) only being added right before the "References" paragraphs in each section. The linetest.py file is the first working model of the code, but it is very messy and esoteric. Comments have been made to aid interpretation. The new project file, updateChapters.py is a more readable version.
 
-Left to do in updateChapters.py:
-import over the necessary files to make the pdf work, change all instances of "section" to "paragraph" and add "\large\bf" to make font large and bold like the other chapter headings. Also necessary to add initials of programmer wherever the new additions were added (ex. "%RS added, %RS end") 
+TODO in updateChapters.py:
 
-Also: rewrite code for "smarter" edits (ex. add new limit relations straight to the limit relations section in the section itself, not at the end) 
+FINISHED- implemented smart fix for "hypergeometric representation" paragraphs. Now the content in these paragraphs are appended directly from the KLS section into the chapter's hypergeometric representation paragraphs
+
+Needs to be done:
+-implemenent the same smart fix for "Limit relations" paragraphs. Current code for this implementation does not work and has spotty logic that does not encompass all variations of limit relations paragraphs (such as the one subsubsection in chapter 9)
