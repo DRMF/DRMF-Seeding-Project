@@ -53,4 +53,4 @@ import math_mode
 
 math_mode.find_math_ranges("LaTeX code")
 ```
-__Last Updated: 6/20/16__
+_Last Updated: 6/20/16_
