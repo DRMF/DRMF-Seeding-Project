@@ -47,9 +47,10 @@ Needs to be done:
 ## MathMode Python code
 Library to determine ranges of math mode in a LaTeX sample, returned in the form of a list of lists.
 
-To use the code, first import, then call the `find_math_ranges` function:
+To use the code, move the file `mathmodepy/math_mode` to the directory in which your code is. Then import it, and to use it call the `find_math_ranges``` function:
 ```python
-from mathmodepy import math_mode
+import math_mode
 
 math_mode.find_math_ranges("LaTeX code")
 ```
+__Last Updated: 6/20/16__
