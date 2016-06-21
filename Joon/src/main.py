@@ -6,7 +6,7 @@ translate = dict(tuple(line.split(" : ")) for line in open("keys/section_names")
                  if line != "" and "%" not in line)
 
 files = ["bessel", "modbessel", "confluent", "confluentlimit", "kummer", "parabolic",
-         "whittaker"]
+         "whittaker", "apery"]
 
 root_directory = "functions"
 
@@ -29,10 +29,10 @@ def main():
                             MapleFile(info[0] + "/" + folder + "/" + folder + ".mpl").convert_formulae() + "\n\n"
 
     with open("output/test.tex", "w") as f:
-        text = open("output/primer").read() + text + "\\end{document}"
+        text = open("output/primer").read() + text + "\n\\end{document}"
         f.write(text)
 
-    print text
+    print "Successfully generated files in subsections: " + ', '.join(files)
 
 if __name__ == '__main__':
     main()
