@@ -1,30 +1,38 @@
 #!/usr/bin/env python
-
+import os
 from math_wrappers import MapleFile
-from category_generator import translate as section_headers
+
+translate = dict(tuple(line.split(" : ")) for line in open("keys/section_names").read().split("\n")
+                 if line != "" and "%" not in line)
+
+files = ["bessel", "modbessel", "confluent", "confluentlimit", "kummer", "parabolic",
+         "whittaker"]
+
+root_directory = "functions"
 
 def main():
-    files = ["functions/BS/bessel/bessel.mpl", "functions/BS/modbessel/modbessel.mpl",
-             "functions/CH/confluent/confluent.mpl", "functions/CH/confluent/confluent.mpl",
-             "functions/CH/confluentlimit/confluentlimit.mpl", "functions/CH/kummer/kummer.mpl",
-             "functions/CH/parabolic/parabolic.mpl", "functions/CH/whittaker/whittaker.mpl",
-             "functions/CN/apery/apery.mpl"]
+    """
+    Generates and writes the results of traversing the root directory and translating all Maple files
+    """
+    root_depth = len(root_directory.split("/"))
+    dirs = [d for d in os.walk(root_directory) if len(d[0].split("/")) == root_depth + 1]
 
     text = ""
+    for info in dirs:
+        depth = len(["" for ch in info[0] if ch == "/"])
 
-    for file_name in files:
-        m_file = MapleFile(file_name)
-        file_name = file_name.split("/")[-2]
-        section_name = section_headers[file_name]
-        text += "\\section{" + section_name + "}\n\n"
-        text += m_file.convert_formulae()
-        text += "\n\n"
-
-    print text
+        if depth == root_depth:  # section
+            text += "\n\\section{" + translate[info[0].split("/")[-1]] + "}\n"
+            for folder in info[1]:
+                if folder in files:
+                    text += "\\subsection{" + translate[folder] + "}\n" + \
+                            MapleFile(info[0] + "/" + folder + "/" + folder + ".mpl").convert_formulae() + "\n\n"
 
     with open("output/test.tex", "w") as f:
         text = open("output/primer").read() + text + "\\end{document}"
         f.write(text)
 
-if __name__ == "__main__":
+    print text
+
+if __name__ == '__main__':
     main()

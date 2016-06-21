@@ -50,6 +50,11 @@ class MapleEquation(object):
         self.label = self.fields["booklabel"]
         self.lhs = self.fields["lhs"]
 
+        if "constraints" in self.fields:
+            self.constraints = self.fields["constraints"]
+        else:
+            self.constraints = "No constraints"
+
         if "general" in self.fields:
             self.general = [self.fields["general"]]
 

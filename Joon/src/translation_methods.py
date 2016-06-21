@@ -3,11 +3,10 @@
 # Constants
 FUNCTIONS = dict(tuple(line.split(" || ", 1)) for line in open("keys/functions").read().split("\n")
                  if line != "" and "%" not in line)
-SYMBOLS = list(line.split(" || ") for line in open("keys/symbols").read().split("\n")
+SYMBOLS = dict(line.split(" || ") for line in open("keys/symbols").read().split("\n")
                if line != "" and "%" not in line)
 PARENTHESES = [["(", "\\left("], [")", "\\right)"]]
 SPACING = list((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ","])
-SPECIAL = [['+\\left(-', '-\\left('], ['+\\frac{-', '-\\frac{'], ['+-', '-'], ['--', '+']]
 NUMBERS = "0123456789"
 
 def replace_strings(string, li):
@@ -51,7 +50,7 @@ def basic_translate(exp):
     Does not translate parentheses
     """
 
-    for order in range(2):
+    for order in xrange(3):
         i = 0
         while i < len(exp):
             modified = False
@@ -67,11 +66,7 @@ def basic_translate(exp):
                 modified = True
 
             elif exp[i] == "*" and order == 1:
-                # rules for nicer spacing
-                if exp[i - 1][-1] not in "})" and exp[i + 1][0] != "\\" \
-                        or exp[i - 1][-1] in NUMBERS and exp[i + 1] in NUMBERS:
-                    exp[i - 1] += " "
-                exp[i - 1] += exp.pop(i + 1)
+                exp[i - 1] += " " + exp.pop(i + 1)
                 modified = True
 
             elif exp[i] == "/" and order == 1:
@@ -84,7 +79,6 @@ def basic_translate(exp):
             if modified:
                 exp.pop(i)
                 i -= 1
-
             else:
                 i += 1
 
@@ -95,38 +89,27 @@ def translate(exp):
     Translate a segment of Maple to LaTeX, including functions
     """
 
-    exp = exp.strip()
+    exp = replace_strings(exp.strip(), [[":-", ":"]] + SPACING).split()
 
-    parens, i = list(), 0
-    exp = replace_strings(exp, SYMBOLS + SPACING).split()
+    for i in xrange(len(exp)):
+        if exp[i] in SYMBOLS:
+            exp[i] = SYMBOLS[exp[i]]
 
-    while i < len(exp):
+    for i in xrange(len(exp)-1, -1, -1):
         if exp[i] == "(":
+            r = i + exp[i:].index(")")
+            piece = basic_translate(exp[i:r + 1])
+
             if exp[i - 1] in FUNCTIONS:
-                parens.append([i, FUNCTIONS[exp[i - 1]]])
-            else:
-                parens.append([i])
-
-        elif exp[i] == ")":
-            info = parens.pop()
-            l = info[0]
-            piece = basic_translate(exp[l:i + 1])
-
-            if len(info) == 2:
-                l -= 1
-                func = info[1].split(" || ")
+                i -= 1
+                func = FUNCTIONS[exp[i]].split(" || ")
                 piece = parse_arguments(piece)
-                result = [func[-1]]
-                for c in range(len(piece))[::-1]:
-                    result += [piece[c], func[c]]
-                piece = ''.join(result[::-1])
+                result = [func.pop(0)] + [piece[c] + func[c] for c in xrange(len(piece))]
+                piece = ''.join(result)
 
-            exp = exp[0:l] + [piece] + exp[i + 1:]
-            i = l
+            exp = exp[0:i] + [piece] + exp[r + 1:]
 
-        i += 1
-
-    return replace_strings(basic_translate(exp), PARENTHESES)
+    return basic_translate(exp)
 
 def make_equation(eq):
     """
@@ -164,7 +147,7 @@ def make_equation(eq):
         if eq.category == "power series":
             equation += eq.general
         elif eq.category == "asymptotic series":  # make sure to fix asymptotic series
-            equation += "\\left(" + eq.general + "\\right)"
+            equation += "(" + eq.general + ")"
 
     elif eq.eq_type == "contfrac":
         start = 1  # in case the value of start isn't assigned
@@ -187,8 +170,8 @@ def make_equation(eq):
         equation += "\\CFK{m}{" + str(start) + "}{\\infty}@{" + eq.general[0] + "}{" + eq.general[1] + "}"
 
     # adds metadata
-    # equation += "\n  %  \\constraint{$" + eq.constraints + "$}"
+    equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"
     equation += "\n  %  \\category{" + eq.category + "}"
     equation += "\n\\end{equation*}"
 
-    return replace_strings(equation, SPECIAL)
+    return replace_strings(equation, PARENTHESES)
