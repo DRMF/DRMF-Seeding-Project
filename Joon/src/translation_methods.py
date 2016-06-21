@@ -5,8 +5,8 @@ FUNCTIONS = dict(tuple(line.split(" || ", 1)) for line in open("keys/functions")
                  if line != "" and "%" not in line)
 SYMBOLS = dict(line.split(" || ") for line in open("keys/symbols").read().split("\n")
                if line != "" and "%" not in line)
-PARENTHESES = [["(", "\\left("], [")", "\\right)"]]
 SPACING = list((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ","])
+SPECIAL = [["(", "\\left("], [")", "\\right)"], ["+-", "-"], ["\\subplus-", "-"]]
 NUMBERS = "0123456789"
 
 def replace_strings(string, li):
@@ -154,7 +154,7 @@ def make_equation(eq):
 
         if "begin" in eq.fields:
             for piece in eq.begin:
-                equation += make_frac(piece[0], piece[1]) + "+"
+                equation += make_frac(piece[0], piece[1]) + "\\subplus"
                 start += 1
 
         elif "front" in eq.fields:
@@ -174,4 +174,4 @@ def make_equation(eq):
     equation += "\n  %  \\category{" + eq.category + "}"
     equation += "\n\\end{equation*}"
 
-    return replace_strings(equation, PARENTHESES)
+    return replace_strings(equation, SPECIAL)
