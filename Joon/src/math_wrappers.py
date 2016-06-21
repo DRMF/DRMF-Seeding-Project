@@ -36,11 +36,17 @@ class MapleEquation(object):
                 if line[0] in ["category"]:
                     line[1] = line[1][1:-1].strip()
 
-                elif line[0] in ["booklabel", "general", "constraints", "begin"]:
+                elif line[0] in ["booklabel", "general", "constraints"]:
                     line[1] = line[1][1:-2].strip()
 
                 elif line[0] in ["lhs", "factor", "front", "even", "odd"]:
                     line[1] = line[1][:-1].strip()
+
+                elif line[0] == "begin":
+                    if "map" in line[1] and "proc" in line[1]:  # makeshift solution. please repair later
+                        line[1] = str([[1, int(d)] for d in inp[i+2].split(",")])[1:-1]
+                    else:
+                        line[1] = line[1][1:-2].strip()
 
                 self.fields[line[0]] = line[1]
 

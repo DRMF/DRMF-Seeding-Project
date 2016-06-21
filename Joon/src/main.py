@@ -6,7 +6,7 @@ translate = dict(tuple(line.split(" : ")) for line in open("keys/section_names")
                  if line != "" and "%" not in line)
 
 files = ["bessel", "modbessel", "confluent", "confluentlimit", "kummer", "parabolic",
-         "whittaker", "apery"]
+         "whittaker", "apery", "archimedes", "catalan", "eulersconstant", "eulersnumber"]
 
 root_directory = "functions"
 

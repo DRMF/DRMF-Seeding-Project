@@ -25,7 +25,7 @@ def parse_brackets(exp):
     Translates the contents between a set of square brackets
     """
 
-    return [[translate(p) for p in piece.split(", ")] for piece in exp[1:-1].split("], [")]
+    return [[translate(p) for p in piece.split(",")] for piece in exp[1:-1].split("], [")]
 
 def make_frac(n, d):
     """
