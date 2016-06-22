@@ -3,6 +3,8 @@
 from translation_methods import make_equation
 from copy import copy
 
+booklabel_version = "booklabelv2"
+
 class MapleFile(object):
     def __init__(self, filename):
         self.filename = filename
@@ -36,7 +38,7 @@ class MapleEquation(object):
                 if line[0] in ["category"]:
                     line[1] = line[1][1:-1].strip()
 
-                elif line[0] in ["booklabelv1", "general", "constraints", "begin"]:
+                elif line[0] in ["booklabelv1", "booklabelv2", "general", "constraints", "begin"]:
                     if line[0] == "begin" and "map" in line[1] and "proc" in line[1]:  # makeshift solution
                         line[1] = str([[1, int(d)] for d in inp[i+2].split(",")])[1:-1]
                     else:
@@ -61,7 +63,7 @@ class MapleEquation(object):
         if "constraints" in self.fields:
             self.constraints = self.fields["constraints"]
         else:
-            self.constraints = "No constraints"
+            self.constraints = ""
 
         if "general" in self.fields:
             self.general = [self.fields["general"]]

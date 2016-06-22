@@ -6,7 +6,8 @@ translate = dict(tuple(line.split(" : ")) for line in open("keys/section_names")
                  if line != "" and "%" not in line)
 
 files = ["bessel", "modbessel", "confluent", "confluentlimit", "kummer", "parabolic",
-         "whittaker", "apery", "archimedes", "catalan", "eulersconstant", "eulersnumber"]
+         "whittaker", "apery", "archimedes", "catalan", "eulersconstant", "eulersnumber",
+         "goldenratio", "gompertz", "naturallogarithm", "powerandroot", "pythagoras", "rabbit"]
 
 root_directory = "functions"
 
@@ -19,8 +20,6 @@ def main():
 
     text = ""
     for info in dirs:
-        print info
-
         depth = len(["" for ch in info[0] if ch == "/"])
 
         if depth == root_depth:  # section
@@ -28,9 +27,6 @@ def main():
 
             for file_name in info[2]:
                 folder = ''.join(file_name.split(".")[:-1])
-
-                print folder
-
                 if folder in files:
                     text += "\\subsection{" + translate[folder] + "}\n" + \
                             MapleFile(info[0] + "/" + file_name).convert_formulae() + "\n\n"

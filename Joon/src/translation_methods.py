@@ -5,8 +5,10 @@ FUNCTIONS = dict(tuple(line.split(" || ", 1)) for line in open("keys/functions")
                  if line != "" and "%" not in line)
 SYMBOLS = dict(tuple(line.split(" || ")) for line in open("keys/symbols").read().split("\n")
                if line != "" and "%" not in line)
-SPACING = list((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ","])
+SPACING = list((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "::"])
 SPECIAL = [["(", "\\left("], [")", "\\right)"], ["+-", "-"], ["\\subplus-", "-"]]
+CONSTRAINTS = list(tuple(line.split(" || ")) for line in open("keys/constraints").read().split("\n")
+                   if line != "" and "%" not in line)
 NUMBERS = "0123456789"
 
 def replace_strings(string, li):
@@ -35,6 +37,9 @@ def make_frac(n, d):
     return "\\frac{" + n + "}{" + d + "}"
 
 def parse_arguments(pieces):
+    if pieces == "()":
+        return []
+
     pieces = pieces[1:-1].split(",")
     for i, piece in enumerate(pieces):
         if piece[0] == "[" and piece[-1] != "]":
@@ -89,7 +94,7 @@ def translate(exp):
     Translate a segment of Maple to LaTeX, including functions
     """
 
-    exp = replace_strings(exp.strip(), [[":-", ":"]] + SPACING).split()
+    exp = replace_strings(exp.strip(), CONSTRAINTS + [[":-", ":"]] + SPACING).split()
 
     for i in xrange(len(exp)):
         if exp[i] in SYMBOLS:
@@ -113,8 +118,6 @@ def translate(exp):
                             piece.insert(j, "0")
                         else:
                             piece.insert(j, str(len(piece[j * 2].split(","))))
-
-                    print piece
 
                 result = [func.pop(0)] + [piece[c] + func[c] for c in xrange(len(piece))]
                 piece = ''.join(result)
@@ -157,6 +160,10 @@ def make_equation(eq):
     if eq.eq_type == "series":
         if "factor" in eq.fields:
             equation += eq.factor + " "
+
+        elif "front" in eq.fields:
+            equation += eq.front + "+"
+
         equation += "\\sum_{k=0}^\\infty "
 
         if eq.category == "power series":
