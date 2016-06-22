@@ -19,14 +19,21 @@ def main():
 
     text = ""
     for info in dirs:
+        print info
+
         depth = len(["" for ch in info[0] if ch == "/"])
 
         if depth == root_depth:  # section
             text += "\n\\section{" + translate[info[0].split("/")[-1]] + "}\n"
-            for folder in info[1]:
+
+            for file_name in info[2]:
+                folder = ''.join(file_name.split(".")[:-1])
+
+                print folder
+
                 if folder in files:
                     text += "\\subsection{" + translate[folder] + "}\n" + \
-                            MapleFile(info[0] + "/" + folder + "/" + folder + ".mpl").convert_formulae() + "\n\n"
+                            MapleFile(info[0] + "/" + file_name).convert_formulae() + "\n\n"
 
     with open("output/test.tex", "w") as f:
         text = open("output/primer").read() + text + "\n\\end{document}"

@@ -3,7 +3,7 @@
 # Constants
 FUNCTIONS = dict(tuple(line.split(" || ", 1)) for line in open("keys/functions").read().split("\n")
                  if line != "" and "%" not in line)
-SYMBOLS = dict(line.split(" || ") for line in open("keys/symbols").read().split("\n")
+SYMBOLS = dict(tuple(line.split(" || ")) for line in open("keys/symbols").read().split("\n")
                if line != "" and "%" not in line)
 SPACING = list((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ","])
 SPECIAL = [["(", "\\left("], [")", "\\right)"], ["+-", "-"], ["\\subplus-", "-"]]
@@ -103,7 +103,19 @@ def translate(exp):
             if exp[i - 1] in FUNCTIONS:
                 i -= 1
                 func = FUNCTIONS[exp[i]].split(" || ")
+
                 piece = parse_arguments(piece)
+
+                # parsing for hypergeometric function
+                if exp[i] == "hypergeom":
+                    for j in xrange(2):
+                        if piece[j * 2] == "":
+                            piece.insert(j, "0")
+                        else:
+                            piece.insert(j, str(len(piece[j * 2].split(","))))
+
+                    print piece
+
                 result = [func.pop(0)] + [piece[c] + func[c] for c in xrange(len(piece))]
                 piece = ''.join(result)
 
@@ -111,11 +123,7 @@ def translate(exp):
 
     return basic_translate(exp)
 
-def make_equation(eq):
-    """
-    :param eq: MapleEquation
-    """
-
+def modify_fields(eq):
     eq.lhs = translate(eq.lhs)
 
     if "factor" in eq.fields:
@@ -135,6 +143,13 @@ def make_equation(eq):
 
         if "begin" in eq.fields:
             eq.begin = parse_brackets(eq.begin)
+
+def make_equation(eq):
+    """
+    Make a LaTeX equation based on a MapleEquation object
+    """
+
+    modify_fields(eq)
 
     equation = "\\begin{equation*}\\tag{" + eq.label + "}\n  " + eq.lhs + "\n  = "
 
