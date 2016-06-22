@@ -6,7 +6,7 @@ FUNCTIONS = dict(tuple(line.split(" || ", 1)) for line in open("keys/functions")
 SYMBOLS = dict(tuple(line.split(" || ")) for line in open("keys/symbols").read().split("\n")
                if line != "" and "%" not in line)
 SPACING = list((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "::"])
-SPECIAL = [["(", "\\left("], [")", "\\right)"], ["+-", "-"], ["\\subplus-", "-"]]
+SPECIAL = [["(", "\\left("], [")", "\\right)"], ["+-", "-"], ["\\subplus-", "-"], ["^{1}", ""]]
 CONSTRAINTS = list(tuple(line.split(" || ")) for line in open("keys/constraints").read().split("\n")
                    if line != "" and "%" not in line)
 NUMBERS = "0123456789"
@@ -129,10 +129,10 @@ def translate(exp):
 def modify_fields(eq):
     eq.lhs = translate(eq.lhs)
 
-    if "factor" in eq.fields:
+    if eq.factor != "":
         eq.factor = translate(eq.fields["factor"])
 
-    if "front" in eq.fields:
+    if eq.front != "":
         eq.front = translate(eq.fields["front"])
 
     if eq.eq_type == "series":
@@ -144,7 +144,7 @@ def modify_fields(eq):
         if isinstance(eq.general[0], list):
             eq.general = eq.general[0]
 
-        if "begin" in eq.fields:
+        if eq.begin != "":
             eq.begin = parse_brackets(eq.begin)
 
 def make_equation(eq):
@@ -158,10 +158,10 @@ def make_equation(eq):
 
     # translates the Maple information (with spacing)
     if eq.eq_type == "series":
-        if "factor" in eq.fields:
+        if eq.factor != "":
             equation += eq.factor + " "
 
-        elif "front" in eq.fields:
+        elif eq.front != "":
             equation += eq.front + "+"
 
         equation += "\\sum_{k=0}^\\infty "
@@ -174,16 +174,16 @@ def make_equation(eq):
     elif eq.eq_type == "contfrac":
         start = 1  # in case the value of start isn't assigned
 
-        if "begin" in eq.fields:
+        if eq.begin != "":
             for piece in eq.begin:
                 equation += make_frac(piece[0], piece[1]) + "\\subplus"
                 start += 1
 
-        elif "front" in eq.fields:
+        elif eq.front != "":
             equation += eq.front + "+"
             start = 1
 
-        if "factor" in eq.fields:
+        if eq.factor != "":
             if eq.factor == "-1":
                 equation += "-"
             else:
