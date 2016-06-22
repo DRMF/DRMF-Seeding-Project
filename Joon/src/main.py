@@ -7,7 +7,8 @@ translate = dict(tuple(line.split(" : ")) for line in open("keys/section_names")
 
 files = ["bessel", "modbessel", "confluent", "confluentlimit", "kummer", "parabolic",
          "whittaker", "apery", "archimedes", "catalan", "eulersconstant", "eulersnumber",
-         "goldenratio", "gompertz", "naturallogarithm", "powerandroot", "pythagoras", "rabbit"]
+         "goldenratio", "gompertz", "naturallogarithm", "powerandroot", "pythagoras",
+         "rabbit", "zeta2", "zeta4"]
 
 root_directory = "functions"
 

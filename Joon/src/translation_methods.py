@@ -49,6 +49,27 @@ def parse_arguments(pieces):
 
     return pieces
 
+def verify_validity(exp):
+    """
+    Verifies the validity of an expression in terms of parentheses grouping
+    """
+
+    left = list()
+
+    try:
+        for ch in exp:
+            if ch == "(":
+                left.append(ch)
+            elif ch == ")":
+                left.pop()
+    except IndexError:
+        return False
+
+    if len(left) != 0:
+        return False
+
+    return True
+
 def basic_translate(exp):
     """
     Translates basic mathematical operations (does not include functions)
@@ -76,9 +97,9 @@ def basic_translate(exp):
 
             elif exp[i] == "/" and order == 1:
                 for index in [i - 1, i + 1]:
-                    if exp[index][0] == "(" and exp[index][-1] == ")":
+                    if exp[index][0] == "(" and exp[index][-1] == ")" and verify_validity(exp[index][1:-1]):
                         exp[index] = exp[index][1:-1]
-                exp[i - 1] = "\\frac{" + exp[i - 1] + "}{" + exp.pop(i + 1) + "}"
+                exp[i - 1] = make_frac(exp[i - 1], exp.pop(i + 1))
                 modified = True
 
             if modified:
