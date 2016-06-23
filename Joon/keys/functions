@@ -1,0 +1,31 @@
+%This is a list of Maple functions and their LaTeX equivalent.
+GAMMA || \EulerGamma@{ || }
+sqrt || \sqrt{ || }
+BesselJ || \BesselJ{ || }@{ || }
+functions:Besselj || \SphBesselJ{ || }@{ || }
+pochhammer || \pochhammer{ || }{ || }
+functions:hankelsymb || \HankelSym{ || }{ || }
+sin || \sin( || )
+cos || \cos( || )
+BesselY || \BesselY{ || }@{ || }
+abs || \abs{ || }
+functions:argument || \arg{ || }
+HankelH1 || \HankelHi{ || }@{ || }
+exp || e^{ || }
+BesselI || \BesselI{ || }@{ || }
+functions:Besseli || \SphBesselIi{ || }@{ || }
+BesselK || \BesselK{ || }@{ || }
+hypergeom || \HyperpFq{ || }{ || }@@@@{ || }{ || }{ || }
+KummerU || \KummerU@{ || }{ || }{ || }
+CylinderU || \ParabolicU@{ || }{ || }
+WhittakerW || \WhitW{ || }{ || }@{ || }
+Zeta || \RiemannZeta@{ || }
+log || \log{ || }
+ln || \ln{ || }
+functions:goldenratio || \phi
+functions:Gompertz || G
+functions:rabbit || \rho
+floor || \floor{ || }
+:combinat[fibonacci] || F( || )
+RealRange || \left] || ,  || \right[
+Open || ( || )

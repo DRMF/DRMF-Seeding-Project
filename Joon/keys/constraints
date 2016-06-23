@@ -1,0 +1,10 @@
+%This is a list of constraints to translate first.
+Not(negint) || \mathbb{C}\\\mathbb{Z}^-
+Not(nonposint) || \mathbb{C}\\\mathbb{Z}_0^-
+::Not(positive) || < 0
+Not(integer) || \mathbb{C}\\\mathbb{Z}
+::positive || > 0
+posint || \mathbb{Z^+}
+nonnegint || \mathbb{Z}\\\mathbb{Z}^-
+::nonnegative ||  \geq 0
+::nonneg ||  \geq 0
