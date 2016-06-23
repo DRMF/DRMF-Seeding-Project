@@ -1,4 +1,4 @@
-%This is a list of Maple symbols and their LaTeX equivalent.
+%Greek letters
 alpha || \alpha
 beta || \beta
 gamma || \gamma
@@ -23,11 +23,13 @@ chi || \chi
 psi || \psi
 omega || \omega
 Pi || \pi
+
+%Other constants
 Catalan || \CatalansConstant
 
-%This is a list of constraints.
+%Constraints
 integer || \mathbb{Z}
 :: || \in
 
-%Other formatting.
+%Function formatting
 :- || :

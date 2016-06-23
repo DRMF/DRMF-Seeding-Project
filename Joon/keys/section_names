@@ -1,4 +1,4 @@
-% section names of folder in functions/ directory, and actual meaning
+%Not updated for newer formulas
 BS : Bessel functions
 bessel : Bessel functions
 modbessel : Modified Bessel functions

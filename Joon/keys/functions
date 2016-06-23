@@ -1,31 +1,37 @@
-%This is a list of Maple functions and their LaTeX equivalent.
-GAMMA || \EulerGamma@{ || }
+%"Simple" functions
 sqrt || \sqrt{ || }
-BesselJ || \BesselJ{ || }@{ || }
-functions:Besselj || \SphBesselJ{ || }@{ || }
-pochhammer || \pochhammer{ || }{ || }
-functions:hankelsymb || \HankelSym{ || }{ || }
 sin || \sin( || )
 cos || \cos( || )
-BesselY || \BesselY{ || }@{ || }
 abs || \abs{ || }
-functions:argument || \arg{ || }
-HankelH1 || \HankelHi{ || }@{ || }
 exp || e^{ || }
+log || \log{ || }
+ln || \ln{ || }
+floor || \floor{ || }
+
+%Special functions
+GAMMA || \EulerGamma@{ || }
 BesselI || \BesselI{ || }@{ || }
-functions:Besseli || \SphBesselIi{ || }@{ || }
+BesselJ || \BesselJ{ || }@{ || }
 BesselK || \BesselK{ || }@{ || }
-hypergeom || \HyperpFq{ || }{ || }@@@@{ || }{ || }{ || }
+BesselY || \BesselY{ || }@{ || }
+HankelH1 || \HankelHi{ || }@{ || }
 KummerU || \KummerU@{ || }{ || }{ || }
 CylinderU || \ParabolicU@{ || }{ || }
 WhittakerW || \WhitW{ || }{ || }@{ || }
 Zeta || \RiemannZeta@{ || }
-log || \log{ || }
-ln || \ln{ || }
+hypergeom || \HyperpFq{ || }{ || }@@@@{ || }{ || }{ || }
+pochhammer || \pochhammer{ || }{ || }
+
+functions:Besseli || \SphBesselIi{ || }@{ || }
+functions:Besselj || \SphBesselJ{ || }@{ || }
+functions:hankelsymb || \HankelSym{ || }{ || }
 functions:goldenratio || \phi
 functions:Gompertz || G
 functions:rabbit || \rho
-floor || \floor{ || }
+
 :combinat[fibonacci] || F( || )
+
+%Constraints
+functions:argument || \arg{ || }
 RealRange || \left] || ,  || \right[
 Open || ( || )
