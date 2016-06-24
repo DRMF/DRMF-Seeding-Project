@@ -4,8 +4,8 @@ sin || \sin( || )
 cos || \cos( || )
 abs || \abs{ || }
 exp || e^{ || }
-log || \log{ || }
-ln || \ln{ || }
+log || \log{( || )}
+ln || \ln{( || )}
 floor || \floor{ || }
 
 %Special functions
@@ -19,6 +19,17 @@ KummerU || \KummerU@{ || }{ || }{ || }
 CylinderU || \ParabolicU@{ || }{ || }
 WhittakerW || \WhitW{ || }{ || }@{ || }
 Zeta || \RiemannZeta@{ || }
+
+arccos || \Acos@@{( || )}
+arccosh || \Acosh@@{( || )}
+arcsin || \Asin@@{( || )}
+arcsinh || \Asinh@@{( || )}
+arctan || \Atan@@{( || )}
+arctanh || \Atanh@@{( || )}
+cosh || \cosh@@{( || )}
+coth || \coth@@{( || )}
+
+doublefactorial || ( || )!!
 hypergeom || \HyperpFq{ || }{ || }@@@@{ || }{ || }{ || }
 pochhammer || \pochhammer{ || }{ || }
 

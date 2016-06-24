@@ -27,7 +27,14 @@ def parse_brackets(exp):
     Translates the contents between a set of square brackets
     """
 
-    return [[translate(p) for p in piece.split(",")] for piece in exp[1:-1].split("], [")]
+    if "],[" in exp[1:-1]:
+        splitter = "],["
+    else:
+        splitter = "], ["
+
+
+    return [[translate(p).replace("]", "").replace("[", "") for p in piece.split(",")]
+            for piece in exp[1:-1].split(splitter)]
 
 def make_frac(n, d):
     """
@@ -41,6 +48,7 @@ def parse_arguments(pieces):
         return []
 
     pieces = pieces[1:-1].split(",")
+
     for i, piece in enumerate(pieces):
         if piece[0] == "[" and piece[-1] != "]":
             pieces[i] = (pieces[i] + "," + pieces.pop(i + 1))[1:-1]
@@ -115,6 +123,9 @@ def translate(exp):
     Translate a segment of Maple to LaTeX, including functions
     """
 
+    if exp == "":
+        return ""
+
     exp = replace_strings(exp.strip(), CONSTRAINTS + [[":-", ":"]] + SPACING).split()
 
     for i in xrange(len(exp)):
@@ -149,21 +160,20 @@ def translate(exp):
 
 def modify_fields(eq):
     eq.lhs = translate(eq.lhs)
-
-    if eq.factor != "":
-        eq.factor = translate(eq.fields["factor"])
-
-    if eq.front != "":
-        eq.front = translate(eq.fields["front"])
+    eq.factor = translate(eq.fields["factor"])
+    eq.front = translate(eq.fields["front"])
 
     if eq.eq_type == "series":
         eq.general = translate(eq.general[0])
 
     elif eq.eq_type == "contfrac":
-        eq.general = parse_brackets(eq.general[0])  # add handling later for even and odd
+        print eq.label
+        print eq.general[0]
+        print eq.general[0].split(",")
 
-        if isinstance(eq.general[0], list):
-            eq.general = eq.general[0]
+        eq.general = parse_brackets(eq.general[0])  # add handling later for even and odd
+        for i, l in enumerate(eq.general):
+            eq.general[i] = make_frac(l[0], l[1])
 
         if eq.begin != "":
             eq.begin = parse_brackets(eq.begin)
@@ -195,14 +205,14 @@ def make_equation(eq):
     elif eq.eq_type == "contfrac":
         start = 1  # in case the value of start isn't assigned
 
+        if eq.front != "":
+            equation += eq.front + "+"
+            start = 1
+
         if eq.begin != "":
             for piece in eq.begin:
                 equation += make_frac(piece[0], piece[1]) + "\\subplus"
                 start += 1
-
-        elif eq.front != "":
-            equation += eq.front + "+"
-            start = 1
 
         if eq.factor != "":
             if eq.factor == "-1":
@@ -210,7 +220,7 @@ def make_equation(eq):
             else:
                 equation += eq.factor + " "
 
-        equation += "\\CFK{m}{" + str(start) + "}{\\infty}@{" + eq.general[0] + "}{" + eq.general[1] + "}"
+        equation += " \\bigK_{m=" + str(start) + "}^\\infty " + '\\subplus'.join(eq.general)
 
     # adds metadata
     equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"

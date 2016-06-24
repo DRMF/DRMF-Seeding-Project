@@ -11,6 +11,7 @@ class MapleFile(object):
     def obtain_formulae(self):
         contents = open(self.filename).read()
 
+
         return [MapleEquation(piece.split("\n")) for piece in contents.split("create(")
                 if "):" in piece or ");" in piece]
 
@@ -32,7 +33,7 @@ class MapleEquation(object):
                 line[0] = line[0].strip()
 
                 if line[0] in ["category"]:
-                    line[1] = line[1][1:-1].strip()
+                    line[1] = line[1].strip()[1:-1].strip()
 
                 elif line[0] == "begin" and "proc (x) [1, x] end proc" in line[1]:
                     line[1] = str([[1, int(d)] for d in inp[i + 2].split(",")])[1:-1]
@@ -41,10 +42,10 @@ class MapleEquation(object):
                     line[1] = "No label"
 
                 elif line[0] in ["booklabelv1", "booklabelv2", "general", "constraints", "begin"]:
-                    line[1] = line[1][1:-2].strip()
+                    line[1] = line[1].strip()[1:-2].strip()
 
                 elif line[0] in ["lhs", "factor", "front", "even", "odd"]:
-                    line[1] = line[1][:-1].strip()
+                    line[1] = line[1].strip()[:-1].strip()
 
                 self.fields[line[0]] = line[1]
 
@@ -65,4 +66,4 @@ class MapleEquation(object):
             self.general = [self.fields["even"], self.fields["odd"]]
 
     def __str__(self):
-        return [s + ": " + self.fields[s] + "\n" for s in self.fields]
+        return '\n'.join([s + ": " + self.fields[s] for s in self.fields])
