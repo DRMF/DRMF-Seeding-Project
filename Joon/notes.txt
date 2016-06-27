@@ -1,6 +1,0 @@
-Issues:
-- need Gompertz macro
-- need updated Cuytbook.pdf
-- need updated Glossary.csv -> based on new .mpl files
-- need updated Delian macro
-- need Fibonacci function
