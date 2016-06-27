@@ -34,16 +34,15 @@ def parse_brackets(exp):
     else:
         splitter = "], ["
 
-
-    return [[translate(p).replace("]", "").replace("[", "") for p in piece.split(",")]
+    return [[replace_strings(p, [["[", ""], ["]", ""]]) for p in piece.split(",")]
             for piece in exp[1:-1].split(splitter)]
 
-def make_frac(n, d):
+def make_frac(parts):
     """
-    Generate a LaTeX frac from numerator and denominator
+    Generate a LaTeX frac from its parts [numerator, denominator]
     """
 
-    return "\\frac{" + n + "}{" + d + "}"
+    return translate("(" + parts[0] + ") / (" + parts[1] + ")")
 
 def parse_arguments(pieces):
     if pieces == "()":
@@ -96,8 +95,8 @@ def basic_translate(exp):
 
             elif exp[i] == "^" and order == 0:
                 power = exp.pop(i + 1)
-                if power[-1] == ")":
-                    power = ''.join(power[1:-1])
+                if power[0] == "(" and verify_validity(power[1:-1]):
+                    power = power[1:-1]
                 exp[i - 1] += "^{" + power + "}"
                 modified = True
 
@@ -107,9 +106,9 @@ def basic_translate(exp):
 
             elif exp[i] == "/" and order == 1:
                 for index in [i - 1, i + 1]:
-                    if exp[index][0] == "(" and exp[index][-1] == ")" and verify_validity(exp[index][1:-1]):
+                    if exp[index][0] == "(" and verify_validity(exp[index][1:-1]):
                         exp[index] = exp[index][1:-1]
-                exp[i - 1] = make_frac(exp[i - 1], exp.pop(i + 1))
+                exp[i - 1] = "\\frac{" + exp[i - 1] + "}{" + exp.pop(i + 1) + "}"
                 modified = True
 
             if modified:
@@ -121,15 +120,20 @@ def basic_translate(exp):
     return ''.join(exp)
 
 def generate_function(name, args):
-    if name == "hypergeom":
-        for j in xrange(2):
-            if args[j * 2] == "":
-                args.insert(j, "0")
-            else:
-                args.insert(j, str(len(args[j * 2].split(","))))
+    """
+    Generate a function with the provided name and arguments
+    """
 
+    # special parsing of arguments, based on the function
+    # (i.e. if information needs to be extrapolated) from the data
+    if name == "hypergeom":
+        for i in xrange(2):
+            if args[i * 2] == "":
+                args.insert(i, "0")
+            else:
+                args.insert(i, str(len(args[i * 2].split(","))))
     elif name == "sum":
-        pass
+        args = args.pop(1).split("..") + [args[0]]
 
     result = functions[name].split(" || ")
 
@@ -138,8 +142,6 @@ def generate_function(name, args):
 
     for n in xrange(1, len(result)):
         result.insert(2 * n - 1, args[n - 1])
-
-    print result
 
     return ''.join(result)
 
@@ -151,7 +153,7 @@ def translate(exp):
     if exp == "":
         return ""
 
-    exp = replace_strings(exp.strip(), constraints + [[":-", ":"]] + spacing).split()
+    exp = replace_strings(exp.strip(), constraints + spacing).split()
 
     for i in xrange(len(exp)):
         if exp[i] in symbols:
@@ -179,13 +181,7 @@ def modify_fields(eq):
         eq.general = translate(eq.general[0])
 
     elif eq.eq_type == "contfrac":
-        print eq.label
-        print eq.general[0]
-        print eq.general[0].split(",")
-
-        eq.general = parse_brackets(eq.general[0])  # add handling later for even and odd
-        for i, l in enumerate(eq.general):
-            eq.general[i] = make_frac(l[0], l[1])
+        eq.general = parse_brackets(eq.general[0])[0]
 
         if eq.begin != "":
             eq.begin = parse_brackets(eq.begin)
@@ -223,7 +219,7 @@ def make_equation(eq):
 
         if eq.begin != "":
             for piece in eq.begin:
-                equation += make_frac(piece[0], piece[1]) + "\\subplus"
+                equation += make_frac(piece) + "\\subplus"
                 start += 1
 
         if eq.factor != "":
@@ -232,9 +228,9 @@ def make_equation(eq):
             else:
                 equation += eq.factor + " "
 
-        print eq.general
-        if eq.general != ["\\frac{0}{1}"]:
-            equation += " \\bigK_{m=" + str(start) + "}^\\infty " + '\\subplus'.join(eq.general)
+        if eq.general != ["0", "1"]:
+            equation += "\\CFK{m}{" + str(start) + "}{\\infty}@@{" + translate(eq.general[0]) + "}{" + \
+                        translate(eq.general[1]) + "}"
         else:
             equation += "\\dots"
 

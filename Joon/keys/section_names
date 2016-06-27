@@ -13,15 +13,15 @@ whittaker : Whittaker functions
 CN : Mathematical constants
 apery : Ap\'{e}ry's constant, $\RiemannZeta@{3}$
 archimedes : Archimedes' constant, symbol $\pi$
-catalan : Catalan's constant, symbol $C$
+catalan : Catalan's constant, symbol $\CatalansConstant$
 eulersconstant : Euler's constant, symbol $\gamma$
 eulersnumber : Euler's number, base of the natural logarithm
-goldenratio : Golden ratio, symbol $\phi$
-gompertz : Gompertz' constant, symbol $G$
+goldenratio : Golden ratio, symbol $\GoldenRatio$
+gompertz : Gompertz' constant, symbol $\GompertzConstant$
 naturallogarithm : The natural logarithm, $\ln(2)$
 powerandroot : Regular continued fractions
 pythagoras : Pythagoras' constant, the square root of two
-rabbit : The rabbit constant, symbol $\rho$
+rabbit : The rabbit constant, symbol $\rabbitConstant$
 zeta2 : zeta2, $\RiemannZeta@{2}$
 zeta4 : zeta4, $\RiemannZeta@{4}$
 
@@ -61,8 +61,10 @@ tetragamma : Tetragamma function
 trigamma : Trigamma function
 
 HY : Hypergeometric functions
+hypergeometric : Hypergeometric functions
 
 QH : q-Hypergeometric function
+qhyper : q-Hypergeometric function
 
 SM : Probability functions
 beta_f_t : Beta, F- and Student's $t$-distributions

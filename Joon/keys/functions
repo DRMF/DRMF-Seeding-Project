@@ -2,14 +2,17 @@
 sqrt || \sqrt{ || }
 sin || \sin( || )
 cos || \cos( || )
+tan || \tan( || )
 abs || \abs{ || }
 exp || e^{ || }
 log || \log{( || )}
 ln || \ln{( || )}
 floor || \floor{ || }
+sum || \sum_{ || }^{ || } ( || )
 
 %Special functions
 GAMMA || \EulerGamma@{ || }
+bernoulli || \BernoulliNumber{ || }
 BesselI || \BesselI{ || }@{ || }
 BesselJ || \BesselJ{ || }@{ || }
 BesselK || \BesselK{ || }@{ || }
@@ -26,8 +29,10 @@ arcsin || \Asin@@{( || )}
 arcsinh || \Asinh@@{( || )}
 arctan || \Atan@@{( || )}
 arctanh || \Atanh@@{( || )}
+sinh || \sinh@@{( || )}
 cosh || \cosh@@{( || )}
 coth || \coth@@{( || )}
+tanh || \tanh@@{( || )}
 
 doublefactorial || ( || )!!
 hypergeom || \HyperpFq{ || }{ || }@@@@{ || }{ || }{ || }
@@ -36,11 +41,12 @@ pochhammer || \pochhammer{ || }{ || }
 functions:Besseli || \SphBesselIi{ || }@{ || }
 functions:Besselj || \SphBesselJ{ || }@{ || }
 functions:hankelsymb || \HankelSym{ || }{ || }
-functions:goldenratio || \phi
-functions:Gompertz || G
-functions:rabbit || \rho
+functions:WhittakerPsi || \WhitPsi{ || }{ || }@{ || }
+functions:goldenratio || \GoldenRatio
+functions:Gompertz || \GompertzConstant
+functions:rabbit || \rabbitConstant
 
-:combinat[fibonacci] || F( || )
+:combinatfibonacci || \FibonacciNumber{ || }
 
 %Constraints
 functions:argument || \arg{ || }

@@ -8,3 +8,4 @@ nonnegint || \mathbb{Z}\\\mathbb{Z}^-
 ::positive || > 0
 ::nonnegative ||  \geq 0
 ::nonneg ||  \geq 0
+:- || :
