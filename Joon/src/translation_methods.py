@@ -2,25 +2,34 @@
 
 import sys
 
-# Constants
-functions = dict(tuple(line.split(" || ", 1)) for line in open("keys/functions").read().split("\n")
+def key_info(filename):
+    return dict(tuple(line.split(" || ", 1)) for line in open(filename).read().split("\n")
                  if line != "" and "%" not in line)
-symbols = dict(tuple(line.split(" || ")) for line in open("keys/symbols").read().split("\n")
-               if line != "" and "%" not in line)
-spacing = list((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "::"])
-special = [["(", "\\left("], [")", "\\right)"], ["+-", "-"], ["\\subplus-", "-"], ["^{1}", ""]]
-constraints = list(tuple(line.split(" || ")) for line in open("keys/constraints").read().split("\n")
-                   if line != "" and "%" not in line)
-numbers = "0123456789"
+
+functions = key_info("keys/functions")
+symbols = key_info("keys/symbols")
+constraints = key_info("keys/constraints")
+
+spacing = dict((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "::"])
+special = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": ""}
 
 def replace_strings(string, li):
     """
     Replaces multiple strings with multiple other strings, stored in lists of length two in li.
     The first element is the string to find, and the second element is the replacement string.
+    A dictionary can also be given.
     """
 
-    for key in li:
-        string = string.replace(key[0], key[1])
+    if type(li) == dict:
+        for key in list(li):
+            string = string.replace(key, li[key])
+
+    elif type(li) == list:
+        for key in li:
+            string = string.replace(key[0], key[1])
+
+    else:
+        raise TypeError("Type of given key set is incorrect.")
 
     return string
 
@@ -153,7 +162,8 @@ def translate(exp):
     if exp == "":
         return ""
 
-    exp = replace_strings(exp.strip(), constraints + spacing).split()
+    exp = replace_strings(exp.strip(), constraints)
+    exp = replace_strings(exp, spacing).split()
 
     for i in xrange(len(exp)):
         if exp[i] in symbols:
