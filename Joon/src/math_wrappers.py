@@ -36,7 +36,10 @@ class MapleEquation(object):
                     line[1] = line[1].strip()[1:-1].strip()
 
                 elif line[0] == "begin" and "proc (x) [1, x] end proc" in line[1]:
-                    line[1] = str([[1, int(d)] for d in inp[i + 2].split(",")])[1:-1]
+                    temp = [[1, int(d)] for d in inp[i + 2].split(",")]
+                    if len(temp) > 10:
+                        temp = temp[:10]
+                    line[1] = str(temp)[1:-1]
 
                 elif line[0] == "booklabelv1" and line[1] == '"",':
                     line[1] = "No label"

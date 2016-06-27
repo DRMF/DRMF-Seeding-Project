@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
+import sys
+
 # Constants
-FUNCTIONS = dict(tuple(line.split(" || ", 1)) for line in open("keys/functions").read().split("\n")
+functions = dict(tuple(line.split(" || ", 1)) for line in open("keys/functions").read().split("\n")
                  if line != "" and "%" not in line)
-SYMBOLS = dict(tuple(line.split(" || ")) for line in open("keys/symbols").read().split("\n")
+symbols = dict(tuple(line.split(" || ")) for line in open("keys/symbols").read().split("\n")
                if line != "" and "%" not in line)
-SPACING = list((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "::"])
-SPECIAL = [["(", "\\left("], [")", "\\right)"], ["+-", "-"], ["\\subplus-", "-"], ["^{1}", ""]]
-CONSTRAINTS = list(tuple(line.split(" || ")) for line in open("keys/constraints").read().split("\n")
+spacing = list((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "::"])
+special = [["(", "\\left("], [")", "\\right)"], ["+-", "-"], ["\\subplus-", "-"], ["^{1}", ""]]
+constraints = list(tuple(line.split(" || ")) for line in open("keys/constraints").read().split("\n")
                    if line != "" and "%" not in line)
-NUMBERS = "0123456789"
+numbers = "0123456789"
 
 def replace_strings(string, li):
     """
@@ -118,6 +120,29 @@ def basic_translate(exp):
 
     return ''.join(exp)
 
+def generate_function(name, args):
+    if name == "hypergeom":
+        for j in xrange(2):
+            if args[j * 2] == "":
+                args.insert(j, "0")
+            else:
+                args.insert(j, str(len(args[j * 2].split(","))))
+
+    elif name == "sum":
+        pass
+
+    result = functions[name].split(" || ")
+
+    if len(result) != len(args) + 1:
+        raise IOError("Error: insufficient arguments provided for function " + name)
+
+    for n in xrange(1, len(result)):
+        result.insert(2 * n - 1, args[n - 1])
+
+    print result
+
+    return ''.join(result)
+
 def translate(exp):
     """
     Translate a segment of Maple to LaTeX, including functions
@@ -126,33 +151,20 @@ def translate(exp):
     if exp == "":
         return ""
 
-    exp = replace_strings(exp.strip(), CONSTRAINTS + [[":-", ":"]] + SPACING).split()
+    exp = replace_strings(exp.strip(), constraints + [[":-", ":"]] + spacing).split()
 
     for i in xrange(len(exp)):
-        if exp[i] in SYMBOLS:
-            exp[i] = SYMBOLS[exp[i]]
+        if exp[i] in symbols:
+            exp[i] = symbols[exp[i]]
 
     for i in xrange(len(exp)-1, -1, -1):
         if exp[i] == "(":
             r = i + exp[i:].index(")")
             piece = basic_translate(exp[i:r + 1])
 
-            if exp[i - 1] in FUNCTIONS:
+            if exp[i - 1] in functions:
                 i -= 1
-                func = FUNCTIONS[exp[i]].split(" || ")
-
-                piece = parse_arguments(piece)
-
-                # parsing for hypergeometric function
-                if exp[i] == "hypergeom":
-                    for j in xrange(2):
-                        if piece[j * 2] == "":
-                            piece.insert(j, "0")
-                        else:
-                            piece.insert(j, str(len(piece[j * 2].split(","))))
-
-                result = [func.pop(0)] + [piece[c] + func[c] for c in xrange(len(piece))]
-                piece = ''.join(result)
+                piece = generate_function(exp[i], parse_arguments(piece))
 
             exp = exp[0:i] + [piece] + exp[r + 1:]
 
@@ -220,11 +232,15 @@ def make_equation(eq):
             else:
                 equation += eq.factor + " "
 
-        equation += " \\bigK_{m=" + str(start) + "}^\\infty " + '\\subplus'.join(eq.general)
+        print eq.general
+        if eq.general != ["\\frac{0}{1}"]:
+            equation += " \\bigK_{m=" + str(start) + "}^\\infty " + '\\subplus'.join(eq.general)
+        else:
+            equation += "\\dots"
 
     # adds metadata
     equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"
     equation += "\n  %  \\category{" + eq.category + "}"
     equation += "\n\\end{equation*}"
 
-    return replace_strings(equation, SPECIAL)
+    return replace_strings(equation, special)
