@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import sys
-
 def key_info(filename):
     return dict(tuple(line.split(" || ", 1)) for line in open(filename).read().split("\n")
                  if line != "" and "%" not in line)
@@ -139,6 +137,7 @@ def generate_function(name, args):
 
     # special parsing of arguments, based on the function
     # (i.e. if information needs to be extrapolated) from the data
+
     if name == "hypergeom":
         for i in xrange(2):
             if args[i * 2] == "":
@@ -148,9 +147,11 @@ def generate_function(name, args):
     elif name == "sum":
         args = args.pop(1).split("..") + [args[0]]
 
-    result = functions[name].split(" || ")
+    pieces = functions[name].split(" : ")
+    arg_count = int(pieces[0])
+    result = pieces[1].split(" || ")
 
-    if len(result) != len(args) + 1:
+    if len(result) != arg_count + 1:
         raise IOError("Error: insufficient arguments provided for function " + name)
 
     for n in xrange(1, len(result)):
