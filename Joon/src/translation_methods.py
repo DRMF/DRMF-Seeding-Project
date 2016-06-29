@@ -10,7 +10,7 @@ functions = key_info("keys/functions")
 symbols = key_info("keys/symbols")
 constraints = key_info("keys/constraints")
 
-spacing = dict((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "::"])
+spacing = dict((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "!", "::"])
 special = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": ""}
 
 def replace_strings(string, li):
@@ -101,6 +101,10 @@ def basic_translate(exp):
 
             if exp[i] == "I":
                 exp[i] = "i"
+
+            elif exp[i] == "!" and order == 0:
+                exp[i - 1] += "!"
+                modified = True
 
             elif exp[i] == "^" and order == 0:
                 power = exp.pop(i + 1)

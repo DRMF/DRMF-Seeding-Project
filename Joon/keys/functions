@@ -12,11 +12,16 @@ sum || \sum_{ || }^{ || } ( || )
 
 %Special functions
 GAMMA || \EulerGamma@{ || }
-bernoulli || \BernoulliNumber{ || }
+bernoulli || \BernoulliB{ || }
 BesselI || \BesselI{ || }@{ || }
 BesselJ || \BesselJ{ || }@{ || }
 BesselK || \BesselK{ || }@{ || }
 BesselY || \BesselY{ || }@{ || }
+dawson || \DawsonsInt@{ || }
+erfc || \erfc@@{( || )}
+erf || \erf@@{( || )}
+FresnelC || \FresnelCos@{ || }
+FresnelS || \FresnelSin@{ || }
 HankelH1 || \HankelHi{ || }@{ || }
 KummerU || \KummerU@{ || }{ || }{ || }
 CylinderU || \ParabolicU@{ || }{ || }
@@ -40,6 +45,8 @@ pochhammer || \pochhammer{ || }{ || }
 
 functions:Besseli || \SphBesselIi{ || }@{ || }
 functions:Besselj || \SphBesselJ{ || }@{ || }
+functions:cerf || \erfw@@{( || )}
+functions:erfcI || I^{ || } \erfc@@{( || )}
 functions:hankelsymb || \HankelSym{ || }{ || }
 functions:WhittakerPsi || \WhitPsi{ || }{ || }@{ || }
 functions:goldenratio || \GoldenRatio
