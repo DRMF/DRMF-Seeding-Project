@@ -121,7 +121,7 @@ def basic_translate(exp):
                 power = exp.pop(i + 1)
                 if power[0] == "(" and check_parentheses(power[1:-1]):
                     power = power[1:-1]
-                exp[i - 1] += "^{" + power + "}"
+                exp[i - 1] += "^{%s}" % power
                 modified = True
 
             elif exp[i] == "*" and order == 1:
@@ -132,7 +132,7 @@ def basic_translate(exp):
                 for index in [i - 1, i + 1]:
                     if exp[index][0] == "(" and check_parentheses(exp[index][1:-1]):
                         exp[index] = exp[index][1:-1]
-                exp[i - 1] = "\\frac{" + exp[i - 1] + "}{" + exp.pop(i + 1) + "}"
+                exp[i - 1] = "\\frac{%s}{%s}" % (exp[i - 1], exp.pop(i + 1))
                 modified = True
 
             if modified:
@@ -223,7 +223,7 @@ def make_equation(eq):
 
     modify_fields(eq)
 
-    equation = "\\begin{equation*}\\tag{" + eq.label + "}\n  " + eq.lhs + "\n  = "
+    equation = "\\begin{equation*}\\tag{%s}\n%s\n  = " % (eq.label, eq.lhs)
 
     # translates the Maple information (with spacing)
     if eq.eq_type == "series":
@@ -259,8 +259,8 @@ def make_equation(eq):
                 equation += eq.factor + " "
 
         if eq.general != ["0", "1"]:
-            equation += "\\CFK{m}{" + str(start) + "}{\\infty}@@{" + translate(eq.general[0]) + "}{" + \
-                        translate(eq.general[1]) + "}"
+            equation += "\\CFK{m}{%s}{\\infty}@@{%s}{%s}" % (str(start), translate(eq.general[0]),
+                                                             translate(eq.general[1]))
         else:
             equation += "\\dots"
 
