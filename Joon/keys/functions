@@ -18,6 +18,8 @@ BesselJ || 2 : \BesselJ{ || }@{ || }
 BesselK || 2 : \BesselK{ || }@{ || }
 BesselY || 2 : \BesselY{ || }@{ || }
 dawson || 1 : \DawsonsInt@{ || }
+Ei || 2 : \ExpIntn{ || }@{ || }
+Ei || 1 : \ExpInt@{ || }
 erfc || 1 : \erfc@@{( || )}
 erf || 1 : \erf@@{( || )}
 FresnelC || 1 : \FresnelCos@{ || }
@@ -46,6 +48,7 @@ pochhammer || 2 : \pochhammer{ || }{ || }
 functions:Besseli || 2 : \SphBesselIi{ || }@{ || }
 functions:Besselj || 2 : \SphBesselJ{ || }@{ || }
 functions:cerf || 1 : \erfw@@{( || )}
+functions:Ein || 1 : \ExpIntEin@{ || }
 functions:erfcI || 2 : I^{ || } \erfc@@{( || )}
 functions:hankelsymb || 2 : \HankelSym{ || }{ || }
 functions:WhittakerPsi || 3 : \WhitPsi{ || }{ || }@{ || }

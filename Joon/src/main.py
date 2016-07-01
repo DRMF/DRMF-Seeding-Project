@@ -10,7 +10,7 @@ files = ["bessel", "modbessel", "confluent", "confluentlimit", "kummer", "parabo
          "goldenratio", "gompertz", "naturallogarithm", "powerandroot", "pythagoras",
          "rabbit", "zeta2", "zeta4", "arccos", "arccosh", "arcsin", "arcsinh", "arctan", "arctanh",
          "cos", "cosh", "coth", "exp", "ln", "pow", "sin", "sinh", "tan", "tanh",
-         "comperror", "error", "fresnel", "repint"]
+         "comperror", "error", "fresnel", "repint", "expintegrals", "related"]
 
 root_directory = "functions"
 

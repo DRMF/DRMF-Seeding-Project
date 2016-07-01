@@ -27,7 +27,7 @@ class MapleEquation(object):
         self.fields = {"category": "", "constraints": "", "begin": "", "factor": "", "front": "",
                        "type": inp.pop(0).split("'")[1]}
         for i, line in enumerate(inp):
-            line = line.split(" = ")
+            line = line.split(" = ", 1)
 
             if len(line) > 1:
                 line[0] = line[0].strip()

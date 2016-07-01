@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 def key_info(filename):
-    return dict(tuple(line.split(" || ", 1)) for line in open(filename).read().split("\n")
-                 if line != "" and "%" not in line)
+    return [line.split(" || ", 1) for line in open(filename).read().split("\n")
+                 if line != "" and "%" not in line]
 
 functions = key_info("keys/functions")
 symbols = key_info("keys/symbols")
@@ -10,6 +10,14 @@ constraints = key_info("keys/constraints")
 
 spacing = dict((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "!", "::"])
 special = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": ""}
+brackets = {"[": "", "]": ""}
+
+def find(li, element):
+    for group in li:
+        if group[0] == element:
+            return group[1]
+
+    return element
 
 def replace_strings(string, li):
     """
@@ -31,18 +39,58 @@ def replace_strings(string, li):
 
     return string
 
-def parse_brackets(exp):
+def parse_brackets(string):
     """
     Translates the contents between a set of square brackets
     """
 
-    if "],[" in exp[1:-1]:
-        splitter = "],["
-    else:
-        splitter = "], ["
+    string = string[1:-1].split(",")
+    for i, e in enumerate(string):
+        string[i] = replace_strings(e, brackets).strip()
 
-    return [[replace_strings(p, [["[", ""], ["]", ""]]) for p in piece.split(",")]
-            for piece in exp[1:-1].split(splitter)]
+    i = 0
+    while i + 1 < len(string):
+        string[i] = [string[i], string.pop(i+1)]
+        i += 1
+
+    return string
+
+def get_arguments(string):
+    """
+    Obtains the arguments of a function
+    """
+
+    if string == "()":
+        return []
+
+    string = string[1:-1].split(",")
+
+    for i, piece in enumerate(string):
+        if piece[0] == "[" and piece[-1] != "]":
+            string[i] = (string[i] + "," + string.pop(i + 1))[1:-1]
+
+        string[i] = replace_strings(piece, brackets)
+
+    return string
+
+def check_parentheses(exp):
+    """
+    Checks whether the grouping of parentheses are correct or not
+    """
+    s = list() # stack
+    for ch in exp:
+        if ch == "(":
+            s.append(ch)
+        elif ch == ")":
+            if len(s) == 0:
+                return False
+            else:
+                s.pop()
+
+    if len(s) != 0:
+        return False
+
+    return True
 
 def make_frac(parts):
     """
@@ -50,41 +98,6 @@ def make_frac(parts):
     """
 
     return translate("(" + parts[0] + ") / (" + parts[1] + ")")
-
-def parse_arguments(pieces):
-    if pieces == "()":
-        return []
-
-    pieces = pieces[1:-1].split(",")
-
-    for i, piece in enumerate(pieces):
-        if piece[0] == "[" and piece[-1] != "]":
-            pieces[i] = (pieces[i] + "," + pieces.pop(i + 1))[1:-1]
-        elif piece[0] == "[" and piece[-1] == "]":
-            pieces[i] = pieces[i][1:-1]
-
-    return pieces
-
-def verify_validity(exp):
-    """
-    Verifies the validity of an expression in terms of parentheses grouping
-    """
-
-    left = list()
-
-    try:
-        for ch in exp:
-            if ch == "(":
-                left.append(ch)
-            elif ch == ")":
-                left.pop()
-    except IndexError:
-        return False
-
-    if len(left) != 0:
-        return False
-
-    return True
 
 def basic_translate(exp):
     """
@@ -106,7 +119,7 @@ def basic_translate(exp):
 
             elif exp[i] == "^" and order == 0:
                 power = exp.pop(i + 1)
-                if power[0] == "(" and verify_validity(power[1:-1]):
+                if power[0] == "(" and check_parentheses(power[1:-1]):
                     power = power[1:-1]
                 exp[i - 1] += "^{" + power + "}"
                 modified = True
@@ -117,7 +130,7 @@ def basic_translate(exp):
 
             elif exp[i] == "/" and order == 1:
                 for index in [i - 1, i + 1]:
-                    if exp[index][0] == "(" and verify_validity(exp[index][1:-1]):
+                    if exp[index][0] == "(" and check_parentheses(exp[index][1:-1]):
                         exp[index] = exp[index][1:-1]
                 exp[i - 1] = "\\frac{" + exp[i - 1] + "}{" + exp.pop(i + 1) + "}"
                 modified = True
@@ -144,15 +157,15 @@ def generate_function(name, args):
                 args.insert(i, "0")
             else:
                 args.insert(i, str(len(args[i * 2].split(","))))
+
     elif name == "sum":
         args = args.pop(1).split("..") + [args[0]]
 
-    pieces = functions[name].split(" : ")
-    arg_count = int(pieces[0])
-    result = pieces[1].split(" || ")
-
-    if len(result) != arg_count + 1:
-        raise IOError("Error: insufficient arguments provided for function " + name)
+    for group in functions:
+        if group[0] == name and int(group[1].split(" : ")[0]) == len(args):
+            pieces = group[1].split(" : ")
+            result = pieces[1].split(" || ")
+            break
 
     for n in xrange(1, len(result)):
         result.insert(2 * n - 1, args[n - 1])
@@ -171,17 +184,17 @@ def translate(exp):
     exp = replace_strings(exp, spacing).split()
 
     for i in xrange(len(exp)):
-        if exp[i] in symbols:
-            exp[i] = symbols[exp[i]]
+        exp[i] = find(symbols, exp[i])
 
     for i in xrange(len(exp)-1, -1, -1):
         if exp[i] == "(":
             r = i + exp[i:].index(")")
             piece = basic_translate(exp[i:r + 1])
 
-            if exp[i - 1] in functions:
+            if find(functions, exp[i - 1]) != exp[i - 1]:
                 i -= 1
-                piece = generate_function(exp[i], parse_arguments(piece))
+
+                piece = generate_function(exp[i], get_arguments(piece))
 
             exp = exp[0:i] + [piece] + exp[r + 1:]
 
@@ -234,7 +247,7 @@ def make_equation(eq):
 
         if eq.begin != "":
             for piece in eq.begin:
-                equation += make_frac(piece) + "\\subplus"
+                equation += make_frac(piece) + "\\subplus "
                 start += 1
 
         if eq.factor != "":
