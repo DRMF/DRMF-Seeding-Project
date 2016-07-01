@@ -24,9 +24,10 @@ psi || \psi
 omega || \omega
 Pi || \pi
 
-%Other constants
+%Other constants/symbols
 I || i
 Catalan || \CatalansConstant
+infinity || \infty
 
 %Constraints
 integer || \mathbb{Z}

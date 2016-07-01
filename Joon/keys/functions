@@ -1,64 +1,64 @@
 %"Simple" functions
-sqrt || 1 : \sqrt{ || }
-sin || 1 : \sin( || )
-cos || 1 : \cos( || )
-tan || 1 : \tan( || )
-abs || 1 : \abs{ || }
-exp || 1 : e^{ || }
-log || 1 : \log{( || )}
-ln || 1 : \ln{( || )}
-floor || 1 : \floor{ || }
-sum || 3 : \sum_{ || }^{ || } ( || )
+sqrt || \sqrt{ || }
+sin || \sin( || )
+cos || \cos( || )
+tan || \tan( || )
+abs || \abs{ || }
+exp || e^{ || }
+log || \log{( || )}
+ln || \ln{( || )}
+floor || \floor{ || }
+sum || \sum_{ || }^{ || } ( || )
 
 %Special functions
-GAMMA || 1 : \EulerGamma@{ || }
-bernoulli || 1 : \BernoulliB{ || }
-BesselI || 2 : \BesselI{ || }@{ || }
-BesselJ || 2 : \BesselJ{ || }@{ || }
-BesselK || 2 : \BesselK{ || }@{ || }
-BesselY || 2 : \BesselY{ || }@{ || }
-dawson || 1 : \DawsonsInt@{ || }
-Ei || 2 : \ExpIntn{ || }@{ || }
-Ei || 1 : \ExpInt@{ || }
-erfc || 1 : \erfc@@{( || )}
-erf || 1 : \erf@@{( || )}
-FresnelC || 1 : \FresnelCos@{ || }
-FresnelS || 1 : \FresnelSin@{ || }
-HankelH1 || 2 : \HankelHi{ || }@{ || }
-KummerU || 3 : \KummerU@{ || }{ || }{ || }
-CylinderU || 2 : \ParabolicU@{ || }{ || }
-WhittakerW || 3 : \WhitW{ || }{ || }@{ || }
-Zeta || 1 : \RiemannZeta@{ || }
+GAMMA || \EulerGamma@{ || }
+bernoulli || \BernoulliB{ || }
+BesselI || \BesselI{ || }@{ || }
+BesselJ || \BesselJ{ || }@{ || }
+BesselK || \BesselK{ || }@{ || }
+BesselY || \BesselY{ || }@{ || }
+dawson || \DawsonsInt@{ || }
+Ei || \ExpIntn{ || }@{ || }
+Ei || \ExpInt@{ || }
+erfc || \erfc@@{( || )}
+erf || \erf@@{( || )}
+FresnelC || \FresnelCos@{ || }
+FresnelS || \FresnelSin@{ || }
+HankelH1 || \HankelHi{ || }@{ || }
+KummerU || \KummerU@{ || }{ || }{ || }
+CylinderU || \ParabolicU@{ || }{ || }
+WhittakerW || \WhitW{ || }{ || }@{ || }
+Zeta || \RiemannZeta@{ || }
 
-arccos || 1 : \Acos@@{( || )}
-arccosh || 1 : \Acosh@@{( || )}
-arcsin || 1 : \Asin@@{( || )}
-arcsinh || 1 : \Asinh@@{( || )}
-arctan || 1 : \Atan@@{( || )}
-arctanh || 1 : \Atanh@@{( || )}
-sinh || 1 : \sinh@@{( || )}
-cosh || 1 : \cosh@@{( || )}
-coth || 1 : \coth@@{( || )}
-tanh || 1 : \tanh@@{( || )}
+arccos || \Acos@@{( || )}
+arccosh || \Acosh@@{( || )}
+arcsin || \Asin@@{( || )}
+arcsinh || \Asinh@@{( || )}
+arctan || \Atan@@{( || )}
+arctanh || \Atanh@@{( || )}
+sinh || \sinh@@{( || )}
+cosh || \cosh@@{( || )}
+coth || \coth@@{( || )}
+tanh || \tanh@@{( || )}
 
-doublefactorial || 1 : ( || )!!
-hypergeom || 5 : \HyperpFq{ || }{ || }@@@@{ || }{ || }{ || }
-pochhammer || 2 : \pochhammer{ || }{ || }
+doublefactorial || ( || )!!
+hypergeom || \HyperpFq{ || }{ || }@@@@{ || }{ || }{ || }
+pochhammer || \pochhammer{ || }{ || }
 
-functions:Besseli || 2 : \SphBesselIi{ || }@{ || }
-functions:Besselj || 2 : \SphBesselJ{ || }@{ || }
-functions:cerf || 1 : \erfw@@{( || )}
-functions:Ein || 1 : \ExpIntEin@{ || }
-functions:erfcI || 2 : I^{ || } \erfc@@{( || )}
-functions:hankelsymb || 2 : \HankelSym{ || }{ || }
-functions:WhittakerPsi || 3 : \WhitPsi{ || }{ || }@{ || }
-functions:goldenratio || 0 : \GoldenRatio
-functions:Gompertz || 0 : \GompertzConstant
-functions:rabbit || 0 : \rabbitConstant
+functions:Besseli || \SphBesselIi{ || }@{ || }
+functions:Besselj || \SphBesselJ{ || }@{ || }
+functions:cerf || \erfw@@{( || )}
+functions:Ein || \ExpIntEin@{ || }
+functions:erfcI || I^{ || } \erfc@@{( || )}
+functions:hankelsymb || \HankelSym{ || }{ || }
+functions:WhittakerPsi || \WhitPsi{ || }{ || }@{ || }
+functions:goldenratio || \GoldenRatio
+functions:Gompertz || \GompertzConstant
+functions:rabbit || \rabbitConstant
 
-:combinatfibonacci || 1 : \FibonacciNumber{ || }
+:combinatfibonacci || \FibonacciNumber{ || }
 
 %Constraints
-functions:argument || 1 : \arg{ || }
-RealRange || 2 : \left] || ,  || \right[
-Open || 1 : ( || )
+functions:argument || \arg{ || }
+RealRange || \left] || ,  || \right[
+Open || ( || )

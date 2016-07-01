@@ -160,11 +160,13 @@ def generate_function(name, args):
 
     elif name == "sum":
         args = args.pop(1).split("..") + [args[0]]
+        if args[1] == "infinity":
+            args[1] = "\\infty"
 
+    result = list()
     for group in functions:
-        if group[0] == name and int(group[1].split(" : ")[0]) == len(args):
-            pieces = group[1].split(" : ")
-            result = pieces[1].split(" || ")
+        if group[0] == name and len(args) + 1 == len(group[1].split(" || ")):
+            result = group[1].split(" || ")
             break
 
     for n in xrange(1, len(result)):
