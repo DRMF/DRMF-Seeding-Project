@@ -5,13 +5,16 @@ from math_wrappers import MapleFile
 translate = dict(tuple(line.split(" : ")) for line in open("keys/section_names").read().split("\n")
                  if line != "" and "%" not in line)
 
-files = ["bessel", "modbessel", "confluent", "confluentlimit", "kummer", "parabolic",
-         "whittaker", "apery", "archimedes", "catalan", "delian", "eulersconstant", "eulersnumber",
-         "goldenratio", "gompertz", "naturallogarithm", "powerandroot", "pythagoras",
-         "rabbit", "theodorus", "zeta2", "zeta4", "arccos", "arccosh", "arcsin", "arcsinh", "arctan", "arctanh",
-         "cos", "cosh", "coth", "exp", "ln", "pow", "sin", "sinh", "tan", "tanh",
-         "comperror", "error", "fresnel", "repint", "expintegrals", "related", "binet", "incompletegamma",
-         "polygamma", "tetragamma", "trigamma"]
+files = ["bessel", "modbessel",
+         "confluent", "confluentlimit", "kummer", "parabolic", "whittaker",
+         "apery", "archimedes", "catalan", "delian", "eulersconstant", "eulersnumber", "goldenratio", "gompertz",
+         "naturallogarithm", "powerandroot", "pythagoras", "rabbit", "theodorus", "zeta2", "zeta4",
+         "arccos", "arccosh", "arcsin", "arcsinh", "arctan", "arctanh", "cos", "cosh", "coth",
+         "exp", "ln", "pow", "sin", "sinh", "tan", "tanh",
+         "comperror", "error", "fresnel", "repint",
+         "expintegrals", "related",
+         "binet", "incompletegamma", "polygamma", "tetragamma", "trigamma"
+         ]
 
 root_directory = "functions"
 

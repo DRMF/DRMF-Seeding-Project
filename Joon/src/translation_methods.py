@@ -125,7 +125,10 @@ def basic_translate(exp):
                 modified = True
 
             elif exp[i] == "*" and order == 1:
-                exp[i - 1] += " " + exp.pop(i + 1)
+                if "\\" in exp[i - 1] and exp[i + 1][0] != "\\":
+                    exp[i - 1] += " "
+
+                exp[i - 1] += exp.pop(i + 1)
                 modified = True
 
             elif exp[i] == "/" and order == 1:
@@ -249,7 +252,7 @@ def make_equation(eq):
 
         if eq.begin != "":
             for piece in eq.begin:
-                equation += make_frac(piece) + "\\subplus "
+                equation += make_frac(piece) + " \\subplus "
                 start += 1
 
         if eq.factor != "":
