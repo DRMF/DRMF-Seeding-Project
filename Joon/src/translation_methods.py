@@ -223,7 +223,7 @@ def make_equation(eq):
 
     modify_fields(eq)
 
-    equation = "\\begin{equation*}\\tag{%s}\n%s\n  = " % (eq.label, eq.lhs)
+    equation = "\\begin{equation*}\\tag{%s}\n  %s\n  = " % (eq.label, eq.lhs)
 
     # translates the Maple information (with spacing)
     if eq.eq_type == "series":
@@ -265,10 +265,8 @@ def make_equation(eq):
             equation += "\\dots"
 
     # adds metadata
-    # equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"
-    #equation += "\n  %  \\category{" + eq.category + "}"
+    equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"
+    equation += "\n  %  \\category{" + eq.category + "}"
     equation += "\n\\end{equation*}"
-    equation += "\n\\centerline{" + eq.category + "}"
-    equation += "\n$$" + translate(eq.constraints) + "$$"
 
     return replace_strings(equation, special)

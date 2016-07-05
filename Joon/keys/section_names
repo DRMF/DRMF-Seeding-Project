@@ -14,6 +14,7 @@ CN : Mathematical constants
 apery : Ap\'{e}ry's constant, $\RiemannZeta@{3}$
 archimedes : Archimedes' constant, symbol $\pi$
 catalan : Catalan's constant, symbol $\CatalansConstant$
+delian : Delian
 eulersconstant : Euler's constant, symbol $\gamma$
 eulersnumber : Euler's number, base of the natural logarithm
 goldenratio : Golden ratio, symbol $\GoldenRatio$
@@ -22,6 +23,7 @@ naturallogarithm : The natural logarithm, $\ln(2)$
 powerandroot : Regular continued fractions
 pythagoras : Pythagoras' constant, the square root of two
 rabbit : The rabbit constant, symbol $\rabbitConstant$
+theodorus : Theodorus
 zeta2 : zeta2, $\RiemannZeta@{2}$
 zeta4 : zeta4, $\RiemannZeta@{4}$
 
