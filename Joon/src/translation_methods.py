@@ -9,7 +9,7 @@ symbols = key_info("keys/symbols")
 constraints = key_info("keys/constraints")
 
 spacing = dict((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "!", "::"])
-special = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": ""}
+special = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin"}
 brackets = {"[": "", "]": ""}
 
 def find(li, element):
@@ -265,8 +265,10 @@ def make_equation(eq):
             equation += "\\dots"
 
     # adds metadata
-    equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"
-    equation += "\n  %  \\category{" + eq.category + "}"
+    # equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"
+    #equation += "\n  %  \\category{" + eq.category + "}"
     equation += "\n\\end{equation*}"
+    equation += "\n\\centerline{" + eq.category + "}"
+    equation += "\n$$" + translate(eq.constraints) + "$$"
 
     return replace_strings(equation, special)

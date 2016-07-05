@@ -27,6 +27,8 @@ FresnelS || \FresnelSin@{ || }
 HankelH1 || \HankelHi{ || }@{ || }
 KummerU || \KummerU@{ || }{ || }{ || }
 CylinderU || \ParabolicU@{ || }{ || }
+Psi || \polygamma{ || }@{ || }
+Psi || \digamma@{ || }
 WhittakerW || \WhitW{ || }{ || }@{ || }
 Zeta || \RiemannZeta@{ || }
 
@@ -40,6 +42,8 @@ sinh || \sinh@@{( || )}
 cosh || \cosh@@{( || )}
 coth || \coth@@{( || )}
 tanh || \tanh@@{( || )}
+Re || \Re( || )
+Im || \Im( || )
 
 doublefactorial || ( || )!!
 hypergeom || \HyperpFq{ || }{ || }@@@@{ || }{ || }{ || }
@@ -51,6 +55,8 @@ functions:cerf || \erfw@@{( || )}
 functions:Ein || \ExpIntEin@{ || }
 functions:erfcI || I^{ || } \erfc@@{( || )}
 functions:hankelsymb || \HankelSym{ || }{ || }
+functions:lincgamma || \incgamma@{ || }{ || }
+functions:uincgamma || \IncGamma@{ || }{ || }
 functions:WhittakerPsi || \WhitPsi{ || }{ || }@{ || }
 functions:goldenratio || \GoldenRatio
 functions:Gompertz || \GompertzConstant
@@ -60,5 +66,5 @@ functions:rabbit || \rabbitConstant
 
 %Constraints
 functions:argument || \arg{ || }
-RealRange || \left] || ,  || \right[
+RealRange || ( || ,  || )
 Open || ( || )
