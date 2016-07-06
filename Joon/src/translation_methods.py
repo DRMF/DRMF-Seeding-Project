@@ -41,7 +41,7 @@ def replace_strings(string, li):
 
 def parse_brackets(string):
     """
-    Translates the contents between a set of square brackets
+    Obtains the contents from data encapsulated in squar ebrackets
     """
 
     string = string[1:-1].split(",")
@@ -73,24 +73,32 @@ def get_arguments(string):
 
     return string
 
-def check_parentheses(exp):
+def trim_parens(exp):
     """
-    Checks whether the grouping of parentheses are correct or not
+    Removes unnecessary parentheses
     """
-    s = list() # stack
-    for ch in exp:
-        if ch == "(":
-            s.append(ch)
-        elif ch == ")":
-            if len(s) == 0:
-                return False
-            else:
-                s.pop()
 
-    if len(s) != 0:
-        return False
+    # checks whether the outer set of parentheses are necessary
+    if exp[0] == "(" and exp[-1] == ")":
+        test = exp[1:-1]
 
-    return True
+        # validate whether test is correct (in terms of parentheses)
+        s = list()  # stack
+        for ch in test:
+            if ch == "(":
+                s.append(ch)
+            elif ch == ")":
+                if len(s) == 0:
+                    return exp
+                else:
+                    s.pop()
+
+        if len(s) != 0:
+            return exp
+
+        return test
+
+    return exp
 
 def make_frac(parts):
     """
@@ -118,9 +126,7 @@ def basic_translate(exp):
                 modified = True
 
             elif exp[i] == "^" and order == 0:
-                power = exp.pop(i + 1)
-                if power[0] == "(" and check_parentheses(power[1:-1]):
-                    power = power[1:-1]
+                power = trim_parens(exp.pop(i + 1))
                 exp[i - 1] += "^{%s}" % power
                 modified = True
 
@@ -133,8 +139,7 @@ def basic_translate(exp):
 
             elif exp[i] == "/" and order == 1:
                 for index in [i - 1, i + 1]:
-                    if exp[index][0] == "(" and check_parentheses(exp[index][1:-1]):
-                        exp[index] = exp[index][1:-1]
+                    exp[index] = trim_parens(exp[index])
                 exp[i - 1] = "\\frac{%s}{%s}" % (exp[i - 1], exp.pop(i + 1))
                 modified = True
 
@@ -165,6 +170,8 @@ def generate_function(name, args):
         args = args.pop(1).split("..") + [args[0]]
         if args[1] == "infinity":
             args[1] = "\\infty"
+
+        args[0] = args[0].replace("i", "k")
 
     result = list()
     for group in functions:
@@ -200,6 +207,10 @@ def translate(exp):
                 i -= 1
 
                 piece = generate_function(exp[i], get_arguments(piece))
+
+            if replace_strings(piece, {"(": ""})[:5] == "\\frac":
+                while piece != trim_parens(piece):
+                    piece = trim_parens(piece)
 
             exp = exp[0:i] + [piece] + exp[r + 1:]
 
@@ -262,8 +273,8 @@ def make_equation(eq):
                 equation += eq.factor + " "
 
         if eq.general != ["0", "1"]:
-            equation += "\\CFK{m}{%s}{\\infty}@@{%s}{%s}" % (str(start), translate(eq.general[0]),
-                                                             translate(eq.general[1]))
+            equation += "\\CFK{m}{%s}{\\infty}@@{%s}{%s}" % (str(start), trim_parens(translate(eq.general[0])),
+                                                             trim_parens(translate(eq.general[1])))
         else:
             equation += "\\dots"
 
