@@ -5,20 +5,34 @@ from math_wrappers import MapleFile
 translate = dict(tuple(line.split(" : ")) for line in open("keys/section_names").read().split("\n")
                  if line != "" and "%" not in line)
 
-files = ["bessel", "modbessel",
-         "confluent", "confluentlimit", "kummer", "parabolic", "whittaker",
-         "apery", "archimedes", "catalan", "delian", "eulersconstant", "eulersnumber", "goldenratio", "gompertz",
-         "naturallogarithm", "powerandroot", "pythagoras", "rabbit", "theodorus", "zeta2", "zeta4",
-         "arccos", "arccosh", "arcsin", "arcsinh", "arctan", "arctanh", "cos", "cosh", "coth",
-         "exp", "ln", "pow", "sin", "sinh", "tan", "tanh",
-         "comperror", "error", "fresnel", "repint",
-         "expintegrals", "related",
-         "binet", "incompletegamma", "polygamma", "tetragamma", "trigamma"
-         ]
+files = [
+    "bessel", "modbessel",
+    "confluent", "confluentlimit", "kummer", "parabolic", "whittaker",
+    "apery", "archimedes", "catalan", "delian", "eulersconstant", "eulersnumber", "goldenratio", "gompertz",
+    "naturallogarithm", "powerandroot", "pythagoras", "rabbit", "theodorus", "zeta2", "zeta4",
+    "arccos", "arccosh", "arcsin", "arcsinh", "arctan", "arctanh", "cos", "cosh", "coth",
+    "exp", "ln", "pow", "sin", "sinh", "tan", "tanh",
+    "comperror", "error", "fresnel", "repint",
+    "expintegrals", "related",
+    "binet", "incompletegamma", "polygamma", "tetragamma", "trigamma",
+    "hypergeometric",
+    "qhyper"
+]
 
 root_directory = "functions"
 
-def main():
+def translate_file(filename):
+    """
+    Translates all the formulae in a file
+    """
+
+    with open("output/test.tex", "w") as f:
+        f.write(open("output/primer").read() + MapleFile(filename).convert_formulae() + "\n\\end{document}")
+
+    print "Successfully translated formulae in " + filename
+
+
+def translate_directories():
     """
     Generates and writes the results of traversing the root directory and translating all Maple files
     """
@@ -45,4 +59,4 @@ def main():
     print "Successfully generated files in subsections: " + ', '.join(files)
 
 if __name__ == '__main__':
-    main()
+    translate_directories()

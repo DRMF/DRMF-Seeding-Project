@@ -65,11 +65,24 @@ def get_arguments(string):
 
     string = string[1:-1].split(",")
 
-    for i, piece in enumerate(string):
-        if piece[0] == "[" and piece[-1] != "]":
-            string[i] = (string[i] + "," + string.pop(i + 1))[1:-1]
+    i = 0
+    while i < len(string):
+        piece = string[i]
 
-        string[i] = replace_strings(piece, brackets)
+        if "[" in piece and "]" not in piece:
+            r = i
+            while r < len(string):
+                if "]" in string[r]:
+                    break
+                r += 1
+
+            string = string[:i] + [replace_strings(','.join(string[i:r + 1]), brackets)] + string[r + 1:]
+
+            i -= r - i
+        else:
+            string[i] = replace_strings(piece, brackets)
+
+        i += 1
 
     return string
 
@@ -77,6 +90,9 @@ def trim_parens(exp):
     """
     Removes unnecessary parentheses
     """
+
+    if exp == "":
+        return ""
 
     # checks whether the outer set of parentheses are necessary
     if exp[0] == "(" and exp[-1] == ")":
@@ -205,7 +221,6 @@ def translate(exp):
 
             if find(functions, exp[i - 1]) != exp[i - 1]:
                 i -= 1
-
                 piece = generate_function(exp[i], get_arguments(piece))
 
             if replace_strings(piece, {"(": ""})[:5] == "\\frac":
