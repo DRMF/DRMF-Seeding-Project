@@ -6,7 +6,7 @@ tan || \tan( || )
 abs || \abs{ || }
 exp || e^{ || }
 log || \log{( || )}
-log[q] || \log_{ || } ( || )
+log || \log_{ || } ( || )
 ln || \ln{( || )}
 floor || \floor{ || }
 sum || \sum_{ || }^{ || } ( || )

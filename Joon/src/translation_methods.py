@@ -8,7 +8,8 @@ functions = key_info("keys/functions")
 symbols = key_info("keys/symbols")
 constraints = key_info("keys/constraints")
 
-spacing = dict((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "!", "::"])
+spacing = dict((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "!", "::",
+                                                     "[", "]"])
 special = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin"}
 brackets = {"[": "", "]": ""}
 
@@ -203,6 +204,8 @@ def translate(exp):
     exp = replace_strings(exp.strip(), constraints)
     exp = replace_strings(exp, spacing).split()
 
+    print exp
+
     for i in xrange(len(exp)):
         exp[i] = find(symbols, exp[i])
 
@@ -210,6 +213,11 @@ def translate(exp):
         if exp[i] == "(":
             r = i + exp[i:].index(")")
             piece = exp[i:r + 1]
+
+            if exp[i - 1] == "]":
+                sq = i - 2 - exp[:i - 1][::-1].index("[")
+                piece = [piece[0]] + exp[sq + 1:i - 1] + [","] + piece[1:]
+                i = sq
 
             if find(functions, exp[i - 1]) != exp[i - 1]:
                 i -= 1
@@ -291,8 +299,16 @@ def make_equation(eq):
             equation += "\\dots"
 
     # adds metadata
-    equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"
-    equation += "\n  %  \\category{" + eq.category + "}"
-    equation += "\n\\end{equation*}"
+    view_metadata = True
+
+    if view_metadata and eq.constraints == "":
+        equation += "\n\\end{equation*}\n\\begin{center}\nNo constraints\n" + eq.category + "\\end{center}"
+    elif view_metadata:
+        equation += "\n\\end{equation*}\n$$%s$$\n\\begin{center}%s\\end{center}" % (
+            translate(eq.constraints), eq.category)
+    else:
+        equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"
+        equation += "\n  %  \\category{" + eq.category + "}"
+        equation += "\n\\end{equation*}"
 
     return replace_strings(equation, special)
