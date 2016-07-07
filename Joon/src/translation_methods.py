@@ -55,37 +55,6 @@ def parse_brackets(string):
 
     return string
 
-def get_arguments(string):
-    """
-    Obtains the arguments of a function
-    """
-
-    if string == "()":
-        return []
-
-    string = string[1:-1].split(",")
-
-    i = 0
-    while i < len(string):
-        piece = string[i]
-
-        if "[" in piece and "]" not in piece:
-            r = i
-            while r < len(string):
-                if "]" in string[r]:
-                    break
-                r += 1
-
-            string = string[:i] + [replace_strings(','.join(string[i:r + 1]), brackets)] + string[r + 1:]
-
-            i -= r - i
-        else:
-            string[i] = replace_strings(piece, brackets)
-
-        i += 1
-
-    return string
-
 def trim_parens(exp):
     """
     Removes unnecessary parentheses
@@ -167,6 +136,43 @@ def basic_translate(exp):
 
     return ''.join(exp)
 
+def count_args(string, pattern):
+    if string == "":
+        return 0
+    return string.count(pattern) + 1
+
+def get_arguments(function, string):
+    """
+    Obtains the arguments of a function
+    """
+
+    if string == ["(", ")"]:
+        return []
+
+    elif function in ["hypergeom", "functions:qhyper"]:
+        args = [basic_translate(s.replace("[", "").split()) for s in ' '.join(string[1:-1]).split("] , ")]
+
+        if function == "functions:qhyper":
+            args += args.pop(2).split(",")
+
+        args = [str(count_args(args[i], ",")) for i in [0, 1]] + args
+
+    elif function == "sum":
+        args = basic_translate(string[1:-1]).split(",")
+        args = args.pop(1).split("..") + [args[0]]
+        if args[1] == "infinity":
+            args[1] = "\\infty"
+
+        args[0] = args[0].replace("i", "k")
+
+    elif function == "log[q]":
+        args = ["q"] + basic_translate(string[1:-1]).split(",")
+
+    else:
+        args = basic_translate(string[1:-1]).split(",")
+
+    return args
+
 def generate_function(name, args):
     """
     Generate a function with the provided name and arguments
@@ -174,20 +180,6 @@ def generate_function(name, args):
 
     # special parsing of arguments, based on the function
     # (i.e. if information needs to be extrapolated) from the data
-
-    if name == "hypergeom":
-        for i in xrange(2):
-            if args[i * 2] == "":
-                args.insert(i, "0")
-            else:
-                args.insert(i, str(len(args[i * 2].split(","))))
-
-    elif name == "sum":
-        args = args.pop(1).split("..") + [args[0]]
-        if args[1] == "infinity":
-            args[1] = "\\infty"
-
-        args[0] = args[0].replace("i", "k")
 
     result = list()
     for group in functions:
@@ -217,11 +209,13 @@ def translate(exp):
     for i in xrange(len(exp)-1, -1, -1):
         if exp[i] == "(":
             r = i + exp[i:].index(")")
-            piece = basic_translate(exp[i:r + 1])
+            piece = exp[i:r + 1]
 
             if find(functions, exp[i - 1]) != exp[i - 1]:
                 i -= 1
-                piece = generate_function(exp[i], get_arguments(piece))
+                piece = generate_function(exp[i], get_arguments(exp[i], piece))
+            else:
+                piece = basic_translate(piece)
 
             if replace_strings(piece, {"(": ""})[:5] == "\\frac":
                 while piece != trim_parens(piece):

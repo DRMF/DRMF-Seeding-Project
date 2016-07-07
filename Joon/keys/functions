@@ -6,6 +6,7 @@ tan || \tan( || )
 abs || \abs{ || }
 exp || e^{ || }
 log || \log{( || )}
+log[q] || \log_{ || } ( || )
 ln || \ln{( || )}
 floor || \floor{ || }
 sum || \sum_{ || }^{ || } ( || )
@@ -56,6 +57,7 @@ functions:Ein || \ExpIntEin@{ || }
 functions:erfcI || I^{ || } \erfc@@{( || )}
 functions:hankelsymb || \HankelSym{ || }{ || }
 functions:lincgamma || \incgamma@{ || }{ || }
+functions:qhyper || \qHyperrphis{ || }{ || }@@@@{ || }{ || }{ || }{ || }
 functions:uincgamma || \IncGamma@{ || }{ || }
 functions:WhittakerPsi || \WhitPsi{ || }{ || }@{ || }
 functions:goldenratio || \GoldenRatio
