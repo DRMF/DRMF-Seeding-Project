@@ -48,7 +48,7 @@ class MapleEquation(object):
                     line[1] = line[1].strip()[1:-2].strip()
 
                 elif line[0] in ["lhs", "factor", "front", "even", "odd"]:
-                    if line[1][-1] == ",":
+                    if line[1].strip()[-1] == ",":
                         line[1] = line[1].strip()[:-1]
                     line[1] = line[1].strip()
                 self.fields[line[0]] = line[1]

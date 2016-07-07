@@ -47,7 +47,7 @@ Re || \Re( || )
 Im || \Im( || )
 
 doublefactorial || ( || )!!
-hypergeom || \HyperpFq{ || }{ || }@@@@{ || }{ || }{ || }
+hypergeom || \HyperpFq{ || }{ || }@@{ || }{ || }{ || }
 pochhammer || \pochhammer{ || }{ || }
 
 functions:Besseli || \SphBesselIi{ || }@{ || }
@@ -57,7 +57,7 @@ functions:Ein || \ExpIntEin@{ || }
 functions:erfcI || I^{ || } \erfc@@{( || )}
 functions:hankelsymb || \HankelSym{ || }{ || }
 functions:lincgamma || \incgamma@{ || }{ || }
-functions:qhyper || \qHyperrphis{ || }{ || }@@@@{ || }{ || }{ || }{ || }
+functions:qhyper || \qHyperrphis{ || }{ || }@@{ || }{ || }{ || }{ || }
 functions:uincgamma || \IncGamma@{ || }{ || }
 functions:WhittakerPsi || \WhitPsi{ || }{ || }@{ || }
 functions:goldenratio || \GoldenRatio

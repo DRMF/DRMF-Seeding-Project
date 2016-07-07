@@ -150,7 +150,7 @@ def get_arguments(function, string):
         return []
 
     elif function in ["hypergeom", "functions:qhyper"]:
-        args = [basic_translate(s.replace("[", "").split()) for s in ' '.join(string[1:-1]).split("] , ")]
+        args = [basic_translate(replace_strings(s, brackets).split()) for s in ' '.join(string[1:-1]).split("] , ")]
 
         if function == "functions:qhyper":
             args += args.pop(2).split(",")
@@ -217,7 +217,7 @@ def translate(exp):
             else:
                 piece = basic_translate(piece)
 
-            if replace_strings(piece, {"(": ""})[:5] == "\\frac":
+            if "frac" in replace_strings(piece, {"(": ""})[:6] and (r + 2 > len(exp) or exp[r + 1] != "^"):
                 while piece != trim_parens(piece):
                     piece = trim_parens(piece)
 
@@ -247,6 +247,9 @@ def make_equation(eq):
     modify_fields(eq)
 
     equation = "\\begin{equation*}\\tag{%s}\n  %s\n  = " % (eq.label, eq.lhs)
+
+    if eq.factor == "1":
+        eq.factor = ""
 
     # translates the Maple information (with spacing)
     if eq.eq_type == "series":
