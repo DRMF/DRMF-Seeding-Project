@@ -29,12 +29,8 @@ i || k
 I || i
 Catalan || \CatalansConstant
 infinity || \infty
-functions:Delian || \sqrt[\leftroot{-2}\uproot{2} 3]{2}
-functions:Theodorus || \sqrt{3}
+Delian || \sqrt[\leftroot{-2}\uproot{2} 3]{2}
+Theodorus || \sqrt{3}
 
 %Constraints
 integer || \mathbb{Z}
-:: || \in
-
-%Function formatting
-:- || :

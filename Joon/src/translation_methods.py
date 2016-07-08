@@ -1,17 +1,35 @@
 #!/usr/bin/env python
 
+import tokenize
+from StringIO import StringIO
+
 def key_info(filename):
     return [line.split(" || ", 1) for line in open(filename).read().split("\n")
                  if line != "" and "%" not in line]
 
 functions = key_info("keys/functions")
 symbols = key_info("keys/symbols")
-constraints = key_info("keys/constraints")
+constraints = key_info("keys/constraints") + [["::", "\\in "]]
 
-spacing = dict((char, " " + char + " ") for char in ["(", ")", "+", "-", "*", "/", "^", "<", ">", ",", "!", "::",
-                                                     "[", "]"])
 special = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin"}
 brackets = {"[": "", "]": ""}
+
+alphabet = "abcdefghijklmnopqrstuvwxyz"
+
+def sort(li):
+    organized = dict()
+
+    for s in li:
+        num = s.split("\n")[0][22:-1]
+
+        for i, ch in enumerate(alphabet):
+            num = num.replace(ch, "."+str(i + 1))
+
+        num = [n.rjust(3) for n in num.split(".")]
+
+        organized[''.join(num)] = [num, s]
+
+    return [organized[''.join(id)][1] for id in sorted([organized[q][0] for q in organized])]
 
 def find(li, element):
     for group in li:
@@ -150,10 +168,10 @@ def get_arguments(function, string):
     if string == ["(", ")"]:
         return []
 
-    elif function in ["hypergeom", "functions:qhyper"]:
+    elif function in ["hypergeom", "qhyper"]:
         args = [basic_translate(replace_strings(s, brackets).split()) for s in ' '.join(string[1:-1]).split("] , ")]
 
-        if function == "functions:qhyper":
+        if function == "qhyper":
             args += args.pop(2).split(",")
 
         args = [str(count_args(args[i], ",")) for i in [0, 1]] + args
@@ -202,9 +220,19 @@ def translate(exp):
         return ""
 
     exp = replace_strings(exp.strip(), constraints)
-    exp = replace_strings(exp, spacing).split()
+    exp = replace_strings(exp, {"functions:-": ""})
 
-    print exp
+    s = list()
+    def add_to_list(a, b, c, d, e):
+        s.append(b)
+
+    tokenize.tokenize(StringIO(exp).readline, add_to_list)
+
+    exp = s
+
+    # exp = replace_strings(exp, spacing).split()
+
+    # print exp
 
     for i in xrange(len(exp)):
         exp[i] = find(symbols, exp[i])
@@ -301,9 +329,7 @@ def make_equation(eq):
     # adds metadata
     view_metadata = True
 
-    if view_metadata and eq.constraints == "":
-        equation += "\n\\end{equation*}\n\\begin{center}\nNo constraints\n" + eq.category + "\\end{center}"
-    elif view_metadata:
+    if view_metadata:
         equation += "\n\\end{equation*}\n$$%s$$\n\\begin{center}%s\\end{center}" % (
             translate(eq.constraints), eq.category)
     else:

@@ -50,23 +50,23 @@ doublefactorial || ( || )!!
 hypergeom || \HyperpFq{ || }{ || }@@{ || }{ || }{ || }
 pochhammer || \pochhammer{ || }{ || }
 
-functions:Besseli || \SphBesselIi{ || }@{ || }
-functions:Besselj || \SphBesselJ{ || }@{ || }
-functions:cerf || \erfw@@{( || )}
-functions:Ein || \ExpIntEin@{ || }
-functions:erfcI || I^{ || } \erfc@@{( || )}
-functions:hankelsymb || \HankelSym{ || }{ || }
-functions:lincgamma || \incgamma@{ || }{ || }
-functions:qhyper || \qHyperrphis{ || }{ || }@@{ || }{ || }{ || }{ || }
-functions:uincgamma || \IncGamma@{ || }{ || }
-functions:WhittakerPsi || \WhitPsi{ || }{ || }@{ || }
-functions:goldenratio || \GoldenRatio
-functions:Gompertz || \GompertzConstant
-functions:rabbit || \rabbitConstant
+Besseli || \SphBesselIi{ || }@{ || }
+Besselj || \SphBesselJ{ || }@{ || }
+cerf || \erfw@@{( || )}
+Ein || \ExpIntEin@{ || }
+erfcI || I^{ || } \erfc@@{( || )}
+hankelsymb || \HankelSym{ || }{ || }
+lincgamma || \incgamma@{ || }{ || }
+qhyper || \qHyperrphis{ || }{ || }@@{ || }{ || }{ || }{ || }
+uincgamma || \IncGamma@{ || }{ || }
+WhittakerPsi || \WhitPsi{ || }{ || }@{ || }
+goldenratio || \GoldenRatio
+Gompertz || \GompertzConstant
+rabbit || \rabbitConstant
 
-:combinatfibonacci || \FibonacciNumber{ || }
+combinatfibonacci || \FibonacciNumber{ || }
 
 %Constraints
-functions:argument || \arg{ || }
+argument || \arg{ || }
 RealRange || ( || ,  || )
 Open || ( || )

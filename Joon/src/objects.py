@@ -1,6 +1,6 @@
 #!/user/bin/env python
 
-from translation_methods import make_equation
+from translation_methods import make_equation, sort
 from copy import copy
 
 class MapleFile(object):
@@ -11,12 +11,11 @@ class MapleFile(object):
     def obtain_formulae(self):
         contents = open(self.filename).read()
 
-
         return [MapleEquation(piece.split("\n")) for piece in contents.split("create(")
                 if "):" in piece or ");" in piece]
 
     def convert_formulae(self):
-        return '\n\n'.join([make_equation(copy(formula)) for formula in self.formulae])
+        return '\n\n'.join(sort([make_equation(copy(formula)) for formula in self.formulae]))
 
     def __str__(self):
         return "MapleFile of " + self.filename
@@ -26,6 +25,7 @@ class MapleEquation(object):
         # creates a dictionary called "fields", containing all the Maple fields
         self.fields = {"category": "", "constraints": "", "begin": "", "factor": "", "front": "",
                        "type": inp.pop(0).split("'")[1]}
+
         for i, line in enumerate(inp):
             line = line.split(" = ", 1)
 
@@ -41,7 +41,7 @@ class MapleEquation(object):
                         temp = temp[:10]
                     line[1] = str(temp)[1:-1]
 
-                elif line[0] == "booklabelv1" and line[1] == '"",':
+                elif line[0] == "booklabelv2" and line[1] == '"",':
                     line[1] = "No label"
 
                 elif line[0] in ["booklabelv1", "booklabelv2", "general", "constraints", "begin"]:
@@ -56,7 +56,7 @@ class MapleEquation(object):
         # assign fields containing information about the equation
         self.eq_type = self.fields["type"]
         self.category = self.fields["category"]
-        self.label = self.fields["booklabelv1"]
+        self.label = self.fields["booklabelv2"]
         self.lhs = self.fields["lhs"]
         self.factor = self.fields["factor"]
         self.front = self.fields["front"]

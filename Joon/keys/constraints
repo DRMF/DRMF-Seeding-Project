@@ -7,6 +7,5 @@ Not(integer) || \CC\backslash\ZZ
 posint || \mathbb{Z^+}
 nonnegint || \ZZ\backslash\ZZ^-
 ::positive || > 0
-::nonnegative ||  \geq 0
-::nonneg ||  \geq 0
-:- || :
+::nonnegative || \geq 0
+::nonneg || \geq 0
