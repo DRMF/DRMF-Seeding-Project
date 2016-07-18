@@ -4,83 +4,44 @@ import json
 from maple_tokenize import tokenize
 from copy import copy
 
-info = json.loads(open("info.json").read())
+INFO = json.loads(open("info/keys.json").read())
 
-def key_info(filename):
-    return [line.split(" || ", 1) for line in open(filename).read().split("\n")
-                 if line != "" and "%" not in line]
+FUNCTIONS = INFO["functions"]
+SYMBOLS = INFO["symbols"]
+CONSTRAINTS = INFO["constraints"]
 
-functions = info["functions"] #key_info("info/functions")
-symbols = info["symbols"] #key_info("info/symbols")
-constraints = info["constraints"] #key_info("info/constraints") + [["::", "\\in "]]
+SPECIAL = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin"}
 
-special = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin"}
-brackets = {"[": "", "]": ""}
 
-alphabet = "abcdefghijklmnopqrstuvwxyz"
-
-def sort(li):
-    organized = dict()
-
-    for s in li:
-        num = s.split("\n")[0][22:-1]
-
-        for i, ch in enumerate(alphabet):
-            num = num.replace(ch, "."+str(i + 1))
-
-        num = [n.rjust(3) for n in num.split(".")]
-
-        organized[''.join(num)] = [num, s]
-
-    return [organized[''.join(id)][1] for id in sorted([organized[q][0] for q in organized])]
-
-def find(li, element):
-    for group in li:
-        if group[0] == element:
-            return group[1]
-
-    return element
-
-def replace_strings(string, li):
+def replace_strings(string: str, keys: dict) -> str:
     """
     Replaces multiple strings with multiple other strings, stored in lists of length two in li.
     The first element is the string to find, and the second element is the replacement string.
     A dictionary can also be given.
     """
-
-    if type(li) == dict:
-        for key in list(li):
-            string = string.replace(key, li[key])
-
-    elif type(li) == list:
-        for key in li:
-            string = string.replace(key[0], key[1])
-
-    else:
-        raise TypeError("Type of given key set is incorrect.")
+    for key in list(keys):
+        string = string.replace(key, keys[key])
 
     return string
 
-def parse_brackets(string):
-    """
-    Obtains the contents from data encapsulated in squar ebrackets
-    """
 
-    string = string[1:-1].split(",")
-    for i, e in enumerate(string):
-        string[i] = replace_strings(e, brackets).strip()
+def parse_brackets(exp: (str, list)) -> list:
+    """Obtains the contents from data encapsulated in square brackets."""
+
+    exp = exp[1:-1].split(",")
+    for i, e in enumerate(exp):
+        exp[i] = replace_strings(e, {"[": "", "]": ""}).strip()
 
     i = 0
-    while i + 1 < len(string):
-        string[i] = [string[i], string.pop(i+1)]
+    while i + 1 < len(exp):
+        exp[i] = [exp[i], exp.pop(i+1)]
         i += 1
 
-    return string
+    return exp
 
-def trim_parens(exp):
-    """
-    Removes unnecessary parentheses
-    """
+
+def trim_parens(exp: str) -> str:
+    """Removes unnecessary parentheses."""
 
     if exp == "":
         return ""
@@ -107,20 +68,17 @@ def trim_parens(exp):
 
     return exp
 
-def make_frac(parts):
-    """
-    Generate a LaTeX frac from its parts [numerator, denominator]
-    """
+
+def make_frac(parts: list):
+    """Generate a LaTeX fraction from its numerator and denominator."""
 
     return translate("(" + parts[0] + ") / (" + parts[1] + ")")
 
-def basic_translate(exp):
-    """
-    Translates basic mathematical operations (does not include functions)
-    Does not translate parentheses
-    """
 
-    for order in xrange(3):
+def basic_translate(exp: list) -> str:
+    """Translates basic mathematical operations."""
+
+    for order in range(3):
         i = 0
         while i < len(exp):
             modified = False
@@ -147,7 +105,7 @@ def basic_translate(exp):
             elif exp[i] == "/" and order == 1:
                 for index in [i - 1, i + 1]:
                     exp[index] = trim_parens(exp[index])
-                exp[i - 1] = "\\frac{%s}{%s}" % (exp[i - 1], exp.pop(i + 1))
+                exp[i - 1] = "\\frac{" + exp[i - 1] + "}{" + exp.pop(i + 1) + "}"
                 modified = True
 
             if modified:
@@ -158,74 +116,79 @@ def basic_translate(exp):
 
     return ''.join(exp)
 
-def count_args(string, pattern):
+
+def count_args(string: str, pattern: str) -> int:
+    """Counts the arguments contained in a string, based on a delimiter pattern."""
     if string == "":
         return 0
+
     return string.count(pattern) + 1
 
-def get_arguments(function, string):
-    """
-    Obtains the arguments of a function
-    """
 
-    if string == ["(", ")"]:
+def get_arguments(function: str, arg_string: str) -> list:
+    """Obtains the arguments of a function."""
+
+    if arg_string == ["(", ")"]:
         return []
 
     elif function in ["hypergeom", "qhyper"]:
-        args = [basic_translate(replace_strings(s, brackets).split()) for s in ' '.join(string[1:-1]).split("] , ")]
+        args = list()
+        for s in ' '.join(arg_string[1:-1]).split("] , "):
+            args.append(basic_translate(replace_strings(s, {"[": "", "]": ""}).split()))
 
         if function == "qhyper":
             args += args.pop(2).split(",")
 
-        args = [str(count_args(args[i], ",")) for i in [0, 1]] + args
+        for i in [1, 0]:
+            arg_count = 0
+            if args[i] != "":
+                arg_count = arg_string.count(",") + 1
+
+            args.insert(0, str(arg_count))
 
     elif function == "sum":
-        args = basic_translate(string[1:-1]).split(",")
+        args = basic_translate(arg_string[1:-1]).split(",")
         args = args.pop(1).split("..") + [args[0]]
         if args[1] == "infinity":
             args[1] = "\\infty"
 
-        args[0] = args[0].replace("i", "k")
-
     else:
-        args = basic_translate(string[1:-1]).split(",")
+        args = basic_translate(arg_string[1:-1]).split(",")
 
     return args
 
-def generate_function(name, args):
-    """
-    Generate a function with the provided name and arguments
-    """
+
+def generate_function(name: str, args: list) -> str:
+    """Generate a function with the provided function name and arguments."""
 
     result = list()
-    for n in functions:
-        for variant in functions[n]:
+    for n in FUNCTIONS:
+        for variant in FUNCTIONS[n]:
             if name == n and len(args) == variant["args"]:
                 result = copy(variant["repr"])
 
-    for n in xrange(1, len(result)):
+    for n in range(1, len(result)):
         result.insert(2 * n - 1, args[n - 1])
 
     return ''.join(result)
 
-def translate(exp):
-    """
-    Translate a segment of Maple to LaTeX, including functions
-    """
+
+def translate(exp: str) -> str:
+    """Format Maple code as LaTeX."""
 
     if exp == "":
         return ""
 
-    exp = replace_strings(exp.strip(), constraints)
+    exp = replace_strings(exp.strip(), CONSTRAINTS)
     exp = replace_strings(exp, {"functions:-": ""})
     exp = tokenize(exp)
 
-    for i in xrange(len(exp)):
-        for s in symbols:
+    for i in range(len(exp)):
+        for s in SYMBOLS:
             if exp[i] == s:
-                exp[i] = symbols[s]
+                exp[i] = SYMBOLS[s]
 
-    for i in xrange(len(exp)-1, -1, -1):
+    for i in range(len(exp)-1, -1, -1):
         if exp[i] == "(":
             r = i + exp[i:].index(")")
             piece = exp[i:r + 1]
@@ -235,7 +198,7 @@ def translate(exp):
                 piece = [piece[0]] + exp[sq + 1:i - 1] + [","] + piece[1:]
                 i = sq
 
-            if exp[i - 1] in functions:
+            if exp[i - 1] in FUNCTIONS:
                 i -= 1
                 piece = generate_function(exp[i], get_arguments(exp[i], piece))
 
@@ -250,7 +213,10 @@ def translate(exp):
 
     return basic_translate(exp)
 
-def modify_fields(eq):
+
+def make_equation(eq: "MapleEquation") -> str:
+    """Make a LaTeX equation based on a MapleEquation object."""
+
     eq.lhs = translate(eq.lhs)
     eq.factor = translate(eq.fields["factor"])
     eq.front = translate(eq.fields["front"])
@@ -263,13 +229,6 @@ def modify_fields(eq):
 
         if eq.begin != "":
             eq.begin = parse_brackets(eq.begin)
-
-def make_equation(eq):
-    """
-    Make a LaTeX equation based on a MapleEquation object
-    """
-
-    modify_fields(eq)
 
     equation = "\\begin{equation*}\\tag{%s}\n  %s\n  = " % (eq.label, eq.lhs)
 
@@ -309,9 +268,11 @@ def make_equation(eq):
             else:
                 equation += eq.factor + " "
 
+        for i, element in enumerate(eq.general):
+            eq.general[i] = trim_parens(translate(element))
+
         if eq.general != ["0", "1"]:
-            equation += "\\CFK{m}{%s}{\\infty}@@{%s}{%s}" % (str(start), trim_parens(translate(eq.general[0])),
-                                                             trim_parens(translate(eq.general[1])))
+            equation += "\\CFK{m}{" + str(start) + "}{\\infty}@@{" + eq.general[0] + "}{" + eq.general[1] + "}"
         else:
             equation += "\\dots"
 
@@ -319,11 +280,15 @@ def make_equation(eq):
     view_metadata = False
 
     if view_metadata:
-        equation += "\n\\end{equation*}\n\\begin{center}\nParameters: $$%s$$\n$$%s$$\n%s\n\\end{center}" % (
-            eq.parameters, translate(eq.constraints), eq.category)
+        equation += "\n\\end{equation*}"
+        equation += "\n\\begin{center}"
+        equation += "\nParameters: $$" + eq.parameters + "$$"
+        equation += "\n$$" + translate(eq.constraints) + "$$"
+        equation += eq.category
+        equation += "\n\\end{center}"
     else:
         equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"
         equation += "\n  %  \\category{" + eq.category + "}"
         equation += "\n\\end{equation*}"
 
-    return replace_strings(equation, special)
+    return replace_strings(equation, SPECIAL)

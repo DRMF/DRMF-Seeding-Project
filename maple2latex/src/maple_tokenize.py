@@ -27,6 +27,7 @@ symbols = [
     "?"
 ]
 
+
 def tokenize(string):
     for symbol in symbols:
         string = string.replace(symbol, " " + symbol + " ")

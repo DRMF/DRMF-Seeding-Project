@@ -1,7 +1,8 @@
 #!/user/bin/env python
 
-from translation_methods import make_equation, sort
+from translation_methods import make_equation
 from copy import copy
+
 
 class MapleFile(object):
     def __init__(self, filename):
@@ -15,10 +16,11 @@ class MapleFile(object):
                 if "):" in piece or ");" in piece]
 
     def convert_formulae(self):
-        return '\n\n'.join(sort([make_equation(copy(formula)) for formula in self.formulae]))
+        return '\n\n'.join([make_equation(copy(formula)) for formula in self.formulae])
 
     def __str__(self):
         return "MapleFile of " + self.filename
+
 
 class MapleEquation(object):
     def __init__(self, inp):
