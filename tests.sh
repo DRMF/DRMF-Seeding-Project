@@ -1,7 +1,8 @@
 #!/bin/sh
+set -e
+set -o pipefail
 
 cd AlexDanoff
 echo ls
 python -m unittest discover
-rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
