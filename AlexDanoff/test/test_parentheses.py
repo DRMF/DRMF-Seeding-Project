@@ -1,5 +1,5 @@
 from unittest import TestCase
-from parentheses import insert, remove
+from src.parentheses import insert, remove
 
 test_cases = [{
     'normal': '\\sin(x)',
