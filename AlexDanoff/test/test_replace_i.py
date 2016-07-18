@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.replace_special import replace_special
+from src.replace_special import remove_special
 
 
 class TestReplaceSpecial(TestCase):
