@@ -43,3 +43,15 @@ FINISHED- implemented smart fix for "hypergeometric representation" paragraphs. 
 
 Needs to be done:
 -implemenent the same smart fix for "Limit relations" paragraphs. Current code for this implementation does not work and has spotty logic that does not encompass all variations of limit relations paragraphs (such as the one subsubsection in chapter 9)
+
+## MathMode Python code
+Library to determine ranges of math mode in a LaTeX sample, returned in the form of a list of lists.
+
+To use the code, move the file `mathmodepy/math_mode` to the directory in which your code is. Then import it, and to use it call the `find_math_ranges` function:
+```python
+import math_mode
+
+math_mode.find_math_ranges("LaTeX code")
+```
+_Last Updated: 6/20/16_
+
