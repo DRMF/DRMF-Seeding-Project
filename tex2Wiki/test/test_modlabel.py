@@ -1,3 +1,6 @@
+__author__ = "Azeem Mohammed"
+__status__ = "Development"
+
 from unittest import TestCase
 from tex2Wiki import modLabel
 from tex2Wiki import setup_label_links

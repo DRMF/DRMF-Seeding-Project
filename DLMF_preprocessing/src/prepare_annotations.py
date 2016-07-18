@@ -1,3 +1,6 @@
+__author__ = "Alex Danoff"
+__status__ = "Development"
+
 """
 Prepare the special annotations in the file by uncommenting them and further
 readying them to be converted to WikiText.

@@ -1,3 +1,6 @@
+__author__ = "Cherry Zou"
+__status__ = "Development"
+
 #Driver file for the DRMF seeding program
 
 from optparse import OptionParser, OptionValueError

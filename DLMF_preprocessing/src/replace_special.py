@@ -1,3 +1,6 @@
+__author__ = "Alex Danoff"
+__status__ = "Development"
+
 """Replace i, e, and \pi with \iunit, \expe, and \cpi respectively."""
 
 import math_mode

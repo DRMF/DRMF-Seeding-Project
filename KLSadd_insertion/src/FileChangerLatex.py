@@ -1,3 +1,6 @@
+__author__ = "Rahul Shah"
+__status__ = "Development"
+
 """
 Rahul Shah
 11/20/15

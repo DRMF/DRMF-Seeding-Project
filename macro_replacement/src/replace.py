@@ -1,4 +1,7 @@
 #!/usr/bin/python
+__author__ = "Cherry Zou"
+__status__ = "Development"
+
 """This module contains the code for the 'replace' functionality of the DRMF seeding program."""
 
 import identifiers

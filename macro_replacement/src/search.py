@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+__author__ = "Cherry Zou"
+__status__ = "Development"
+
 """This module contains the code for the 'search' functionality of the DRMF seeding program."""
 
 from collections import defaultdict

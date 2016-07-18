@@ -1,3 +1,6 @@
+__author__ = "Alex Danoff"
+__status__ = "Development"
+
 from unittest import TestCase
 from replace_special import replace_special
 

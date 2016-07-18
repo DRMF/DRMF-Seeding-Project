@@ -1,3 +1,6 @@
+__author__ = "Cherry Zou"
+__status__ = "Development"
+
 import re
 
 class Function(object):

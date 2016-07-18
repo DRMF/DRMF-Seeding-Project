@@ -1,3 +1,6 @@
+__author__ = "Azeem Mohammed"
+__status__ = "Development"
+
 # Version 15: Minor Fixes
 # Convert tex to wikiText
 import csv  # imported for using csv format

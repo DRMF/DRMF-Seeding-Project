@@ -1,3 +1,6 @@
+__author__ = "Cherry Zou"
+__status__ = "Development"
+
 """
 Provides utility/helper functions for use in other files.
 """

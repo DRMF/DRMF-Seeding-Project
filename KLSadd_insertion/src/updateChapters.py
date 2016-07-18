@@ -1,3 +1,7 @@
+__author__ = "Rahul Shah"
+__status__ = "Development"
+__credits__ = ["Rahul Shah", "Edward Bian"]
+
 """
 Rahul Shah
 self-taught python don't kill me I know its bad

@@ -1,3 +1,6 @@
+__author__ = "Cherry Zou"
+__status__ = "Development"
+
 """Goes through input file, numbers every opening and corresponding closing parenthesis and writes result to output file."""
 
 import sys

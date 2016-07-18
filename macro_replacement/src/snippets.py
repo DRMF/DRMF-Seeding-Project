@@ -1,3 +1,6 @@
+__author__ = "Cherry Zou"
+__status__ = "Development"
+
 #Provides uncompiled regex "snippets" useful in processing LaTeX
 
 from collections import defaultdict

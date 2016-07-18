@@ -1,3 +1,6 @@
+__author__ = "Rahul Shah"
+__status__ = "Development"
+
 """
 TODO: Rewrite the whole thing so another human being can read it
 jeez this is like my handwriting; it's nonsense to everyone but me

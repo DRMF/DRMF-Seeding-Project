@@ -1,3 +1,6 @@
+__author__ = "Cherry Zou"
+__status__ = "Development"
+
 """Replace i, e, and \pi with \iunit, \expe, and \cpi respectively."""
 
 import re

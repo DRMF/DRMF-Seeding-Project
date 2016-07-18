@@ -1,5 +1,5 @@
-#Divya Gandla
-#Master Code
+__author__ = "Divya Gandla"
+__status__ = "Development"
 
 import re
 

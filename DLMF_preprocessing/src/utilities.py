@@ -1,3 +1,6 @@
+__author__ = "Alex Danoff"
+__status__ = "Development"
+
 """
 Provides utility/helper functions for use in other files.
 """

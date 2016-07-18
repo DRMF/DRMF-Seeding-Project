@@ -1,3 +1,6 @@
+__author__ = "Alex Danoff"
+__status__ = "Development"
+
 """This program begins with an unprocessed LaTeX file and removes parts that are unnecessary for the DLMF."""
 
 import re
