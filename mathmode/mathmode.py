@@ -1,23 +1,23 @@
 """
 Dictionary containing math mode delimiters and their respective endpoints.
 """
-mathStart = {"\\[": "\\]",
-             "\\(": "\\)",
-             "$$": "$$",
-             "$": "$",
-             "\\begin{equation}": "\\end{equation}",
-             "\\begin{equation*}": "\\end{equation*}",
-             "\\begin{align}": "\\end{align}",
-             "\\begin{align*}": "\\end{align*}",
-             "\\begin{multline}": "\\end{multline}",
-             "\\begin{multline*}": "\\end{multline*}"}
+MATH_START = {"\\[": "\\]",
+              "\\(": "\\)",
+              "$$": "$$",
+              "$": "$",
+              "\\begin{equation}": "\\end{equation}",
+              "\\begin{equation*}": "\\end{equation*}",
+              "\\begin{align}": "\\end{align}",
+              "\\begin{align*}": "\\end{align*}",
+              "\\begin{multline}": "\\end{multline}",
+              "\\begin{multline*}": "\\end{multline*}"}
 
 """
 List of delimiters that exit math mode.
 """
-mathEnd = ["\\hbox{",
-           "\\mbox{",
-           "\\text{"]
+MATH_END = ["\\hbox{",
+            "\\mbox{",
+            "\\text{"]
 
 
 def find_first(string, delim, start=0):
@@ -47,7 +47,7 @@ def first_delim(string, enter=True):
     :return: The delimiter that first appears in the string.
     """
     minm = ["\\hbox{", "\\]"][enter]
-    for delim in [mathEnd, mathStart][enter]:
+    for delim in [MATH_END, MATH_START][enter]:
         i = find_first(string, delim)
         if i != -1 and i < find_first(string, minm) or minm not in string:
             minm = delim
@@ -63,7 +63,7 @@ def does_exit(string):
     :param string: The string to check.
     :return: Whether the string starts with a text mode delimiter.
     """
-    return any(string.startswith(delim) for delim in mathEnd)
+    return any(string.startswith(delim) for delim in MATH_END)
 
 
 def does_enter(string):
@@ -73,7 +73,7 @@ def does_enter(string):
     :param string: The string to check.
     :return: Whether the string starts with a math mode delimiter.
     """
-    return any(string.startswith(delim) for delim in mathStart)
+    return any(string.startswith(delim) for delim in MATH_START)
 
 
 def parse_math(string, start, ranges):
@@ -101,10 +101,10 @@ def parse_math(string, start, ranges):
                     ranges.append((begin, start + i))
                 i += parse_non_math(string[i:], start + i, ranges)
                 begin = start + i
-            if string[i:].startswith(mathStart[delim]):
+            if string[i:].startswith(MATH_START[delim]):
                 if begin != start + i:
                     ranges.append((begin, start + i))
-                return i + len(mathStart[delim]) - 1
+                return i + len(MATH_START[delim]) - 1
         i += 1
     return i
 
