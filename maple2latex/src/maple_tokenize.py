@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+
+__author__ = "Joon Bang"
+__status__ = "Development"
+
 symbols = [
     "+",
     "-",

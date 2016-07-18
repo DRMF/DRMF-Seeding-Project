@@ -1,5 +1,8 @@
 #!/user/bin/env python
 
+__author__ = "Joon Bang"
+__status__ = "Development"
+
 from translation_methods import make_equation
 from copy import copy
 

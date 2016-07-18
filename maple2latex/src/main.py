@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+
+__author__ = "Joon Bang"
+__status__ = "Development"
+
 import os
 from classes import MapleFile
 

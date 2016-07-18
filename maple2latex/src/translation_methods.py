@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+__author__ = "Joon Bang"
+__status__ = "Development"
+
 import json
 from maple_tokenize import tokenize
 from copy import copy
