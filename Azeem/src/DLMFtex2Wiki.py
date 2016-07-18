@@ -3,221 +3,14 @@
 import csv  # imported for using csv format
 import sys  # imported for getting args
 from shutil import copyfile
-import xml.etree.ElementTree as ET
-import datetime
-
-wiki = ''
-next_formula_number = 0
-lLink = ''
-ET.register_namespace('', 'http://www.mediawiki.org/xml/export-0.10/')
-root = ET.Element('{http://www.mediawiki.org/xml/export-0.10/}mediawiki')
+from tex2Wiki import append_text, append_revision, getString,\
+    getSym, getEq, secLabel, getEqP, unmodLabel, isnumber
 
 
-def isnumber(char):  # Function to check if char is a number (assuming 1 character)
-    return char[0] in "0123456789"
 
 
-def getString(line):  # Gets all data within curly braces on a line
-    # -------Initialization-------
-    stringWrite = ""
-    getStr = False
-    pW = ""
-    # ----------------------------
-    for c in line:
-        if c == "{" or c == "}":  # if there is a curly brace in the line
-            getStr = not getStr  # toggle the getStr flag
-            if c == "}":  # no more info needed
-                break
-        elif getStr:  # if within curly braces
-            if not (pW == c and c == "-"):  # if there is no double dash (makes single dash)
-                if c != "$":  # if not a $ sign
-                    stringWrite += c  # this character is part of the data
-                else:  # replace $ with ''
-                    stringWrite += "\'\'"  # add double '
-            pW = c  # change last character for finding double dashes
-    return stringWrite.rstrip('\n').lstrip()  # return the data without newlines and without leading spaces
 
-
-def getG(line):  # gets equation for symbols list
-    start = True
-    final = ""
-    for c in line:
-        if c == "$" and start:
-            final += "<math> "
-            start = False
-        elif c == "$":
-            final += "</math>"
-            start = True
-        else:
-            final += c
-    return final
-
-
-def getEq(line):  # Gets all data within constraints,substitutions
-    # -------Initialization-------
-    per = 1
-    stringWrite = ""
-    fEq = False
-    count = 0
-    # ----------------------------
-    for c in line:  # read each character
-        if count >= 0 and per != 0:
-            per += 1
-            if c != " " and c != "%":
-                per = 0
-        if c == "{" and per == 0:
-            if count > 0:
-                stringWrite += c
-            count += 1
-        elif c == "}" and per == 0:
-            count -= 1
-            if count > 0:
-                stringWrite += c
-        elif c == "$" and per == 0:  # either begin or end equation
-            fEq = not fEq  # toggle fEq flag to know if begin or end equation
-            if fEq:  # if begin
-                stringWrite += "<math>"
-            else:  # if end
-                stringWrite += "</math>"
-        elif c == "\n" and per == 0:  # if newline
-            stringWrite = stringWrite.strip()  # remove all leading and trailing whitespace
-
-            # should above be rstrip?<-------------------------------------------------------------------CHECK THIS
-
-            stringWrite += c  # add the newline character
-            per += 1  # watch for % signs
-        elif count > 0 and per == 0:  # not special character
-            stringWrite += c  # write the character
-
-    return stringWrite.rstrip().lstrip()
-
-
-def getEqP(line):  # Gets all data within proofs
-    per = 1
-    stringWrite = ""
-    fEq = False
-    count = 0
-    length = 0
-    for c in line:
-        if fEq and c != " " and c != "$" and c != "{" and c != "}" and not c.isalpha():
-            length += 1
-        if count >= 0 and per != 0:
-            per += 1
-            if c != " " and c != "%":
-                # if c!="%":
-                per = 0
-        if c == "{" and per == 0:
-            if count > 0:
-                stringWrite += c
-            count += 1
-        elif c == "}" and per == 0:
-            count -= 1
-            if count > 0:
-                stringWrite += c
-        elif c == "$" and per == 0:
-            fEq = not fEq
-            if fEq:
-                stringWrite += "<math> "
-            else:
-                if length < 10:
-                    stringWrite += "</math>"
-                else:
-                    stringWrite += "</math>" + "<br />"
-                length = 0
-        elif c == "\n" and per == 0:
-            stringWrite = stringWrite.strip()
-            stringWrite += c
-            per += 1
-        elif count > 0 and per == 0:
-            stringWrite += c
-
-    return stringWrite.lstrip()
-
-
-def getSym(line):  # Gets all symbols on a line for symbols list
-    symList = []
-    if line == "":
-        return symList
-    symbol = ""
-    symFlag = False
-    argFlag = False
-    cC = 0
-    for i in range(0, len(line)):
-        # if "MeixnerPollaczek{\\lambda}{n}@{x}{\\phi}=\frac{\\pochhammer{2\\lambda}{n}}" in line:
-        c = line[i]
-        if symFlag:
-            if c == "{" or c == "[":
-                cC += 1
-                argFlag = True
-            if c != "}" and c != "]":
-                if argFlag or c.isalpha():
-                    symbol += c
-                else:
-                    symFlag = False
-                    argFlag = False
-                    symList.append(symbol)
-                    symList += (getSym(symbol))
-                    symbol = ""
-            else:
-                cC -= 1
-                symbol += c
-                if i + 1 == len(line):
-                    p = ""
-                else:
-                    p = line[i + 1]
-                if cC <= 0 and p != "{" and p != "[" and p != "@":
-                    symFlag = False
-                    # if "monicAskeyWilson{n+1}@{x}{a}{b}{c}{d}{q}+\\frac{1}{2}" in line:
-                    symList.append(symbol)
-                    symList += (getSym(symbol))
-                    argFlag = False
-                    symbol = ""
-
-        elif c == "\\":
-            symFlag = True
-        elif c == "&" and not (i > line.find("\\begin{array}") and i < line.find("\\end{array}")):
-            symList.append("&")
-
-    # if "MeixnerPollaczek{\\lambda}{n}@{x}{\\phi}=\frac{\\pochhammer{2\\lambda}{n}}" in line:
-    symList.append(symbol)
-    symList += getSym(symbol)
-    return symList
-
-
-def unmodLabel(label):
-    label = label.replace(".0", ".")
-    label = label.replace(":0", ":")
-    return label
-
-
-def secLabel(label):
-    return label.replace("\'\'", "")
-
-
-def modLabel(line):
-    global lLink
-    start_label = line.find("\\formula{")
-    if start_label > 0:
-        start_label += len("\\formula{")
-    else:
-        start_label = line.find("\\label{")
-        if start_label > 0:
-            start_label += len("\\label{")
-        else:
-            global next_formula_number
-            next_formula_number += 1
-            return 'auto-number-' + str(next_formula_number)
-    end_label = line.find("}", start_label)
-    label = line[start_label:end_label]
-    rlabel = label
-    for l in lLink:
-        if l.find(label) != -1 and l[len(label) + 1] == "=":
-            rlabel = l[l.find("=>") + 3:l.find("\\n")]
-            rlabel = rlabel.replace("/", "")
-            rlabel = rlabel.replace("#", ":")
-            break
-    label = rlabel
-    label = label.replace('eq:', 'Formula:')
+def modLabel(label):
     isNumer = False
     newlabel = ""
     num = ""
@@ -242,64 +35,14 @@ def modLabel(line):
     return newlabel
 
 
-def append_text(text):
-    global wiki
-    wiki.text = wiki.text + text
-
-
-def append_revision(param):
-    global wiki
-    page = ET.SubElement(root, 'page')
-    title = ET.SubElement(page, 'title')
-    title.text = param
-    revision = ET.SubElement(page, 'revision')
-    timestamp = ET.SubElement(revision, 'timestamp')
-    timestamp.text = str(datetime.datetime.utcnow())
-    contributor = ET.SubElement(revision, 'contributor')
-    username = ET.SubElement(contributor, 'username')
-    username.text = 'SeedBot'
-    wiki = ET.SubElement(revision, 'text')
-    wiki.text = ''
-
-
-def writeout(ofname):
-    tree = ET.ElementTree(root)
-    tree.write(ofname, xml_declaration=True, encoding='utf-8', method='xml')
-
-
-def main():
-    if len(sys.argv) != 6:
-        fname = "../../data/ZE.3.tex"
-        ofname = "../../data/ZE.4.xml"
-        lname = "../../data/BruceLabelLinks"
-        glossary =  "../../data/new.Glossary.csv"
-        mmd =  "../../data/OrthogonalPolynomials.mmd"
-
-    else:
-        fname = sys.argv[1]
-        ofname = sys.argv[2]
-        lname = sys.argv[3]
-        glossary = sys.argv[4]
-        mmd = sys.argv[5]
-    setup_label_links(lname)
-    readin(fname,glossary,mmd)
-    writeout(ofname)
-
-
-def setup_label_links(ofname):
-    global lLink
-    lLink = open(ofname, "r").readlines()
-
-
-def readin(ofname,glossary,mmd):
-    # try:
+def DLMF(ofname,mmd,llinks,n):
     for iterations in range(0, 1):
         tex = open(ofname, 'r')
         main_file = open(mmd, "r")
-        mainText = main_file.read()
+        lLinks = open(llinks, 'r')
         mainPrepend = ""
-        mainWrite = open("OrthogonalPolynomials.mmd.new", "w")
-        glossary = open('new.Glossary.csv', 'rb')
+        mainWrite = open("ZetaFunctions.mmd.new", "w")
+        lLink = lLinks.readlines()
         math = False
         constraint = False
         substitution = False
@@ -312,12 +55,27 @@ def readin(ofname,glossary,mmd):
         refEqs = []
         parse = False
         head = False
+        try:
+            chapRef = [("GA", open("../../data/GA.tex", 'r')), ("ZE", open("../../data/ZE.3.tex", 'r'))]
+        except IOError:
+            chapRef = [("GA", open("GA.tex", 'r')), ("ZE", open("ZE.3.tex", 'r'))]
         refLabels = []
-        chapter = ''
+        for c in chapRef:
+            refLines = refLines + (c[1].readlines())
+            c[1].close()
         for i in range(0, len(refLines)):
             line = refLines[i]
             if "\\begin{equation}" in line:
-                label = modLabel(line)
+                sLabel = line.find("\\label{") + 7
+                eLabel = line.find("}", sLabel)
+                label = line[sLabel:eLabel]
+                for l in lLink:
+                    if l.find(label) != -1 and l[len(label) + 1] == "=":
+                        rlabel = l[l.find("=>") + 3:l.find("\\n")]
+                        rlabel = rlabel.replace("/", "")
+                        rlabel = rlabel.replace("#", ":")
+                        break
+                label = rlabel
                 refLabels.append(label)
                 refEqs.append("")
                 math = True
@@ -327,38 +85,45 @@ def readin(ofname,glossary,mmd):
                         refLines[i + 1] or "\\drmfn" in refLines[i + 1]:
                     math = False
 
+        startFlag = True
         for i in range(0, len(lines)):
             line = lines[i]
             if "\\begin{document}" in line:
                 parse = True
-            elif "\\end{document}" in line and parse:
+            elif "\\end{document}" in line:
                 mainPrepend += "</div>\n"
-                mainText = mainPrepend + mainText
-                mainText = mainText.replace("\'\'\'Orthogonal Polynomials\'\'\'\n", "")
+                mainText = mainPrepend
+                mainText = mainText.replace("drmf_bof\n", "")
+                mainText = mainText.replace("drmf_eof\n", "")
+                mainText = mainText.replace("\'\'\'Zeta and Related Functions\'\'\'\n", "")
                 mainText = mainText.replace("{{#set:Section=0}}\n", "")
-                mainText = mainText[0:mainText.rfind("== Sections ")]
-                append_revision('Orthogonal Polynomials')
+                append_revision('Zeta and Related Functions');
                 mainText = "{{#set:Section=0}}\n" + mainText
                 mainWrite.write(mainText)
                 mainWrite.close()
                 main_file.close()
-                copyfile(mmd, 'OrthogonalPolynomials.mmd.new')
+                copyfile(mmd, 'ZetaFunctions.mmd.new')
                 parse = False
             elif "\\title" in line and parse:
-                stringWrite = "\'\'\'"
-                stringWrite += getString(line) + "\'\'\'\n"
-                labels.append("Orthogonal Polynomials")
-                sections.append(["Orthogonal Polynomials", 0])
-                chapter = getString(line)
-                mainPrepend += (
-                "\n== Sections in " + chapter + " ==\n\n<div style=\"-moz-column-count:2; column-count:2;-webkit-column-count:2\">\n")
+                labels.append("Zeta and Related Functions")
+                sections.append(["Zeta and Related Functions", 0])
             elif "\\part" in line:
                 if getString(line) == "BOF":
                     parse = False
                 elif getString(line) == "EOF":
                     parse = True
                 elif parse:
-                    mainPrepend += ("\n<br />\n= " + getString(line) + " =\n")
+                    stringWrite = "\'\'\'"
+                    stringWrite += getString(line) + "\'\'\'\n"
+                    chapter = getString(line)
+                    if startFlag:
+                        mainPrepend += (
+                            "\n== Sections in " + chapter + " ==\n\n<div style=\"-moz-column-count:2; column-count:2;-webkit-column-count:2\">\n")
+                        startFlag = False
+                    else:
+                        mainPrepend += (
+                            "</div>\n\n== Sections in " + chapter + " ==\n\n<div style=\"-moz-column-count:2; "
+                                                                    "column-count:2;-webkit-column-count:2\">\n")
                     head = True
             elif "\\section" in line:
                 mainPrepend += ("* [[" + secLabel(getString(line)) + "|" + getString(line) + "]]\n")
@@ -366,8 +131,6 @@ def readin(ofname,glossary,mmd):
 
         secCounter = 0
         eqCounter = 0
-        subLine = ''
-        conLine = ''
         for i in range(0, len(lines)):
             line = lines[i]
             if "\\section" in line:
@@ -375,14 +138,32 @@ def readin(ofname,glossary,mmd):
                 secCounter += 1
                 append_revision(secLabel(getString(line)))
                 append_text("{{DISPLAYTITLE:" + (sections[secCounter][0]) + "}}\n")
-                append_text("{{#set:Chapter=" + chapter + "}}\n")
-                append_text("{{#set:Section=" + str(secCounter) + "}}\n")
-                append_text("{{headSection}}\n")
+                append_text("<div id=\"drmf_head\">\n")
+                append_text(
+                    "<div id=\"alignleft\"> << [[" + secLabel(sections[secCounter - 1][0]) + "|" + secLabel(
+                        sections[secCounter - 1][0]) + "]] </div>\n")
+                append_text("<div id=\"aligncenter\"> [[Zeta_and_Related_Functions#" +
+                            "Sections_in_" + chapter.replace(" ", "_") + "|" + secLabel(
+                    sections[secCounter][0]) + "]] </div>\n")
+                append_text(
+                    "<div id=\"alignright\"> [[" + secLabel(sections[(secCounter + 1) % len(sections)][0]) +
+                    "|" + secLabel(sections[(secCounter + 1) % len(sections)][0]) + "]] >> </div>\n</div>\n\n")
                 head = True
                 append_text("== " + getString(line) + " ==\n")
             elif ("\\section" in lines[(i + 1) % len(lines)] or "\\end{document}" in lines[
                     (i + 1) % len(lines)]) and parse:
-                append_text("{{footSection}}\n")
+                append_text("<div id=\"drmf_foot\">\n")
+                append_text(
+                    "<div id=\"alignleft\"> << [[" + secLabel(sections[secCounter - 1][0]) + "|" + secLabel(
+                        sections[secCounter - 1][0]) + "]] </div>\n")
+                append_text("<div id=\"aligncenter\"> [[Zeta_and_Related_Functions#" + "Sections_in_"
+                                                                                       "" + chapter.replace(" ",
+                                                                                                            "_") + "|" + secLabel(
+                    sections[secCounter][0]) + "]] </div>\n")
+                append_text(
+                    "<div id=\"alignright\"> [[" + secLabel(sections[(secCounter + 1) % len(sections)][0]) +
+                    "|" + secLabel(sections[(secCounter + 1) % len(sections)][0]) + "]] >> </div>\n</div>\n\n")
+                append_text("drmf_eof\n")
                 sections[secCounter].append(eqCounter)
                 eqCounter = 0
 
@@ -400,14 +181,26 @@ def readin(ofname,glossary,mmd):
                 if head:
                     append_text("\n")
                     head = False
-                label = modLabel(line)
+                sLabel = line.find("\\label{") + 7
+                eLabel = line.find("}", sLabel)
+                label = (line[sLabel:eLabel])
                 eqCounter += 1
-                labels.append(label)
+                for l in lLink:
+                    if label == l[0:l.find("=") - 1]:
+                        rlabel = l[l.find("=>") + 3:l.find("\\n")]
+                        rlabel = rlabel.replace("/", "")
+                        rlabel = rlabel.replace("#", ":")
+                        rlabel = rlabel.replace("!", ":")
+                        break
+                label = modLabel(rlabel)
+                labels.append("Formula:" + rlabel)
                 eqs.append("")
-                append_text("<math id=\"" + label.lstrip("Formula:") + "\">")
+                append_text("<math id=\"" + rlabel.lstrip("Formula:") + "\">\n")
                 math = True
             elif "\\begin{equation}" in line and not parse:
-                label = modLabel(line)
+                sLabel = line.find("\\label{") + 7
+                eLabel = line.find("}", sLabel)
+                label = modLabel(line[sLabel:eLabel])
                 labels.append("*" + label)  # special marker
                 eqs.append("")
                 math = True
@@ -432,16 +225,16 @@ def readin(ofname,glossary,mmd):
                 flagM = True
                 eqs[len(eqs) - 1] += line
 
-                if "\\end{equation}" in lines[i + 1] and "\\subsection" not in lines[i + 3] and "\\section" not in \
-                        lines[i + 3] and "\\part" not in lines[i + 3]:
+                if not ((not ("\\end{equation}" in lines[i + 1]) or "\\subsection" in lines[i + 3]) or "\\section" in \
+                        lines[i + 3]) and not "\\part" in lines[i + 3]:
                     u = i
                     flagM2 = False
                     while flagM:
                         u += 1
                         if "\\begin{equation}" in lines[u] in lines[u]:
                             flagM = False
-                        if "\\section" in lines[u] or "\\subsection" in lines[i] or "\\part" in lines[u] \
-                                or "\\end{document}" in lines[u]:
+                        if "\\section" in lines[u] or "\\subsection" in lines[i] or "\\part" in lines[
+                            u] or "\\end{document}" in lines[u]:
                             flagM = False
                             flagM2 = True
                     if not flagM2:
@@ -466,26 +259,20 @@ def readin(ofname,glossary,mmd):
                     math = False
             if substitution and parse:
                 subLine += line.replace("&", "&<br />")
-                if "\\end{equation}" in lines[i + 1] or "\\substitution" in lines[i + 1] or "\\constraint" in lines[
-                            i + 1] or "\\drmfn" in lines[i + 1] or "\\proof" in lines[i + 1]:
-                    lineR = ""
-                    for i in range(0, len(subLine)):
-                        if subLine[i] == "&" and not (
-                                i > subLine.find("\\begin{array}") and i < subLine.find("\\end{array}")):
-                            lineR += "&<br />"
-                        else:
-                            lineR += subLine[i]
+                if "\\end{equation}" in lines[i + 1] or "\\substitution" in lines[i + 1] \
+                        or "\\constraint" in lines[i + 1] or "\\drmfn" in lines[i + 1] or "\\proof" in lines[i + 1]:
                     substitution = False
                     append_text("<div align=\"right\">Substitution(s): " + getEq(subLine) + "</div><br />\n")
 
             if constraint and parse:
                 conLine += line.replace("&", "&<br />")
-                if "\\end{equation}" in lines[i + 1] or "\\substitution" in lines[i + 1] or "\\constraint" in lines[
-                            i + 1] or "\\drmfn" in lines[i + 1] or "\\proof" in lines[i + 1]:
+                if "\\end{equation}" in lines[i + 1] or "\\substitution" \
+                        in lines[i + 1] or "\\constraint" in lines[i + 1] or "\\drmfn" in lines[i + 1] or "\\proof" in \
+                        lines[i + 1]:
                     constraint = False
                     append_text("<div align=\"right\">Constraint(s): " + getEq(conLine) + "</div><br />\n")
 
-        eqCounter = 0
+        eqCounter = n
         endNum = len(labels) - 1
         parse = False
         constraint = False
@@ -499,11 +286,6 @@ def readin(ofname,glossary,mmd):
         comToWrite = ""
         secCount = -1
         newSec = False
-        symLine = ''
-        eqS = ''
-        noteLine = ''
-        proofLine = ''
-        pause = False
         for i in range(0, len(lines)):
             line = lines[i]
 
@@ -530,43 +312,51 @@ def readin(ofname,glossary,mmd):
                 label = labels[eqCounter]
                 append_revision(secLabel(label))
                 append_text("{{DISPLAYTITLE:" + (labels[eqCounter]) + "}}\n")
+                if eqCounter == len(labels) - 1:
+                    break
                 if eqCounter < endNum:  # FOR ANYTHING THAT IS NOT THE EXTRA EQUATIONS
                     append_text("<div id=\"drmf_head\">\n")
                     if newSec:
-                        append_text("<div id=\"alignleft\"> << [[" + secLabel(sections[secCount][0]).replace(" ", "_") +
-                                    "|" + secLabel(sections[secCount][0]) + "]] </div>\n")
+                        append_text("<div id=\"alignleft\"> "
+                                    "<< [[" + secLabel(sections[secCount][0]).replace(" ",
+                                                                                      "_") + "|" + secLabel(
+                            sections[secCount][0]) + "]] </div>\n")
                     else:
-                        append_text("<div id=\"alignleft\"> << [[" + secLabel(labels[eqCounter - 1]).replace(" ", "_") +
-                                    "|" + secLabel(labels[eqCounter - 1]) + "]] </div>\n")
-                    append_text("<div id=\"aligncenter\"> [[" + secLabel(sections[secCount + 1][0]).replace(" ", "_") +
-                                "#" + secLabel(labels[eqCounter][len("Formula:"):]) + "|formula in " +
-                                secLabel(sections[secCount + 1][0]) + "]] </div>\n")
-                    if eqS == sections[secCount][1]:
+                        append_text("<div id=\"alignleft\"> "
+                                    "<< [[" + secLabel(labels[eqCounter - 1]).replace(" ",
+                                                                                      "_") + "|" + secLabel(
+                            labels[eqCounter - 1]) + "]] </div>\n")
+                    append_text("<div id=\"aligncenter\"> [[" + secLabel(sections[secCount + 1][0]).replace(" ",
+                                                                                                            "_") + "#" +
+                                secLabel(labels[eqCounter][len("Formula:"):]) + "|formula in " + secLabel(
+                        sections[secCount + 1][0]) + "]] </div>\n")
+                    if True:
                         append_text(
-                            "<div id=\"alignright\"> [[" + secLabel(
-                                sections[(secCount + 1) % len(sections)][0]).replace(
-                                " ", "_") + "|" + secLabel(
-                                sections[(secCount + 1) % len(sections)][0]) + "]] >> </div>\n")
-                    else:
-                        append_text("<div id=\"alignright\"> [[" +
-                                    secLabel(labels[(eqCounter + 1) % (endNum + 1)]).replace(" ", "_") +
-                                    "|" + secLabel(labels[(eqCounter + 1) % (endNum + 1)]) + "]] >> </div>\n")
+                            "<div id=\"alignright\"> [[" + secLabel(labels[(eqCounter + 1) % (endNum + 1)]).replace(
+                                " ", "_") +
+                            "|" + secLabel(labels[(eqCounter + 1) % (endNum + 1)]) + "]] >> </div>\n")
                     append_text("</div>\n\n")
                 elif eqCounter == endNum:
                     append_text("<div id=\"drmf_head\">\n")
                     if newSec:
                         newSec = False
-                        append_text("<div id=\"alignleft\"> << [[" + secLabel(sections[secCount][0]).replace(" ", "_") +
-                                    "|" + secLabel(sections[secCount][0]) + "]] </div>\n")
+                        append_text(
+                            "<div id=\"alignleft\"> << [[" + secLabel(sections[secCount][0]).replace(" ",
+                                                                                                     "_") + "|" +
+                            secLabel(sections[secCount][0]) + "]] </div>\n")
                     else:
-                        append_text("<div id=\"alignleft\"> << [[" + secLabel(labels[eqCounter - 1]).replace(" ", "_") +
-                                    "|" + secLabel(labels[eqCounter - 1]) + "]] </div>\n")
-                    append_text("<div id=\"aligncenter\"> [[" + secLabel(sections[secCount + 1][0]).replace(" ", "_") +
-                                "#" + secLabel(labels[eqCounter][len("Formula:"):]) + "|formula in " +
-                                secLabel(sections[secCount + 1][0]) + "]] </div>\n")
+                        append_text("<div id=\"alignleft\"> "
+                                    "<< [[" + secLabel(labels[eqCounter - 1]).replace(" ",
+                                                                                      "_") + "|" + secLabel(
+                            labels[eqCounter - 1]) + "]] </div>\n")
+                    append_text("<div id=\"aligncenter\"> [[" +
+                                secLabel(sections[secCount + 1][0]).replace(" ", "_") +
+                                "#" + secLabel(labels[eqCounter][len("Formula:"):]) +
+                                "|formula in " + secLabel(sections[secCount + 1][0]) +
+                                "]] </div>\n")
                     append_text("<div id=\"alignright\"> [[" + secLabel(
-                        labels[(eqCounter + 1) % (endNum + 1)].replace(" ", "_")) + "|" + secLabel(
-                        labels[(eqCounter + 1) % (endNum + 1)]) + "]] </div>\n")
+                        labels[(eqCounter + 1) % (endNum + 1)].replace(" ", "_")) +
+                                "|" + secLabel(labels[(eqCounter + 1) % (endNum + 1)]) + "]] </div>\n")
                     append_text("</div>\n\n")
 
                 append_text("<br /><div align=\"center\"><math> \n")
@@ -576,8 +366,9 @@ def readin(ofname,glossary,mmd):
                 parse = False
                 math = False
                 if hProof:
-                    append_text("\n== Proof ==\n\nWe ask users to provide proof(s), reference(s) to proof(s), or"
-                                " further clarification on the proof(s) in this space.\n")
+                    append_text("\n== Proof ==\n\nWe ask users to provide proof(s), \
+                    reference(s) to proof(s), or further clarification on the proof(s) in this space.\n")
+
                 append_text("\n== Symbols List ==\n\n")
                 newSym = []
                 # if "09.07:04" in label:
@@ -631,7 +422,6 @@ def readin(ofname,glossary,mmd):
                     parCx = 0
                     parFlag = False
                     cC = 0
-                    cN = 0
                     for z in symbolPar:
                         if z == "@":
                             parFlag = True
@@ -660,7 +450,10 @@ def readin(ofname,glossary,mmd):
                     gFlag = False
                     checkFlag = False
                     get = False
-                    gCSV = csv.reader(open(glossary, 'rb'), delimiter=',', quotechar='\"')
+                    try:
+                        gCSV = csv.reader(open(sys.argv[3], 'rb'), delimiter=',', quotechar='\"')
+                    except (IOError, IndexError):
+                        gCSV = csv.reader(open('../../data/new.Glossary.csv', 'rb'), delimiter=',', quotechar='\"')
                     preG = ""
                     if symbol == "\\&":
                         ampFlag = True
@@ -688,7 +481,8 @@ def readin(ofname,glossary,mmd):
                                             parCx += 1
                                         else:
                                             ArgCx += 1
-                        if G[0].find(symbol) == 0 and (len(G[0]) == len(symbol) or not G[0][len(symbol)].isalpha()):
+                        if G[0].find(symbol) == 0 and (len(G[0]) == len(symbol) or not G[0][
+                            len(symbol)].isalpha()):  # and (numPar!=0 or numArg!=0):
                             checkFlag = True
                             get = True
                             preG = S
@@ -707,7 +501,9 @@ def readin(ofname,glossary,mmd):
                             if len(Q) > len(symbol) and (Q[len(symbol)] == "{" or Q[len(symbol)] == "["):
                                 ap = ""
                                 for o in range(len(symbol), len(Q)):
-                                    if Q[o] == "}" or z == "]":
+                                    if Q[o] == "{" or z == "[":
+                                        pass
+                                    elif Q[o] == "}" or z == "]":
                                         listArgs.append(ap)
                                         ap = ""
                                     else:
@@ -756,47 +552,56 @@ def readin(ofname,glossary,mmd):
 
                 append_text("\n== Bibliography==\n\n")  # should there be a space between bibliography and ==?
                 r = unmodLabel(labels[eqCounter])
-                q = r.find("KLS:") + 4
+                q = r.find("DLMF:") + 5
                 p = r.find(":", q)
                 section = r[q:p]
                 equation = r[p + 1:]
                 if equation.find(":") != -1:
                     equation = equation[0:equation.find(":")]
-                append_text("<span class=\"plainlinks\">[http://homepage.tudelft.nl/11r49/askey/contents.html "
-                            "Equation in Section " + section + "]</span> of [[Bibliography#KLS|'''KLS''']].\n\n")
+                if isnumber(section) == False:
+                    return eqCounter
+                append_text("<span class=\"plainlinks\">[HTTP://DLMF.NIST.GOV/" +
+                            section + "#" + equation + " Equation (" + equation[1:] + "), Section " + section +
+                            "]</span> of [[Bibliography#DLMF|'''DLMF''']].\n\n")
                 append_text("== URL links ==\n\nWe ask users to provide relevant URL links in this space.\n\n")
                 if eqCounter < endNum:
                     append_text("<br /><div id=\"drmf_foot\">\n")
                     if newSec:
                         newSec = False
-                        append_text("<div id=\"alignleft\"> << [[" + secLabel(sections[secCount][0]).replace(" ", "_") +
-                                    "|" + secLabel(sections[secCount][0]) + "]] </div>\n")
+                        append_text(
+                            "<div id=\"alignleft\"> << [[" + secLabel(sections[secCount][0]).replace(" ", "_") +
+                            "|" + secLabel(sections[secCount][0]) + "]] </div>\n")
                     else:
-                        append_text("<div id=\"alignleft\"> << [[" + secLabel(labels[eqCounter - 1]).replace(" ", "_") +
-                                    "|" + secLabel(labels[eqCounter - 1]) + "]] </div>\n")
-                    append_text("<div id=\"aligncenter\"> [[" + secLabel(sections[secCount + 1][0]).replace(" ", "_") +
-                                "#" + secLabel(labels[eqCounter][len("Formula:"):]) + "|formula in " +
-                                secLabel(sections[secCount + 1][0]) + "]] </div>\n")
-                    if eqS == sections[secCount][1]:
-                        append_text("<div id=\"alignright\"> [[" +
-                                    sections[(secCount + 1) % len(sections)][0].replace(" ", "_") + "|" +
-                                    sections[(secCount + 1) % len(sections)][0] + "]] >> </div>\n")
-                    else:
-                        append_text("<div id=\"alignright\"> [[" +
-                                    secLabel(labels[(eqCounter + 1) % (endNum + 1)]).replace(" ", "_") + "|" +
-                                    secLabel(labels[(eqCounter + 1) % (endNum + 1)]) + "]] >> </div>\n")
-                    append_text("</div>\n")
+                        append_text(
+                            "<div id=\"alignleft\"> << [[" + secLabel(labels[eqCounter - 1]).replace(" ",
+                                                                                                     "_") + "|" +
+                            secLabel(labels[eqCounter - 1]) + "]] </div>\n")
+                    append_text("<div id=\"aligncenter\"> [[" + secLabel(sections[secCount + 1][0]).replace(" ",
+                                                                                                            "_") + "#" +
+                                secLabel(labels[eqCounter][len("Formula:"):]) + "|formula in " + secLabel(
+                        sections[secCount + 1][0]) + "]] </div>\n")
+                    if True:
+                        append_text("<div id=\"alignright\"> [[" + secLabel(labels[(eqCounter + 1) %
+                                                                                   (endNum + 1)]).replace(" ",
+                                                                                                          "_") + "|" + secLabel(
+                            labels[(eqCounter + 1) % (endNum + 1)]) + "]] >> </div>\n")
+                    append_text("</div>\n\ndrmf_eof\n")
                 else:  # FOR EXTRA EQUATIONS
                     append_text("<br /><div id=\"drmf_foot\">\n")
-                    append_text("<div id=\"alignleft\"> << [[" + labels[endNum - 1].replace(" ", "_") + "|" + labels[
-                        endNum - 1] + "]] </div>\n")
-                    append_text("<div id=\"aligncenter\"> [[" + labels[0].replace(" ", "_") + "#" + labels[endNum][8:] +
-                                "|formula in " + labels[0] + "]] </div>\n")
-                    append_text("<div id=\"alignright\"> [[" + labels[0 % endNum].replace(" ", "_") + "|" + labels[
-                        0 % endNum] + "]] </div>\n")
-                    append_text("</div>\n")
+                    append_text(
+                        "<div id=\"alignleft\"> << [[" + labels[endNum - 1].replace(" ", "_") + "|" + labels[
+                            endNum - 1] + "]] </div>\n")
+                    append_text("<div id=\"aligncenter\"> [[" + labels[0].replace(" ", "_") + "#" + labels[endNum][
+                                                                                                    8:] + "|formula in " +
+                                labels[0] + "]] </div>\n")
+                    append_text(
+                        "<div id=\"alignright\"> [[" + labels[(0) % endNum].replace(" ", "_") + "|" + labels[
+                            0 % endNum] + "]] </div>\n")
+                    append_text("</div>\n\ndrmf_eof\n")
+
+
+
             elif "\\constraint" in line and parse:
-                # symbols=symbols+getSym(line)
                 symLine = line.strip("\n")
                 if hCon:
                     comToWrite += "\n== Constraint(s) ==\n\n"
@@ -805,7 +610,6 @@ def readin(ofname,glossary,mmd):
                     math = False
                     conLine = ""
             elif "\\substitution" in line and parse:
-                # symbols=symbols+getSym(line)
                 symLine = line.strip("\n")
                 if hSub:
                     comToWrite += "\n== Substitution(s) ==\n\n"
@@ -815,7 +619,8 @@ def readin(ofname,glossary,mmd):
                 subLine = ""
             elif "\\drmfname" in line and parse:
                 math = False
-                comToWrite = "\n== Name ==\n\n<div align=\"left\">" + getString(line) + "</div><br />\n" + comToWrite
+                comToWrite = "\n== Name ==\n\n<div align=\"left\">" + getString(
+                    line) + "</div><br />\n" + comToWrite
 
             elif "\\drmfnote" in line and parse:
                 symbols = symbols + getSym(line)
@@ -827,37 +632,42 @@ def readin(ofname,glossary,mmd):
                 noteLine = ""
 
             elif "\\proof" in line and parse:
-                # symbols=symbols+getSym(line)
                 symLine = line.strip("\n")
                 if hProof:
                     hProof = False
-                    comToWrite += "\n== Proof ==\n\nWe ask users to provide proof(s), reference(s) to proof(s), or " \
-                                  "further clarification on the proof(s) in this space. \n<br /><br />\n" \
-                                  "<div align=\"left\">"
+                    comToWrite += "\n== Proof ==\n\nWe ask users to provide proof(s), reference(s) to proof(s), " \
+                                  "or further clarification on the proof(s) in this space. \n<br /><br />\n<div align=\"left\">"
                 proof = True
                 proofLine = ""
                 pause = False
                 pauseP = False
                 for ind in range(0, len(line)):
                     if line[ind:ind + 7] == "\\eqref{":
-                        # TODO: figure out how eqR is defined
-                        # rLab = getString(eqR)
                         pause = True
-                        eInd = refLabels.index("" + label) # This should be rLab
+                        eqR = line[ind:line.find("}", ind) + 1]
+                        rLab = getString(eqR)
+                        for l in lLink:
+                            if rLab == l[0:l.find("=") - 1]:
+                                rlabel = l[l.find("=>") + 3:l.find("\\n")]
+                                rlabel = rlabel.replace("/", "")
+                                rlabel = rlabel.replace("#", ":")
+                                rlabel = rlabel.replace("!", ":")
+                                break
+
+                        eInd = refLabels.index("" + rlabel)
                         z = line[line.find("}", ind + 7) + 1]
                         if z == "." or z == ",":
                             pauseP = True
-                            proofLine += ("<br /> \n<math id=\"" + label + "\">" + refEqs[
+                            proofLine += ("<br /> \n<math id=\"" + label + "\">\n" + refEqs[
                                 eInd] + "</math>" + z + "<br />\n")
                         else:
                             if z == "}":
                                 proofLine += (
-                                    "<br /> \n<math id=\"" + label + "\">" + refEqs[
-                                        eInd] + "</math><br />")
+                                    "<br /> \n<math id=\"" + rlabel + "\">\n" + refEqs[
+                                    eInd] + "</math><br />")
                             else:
-                                proofLine += (
-                                    "<br /> \n<math id=\"" + label + "\"> \n" + refEqs[
-                                        eInd] + "</math><br />\n")
+                                proofLine += ("<br /> \n<math id=\"" + rlabel + "\">\n" + refEqs[
+                                    eInd] + "</math><br />\n")
                     else:
                         if pause:
                             if line[ind] == "}":
@@ -874,26 +684,31 @@ def readin(ofname,glossary,mmd):
                     comToWrite = ""
                     symbols = symbols + getSym(symLine)
                     symLine = ""
-
             elif proof:
                 symLine += line.strip("\n")
                 pauseP = False
                 for ind in range(0, len(line)):
                     if line[ind:ind + 7] == "\\eqref{":
                         pause = True
-                        # TODO: Figure out how this is used
-                        # eqR = line[ind:line.find("}", ind) + 1]
-                        # rLab = getString(eqR)
-                        eInd = refLabels.index("" + label)
+                        eqR = line[ind:line.find("}", ind) + 1]
+                        rLab = getString(eqR)
+                        for l in lLink:
+                            if rLab == l[0:l.find("=") - 1]:
+                                rlabel = l[l.find("=>") + 3:l.find("\\n")]
+                                rlabel = rlabel.replace("/", "")
+                                rlabel = rlabel.replace("#", ":")
+                                rlabel = rlabel.replace("!", ":")
+                                break
+
+                        eInd = refLabels.index("" + rlabel.lstrip("Formula:"))
                         z = line[line.find("}", ind + 7) + 1]
                         if z == "." or z == ",":
                             pauseP = True
-                            proofLine += ("<br /> \n<math id=\"" + label + "\">" + refEqs[
+                            proofLine += ("<br /> \n<math id=\"" + rlabel + "\">\n" + refEqs[
                                 eInd] + "</math>" + z + "<br />\n")
                         else:
-                            proofLine += (
-                                "<br /> \n<math id=\"" + label + "\">" + refEqs[
-                                    eInd] + "</math><br />\n")
+                            proofLine += ("<br /> \n<math id=\"" + rlabel + "\">\n" + refEqs[
+                                eInd] + "</math><br />\n")
 
                     else:
                         if pause:
@@ -914,10 +729,9 @@ def readin(ofname,glossary,mmd):
                     symLine = ""
 
             elif math:
-                if "\\end{equation}" in lines[i + 1] or "\\constraint" in lines[i + 1] or "\\substitution" in lines[
-                            i + 1] or "\\proof" in lines[i + 1] or "\\drmfnote" in lines[i + 1] or "\\drmfname" in \
-                        lines[
-                                    i + 1]:
+                if "\\end{equation}" in lines[i + 1] or "\\constraint" in lines[i + 1] \
+                        or "\\substitution" in lines[i + 1] or "\\proof" in lines[i + 1] or "\\drmfnote" in lines[
+                            i + 1] or "\\drmfname" in lines[i + 1]:
                     append_text(line.rstrip("\n"))
                     symLine += line.strip("\n")
                     symbols = symbols + getSym(symLine)
@@ -927,19 +741,21 @@ def readin(ofname,glossary,mmd):
                     symLine += line.strip("\n")
                     append_text(line)
             if note and parse:
-                noteLine += line
+                noteLine = noteLine + line
                 symbols = symbols + getSym(line)
-                if "\\end{equation}" in lines[i + 1] or "\\drmfn" in lines[i + 1] or "\\constraint" in lines[
-                            i + 1] or "\\substitution" in lines[i + 1] or "\\proof" in lines[i + 1]:
+                if "\\end{equation}" in lines[i + 1] or "\\drmfn" in lines[i + 1] \
+                        or "\\constraint" in lines[i + 1] \
+                        or "\\substitution" in lines[i + 1] \
+                        or "\\proof" in lines[i + 1]:
                     note = False
                     if "\\emph" in noteLine:
-                        noteLine = noteLine[0:noteLine.find("\\emph{")] + "\'\'" + noteLine[noteLine.find("\\emph{") + len(
-                            "\\emph{"):noteLine.find("}", noteLine.find("\\emph{") + len("\\emph{"))] + "\'\'" + noteLine[
-                                                                                                                 noteLine.find(
-                                                                                                                     "}",
-                                                                                                                     noteLine.find(
-                                                                                                                         "\\emph{") + len(
-                                                                                                                         "\\emph{")) + 1:]
+                        noteLine = noteLine[0:noteLine.find("\\emph{")] + "\'\'" + noteLine[
+                                                                                   noteLine.find("\\emph{") + len(
+                                                                                       "\\emph{"):
+                                                                                   noteLine.find("}", noteLine.find(
+                                                                                       "\\emph{") + len(
+                                                                                       "\\emph{"))] + "\'\'" + \
+                                   noteLine[noteLine.find("}", noteLine.find("\\emph{") + len("\\emph{")) + 1:]
                     comToWrite = comToWrite + "<div align=\"left\">" + getEq(noteLine) + "</div><br />\n"
 
             if constraint and parse:
@@ -947,32 +763,32 @@ def readin(ofname,glossary,mmd):
 
                 symLine += line.strip("\n")
                 # symbols=symbols+getSym(line)
-                if "\\end{equation}" in lines[i + 1] or "\\drmfn" in lines[i + 1] or "\\constraint" in lines[
-                            i + 1] or "\\substitution" in lines[i + 1] or "\\proof" in lines[i + 1]:
+                if "\\end{equation}" in lines[i + 1] or "\\drmfn" in lines[i + 1] \
+                        or "\\constraint" in lines[i + 1] \
+                        or "\\substitution" in lines[i + 1] \
+                        or "\\proof" in lines[i + 1]:
                     constraint = False
                     symbols = symbols + getSym(symLine)
                     symLine = ""
                     append_text(comToWrite + "<div align=\"left\">" + getEq(conLine) + "</div><br />\n")
                     comToWrite = ""
             if substitution and parse:
-                subLine += line.replace("&", "&<br />") #TODO: Figure out if .replace is needed
+                subLine = subLine + line.replace("&", "&<br />")
 
                 symLine += line.strip("\n")
-                if "\\end{equation}" in lines[i + 1] or "\\drmfn" in lines[i + 1] or "\\substitution" in lines[
-                            i + 1] or "\\constraint" in lines[i + 1] or "\\proof" in lines[i + 1]:
+                # symbols=symbols+getSym(line)
+                if "\\end{equation}" in lines[i + 1] or "\\drmfn" in lines[i + 1] or \
+                                "\\substitution" in lines[i + 1] or "\\constraint" in lines[i + 1] or "\\proof" in \
+                        lines[i + 1]:
                     substitution = False
                     symbols = symbols + getSym(symLine)
                     symLine = ""
-                    lineR = ""
-                    for i in range(0, len(subLine)):
-                        if subLine[i] == "&" and not (
-                                i > subLine.find("\\begin{array}") and i < subLine.find("\\end{array}")):
-                            lineR += "&<br />"
-                        else:
-                            lineR += subLine[i]
                     append_text(comToWrite + "<div align=\"left\">" + getEq(subLine) + "</div><br />\n")
                     comToWrite = ""
 
 
 if __name__ == "__main__":
-    main()
+    tex = "../../data/ZE.3.tex"
+    mainFile = "../../data/OrthogonalPolynomials.mmd"
+    lLinks = "../../data/BruceLabelLinks"
+    DLMF(tex, mainFile, lLinks, 0)

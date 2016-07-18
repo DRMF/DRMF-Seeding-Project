@@ -2,6 +2,6 @@ language: python
 install:
   - pip install coveralls
 script:
-  tests.sh 
+  nosetests --with-coverage AlexDanoff Azeem Joon
 after_success:
   coveralls
