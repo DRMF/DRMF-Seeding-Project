@@ -3,7 +3,7 @@ import os
 from objects import MapleFile
 from translation_methods import sort
 
-translate = dict(tuple(line.split(" : ")) for line in open("keys/section_names").read().split("\n")
+translate = dict(tuple(line.split(" : ")) for line in open("info/section_names").read().split("\n")
                  if line != "" and "%" not in line)
 
 files = [
@@ -54,7 +54,7 @@ def translate_directories():
                 folder = ''.join(file_name.split(".")[:-1])
                 if folder in files:
                     t = MapleFile(info[0] + "/" + file_name).convert_formulae()
-                    eq_number = filter(str.isdigit, t.split("\n")[0]).rjust(20)
+                    eq_number = filter(str.isdigit, str(t.split("\n")[0])).rjust(20)
                     file_info[eq_number] = [folder, t]
 
             tags = list(file_info)

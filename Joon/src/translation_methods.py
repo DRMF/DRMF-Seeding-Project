@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 
-import tokenize
-from StringIO import StringIO
+import json
+from maple_tokenize import tokenize
+from copy import copy
+
+info = json.loads(open("info.json").read())
 
 def key_info(filename):
     return [line.split(" || ", 1) for line in open(filename).read().split("\n")
                  if line != "" and "%" not in line]
 
-functions = key_info("keys/functions")
-symbols = key_info("keys/symbols")
-constraints = key_info("keys/constraints") + [["::", "\\in "]]
+functions = info["functions"] #key_info("info/functions")
+symbols = info["symbols"] #key_info("info/symbols")
+constraints = info["constraints"] #key_info("info/constraints") + [["::", "\\in "]]
 
 special = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin"}
 brackets = {"[": "", "]": ""}
@@ -184,9 +187,6 @@ def get_arguments(function, string):
 
         args[0] = args[0].replace("i", "k")
 
-    elif function == "log[q]":
-        args = ["q"] + basic_translate(string[1:-1]).split(",")
-
     else:
         args = basic_translate(string[1:-1]).split(",")
 
@@ -197,14 +197,11 @@ def generate_function(name, args):
     Generate a function with the provided name and arguments
     """
 
-    # special parsing of arguments, based on the function
-    # (i.e. if information needs to be extrapolated) from the data
-
     result = list()
-    for group in functions:
-        if group[0] == name and len(args) + 1 == len(group[1].split(" || ")):
-            result = group[1].split(" || ")
-            break
+    for n in functions:
+        for variant in functions[n]:
+            if name == n and len(args) == variant["args"]:
+                result = copy(variant["repr"])
 
     for n in xrange(1, len(result)):
         result.insert(2 * n - 1, args[n - 1])
@@ -221,21 +218,12 @@ def translate(exp):
 
     exp = replace_strings(exp.strip(), constraints)
     exp = replace_strings(exp, {"functions:-": ""})
-
-    s = list()
-    def add_to_list(a, b, c, d, e):
-        s.append(b)
-
-    tokenize.tokenize(StringIO(exp).readline, add_to_list)
-
-    exp = s
-
-    # exp = replace_strings(exp, spacing).split()
-
-    # print exp
+    exp = tokenize(exp)
 
     for i in xrange(len(exp)):
-        exp[i] = find(symbols, exp[i])
+        for s in symbols:
+            if exp[i] == s:
+                exp[i] = symbols[s]
 
     for i in xrange(len(exp)-1, -1, -1):
         if exp[i] == "(":
@@ -247,9 +235,10 @@ def translate(exp):
                 piece = [piece[0]] + exp[sq + 1:i - 1] + [","] + piece[1:]
                 i = sq
 
-            if find(functions, exp[i - 1]) != exp[i - 1]:
+            if exp[i - 1] in functions:
                 i -= 1
                 piece = generate_function(exp[i], get_arguments(exp[i], piece))
+
             else:
                 piece = basic_translate(piece)
 
@@ -327,11 +316,11 @@ def make_equation(eq):
             equation += "\\dots"
 
     # adds metadata
-    view_metadata = True
+    view_metadata = False
 
     if view_metadata:
-        equation += "\n\\end{equation*}\n$$%s$$\n\\begin{center}%s\\end{center}" % (
-            translate(eq.constraints), eq.category)
+        equation += "\n\\end{equation*}\n\\begin{center}\nParameters: $$%s$$\n$$%s$$\n%s\n\\end{center}" % (
+            eq.parameters, translate(eq.constraints), eq.category)
     else:
         equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"
         equation += "\n  %  \\category{" + eq.category + "}"

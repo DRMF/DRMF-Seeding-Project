@@ -23,7 +23,7 @@ class MapleFile(object):
 class MapleEquation(object):
     def __init__(self, inp):
         # creates a dictionary called "fields", containing all the Maple fields
-        self.fields = {"category": "", "constraints": "", "begin": "", "factor": "", "front": "",
+        self.fields = {"category": "", "constraints": "", "begin": "", "factor": "", "front": "", "parameters": "",
                        "type": inp.pop(0).split("'")[1]}
 
         for i, line in enumerate(inp):
@@ -41,10 +41,10 @@ class MapleEquation(object):
                         temp = temp[:10]
                     line[1] = str(temp)[1:-1]
 
-                elif line[0] == "booklabelv2" and line[1] == '"",':
+                elif line[0] == "booklabelv1" and line[1] == '"",':
                     line[1] = "No label"
 
-                elif line[0] in ["booklabelv1", "booklabelv2", "general", "constraints", "begin"]:
+                elif line[0] in ["booklabelv1", "booklabelv2", "general", "constraints", "begin", "parameters"]:
                     line[1] = line[1].strip()[1:-2].strip()
 
                 elif line[0] in ["lhs", "factor", "front", "even", "odd"]:
@@ -56,12 +56,13 @@ class MapleEquation(object):
         # assign fields containing information about the equation
         self.eq_type = self.fields["type"]
         self.category = self.fields["category"]
-        self.label = self.fields["booklabelv2"]
+        self.label = self.fields["booklabelv1"]
         self.lhs = self.fields["lhs"]
         self.factor = self.fields["factor"]
         self.front = self.fields["front"]
         self.begin = self.fields["begin"]
         self.constraints = self.fields["constraints"]
+        self.parameters = self.fields["parameters"]
 
         # even-odd case handling
         if "general" in self.fields:
