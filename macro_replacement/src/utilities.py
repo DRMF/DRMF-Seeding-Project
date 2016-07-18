@@ -5,8 +5,6 @@ __status__ = "Development"
 Provides utility/helper functions for use in other files.
 """
 
-from __future__ import print_function
-
 import re
 import sys
 
