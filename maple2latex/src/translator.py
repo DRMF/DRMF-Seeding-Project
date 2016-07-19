@@ -234,9 +234,8 @@ def translate(exp):
     exp = tokenize(exp)
 
     for i in range(len(exp)):
-        for s in SYMBOLS:
-            if exp[i] == s:
-                exp[i] = SYMBOLS[s]
+        if exp[i] in SYMBOLS:
+            exp[i] = SYMBOLS[exp[i]]
 
     i = len(exp) - 1
     while i >= 0:
