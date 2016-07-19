@@ -1,6 +1,4 @@
-"""
-Dictionary containing math mode delimiters and their respective endpoints.
-"""
+# Dictionary containing math mode delimiters and their respective endpoints.
 MATH_START = {"\\[": "\\]",
               "\\(": "\\)",
               "$$": "$$",
@@ -12,9 +10,7 @@ MATH_START = {"\\[": "\\]",
               "\\begin{multline}": "\\end{multline}",
               "\\begin{multline*}": "\\end{multline*}"}
 
-"""
-List of delimiters that exit math mode.
-"""
+# List of delimiters that exit math mode.
 MATH_END = ["\\hbox{",
             "\\mbox{",
             "\\text{"]
@@ -106,7 +102,7 @@ def parse_math(string, start, ranges):
                     ranges.append((begin, start + i))
                 return i + len(MATH_START[delim]) - 1
         i += 1
-    return i
+    raise SyntaxError("missing " + MATH_START[delim])
 
 
 def parse_non_math(string, start, ranges):
@@ -136,11 +132,14 @@ def parse_non_math(string, start, ranges):
             level += 1
         elif string[i] == "}":
             if level == 0 and delim != "":
+                i += 1
                 return i
             else:
                 level -= 1
         i += 1
-    return i
+    if delim == "" and level == 0:
+        return i
+    raise SyntaxError("missing end bracket")
 
 
 def find_math_ranges(string):
