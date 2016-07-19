@@ -10,6 +10,7 @@ try:
 except ImportError:
     izip = zip
 
+import math_mode
 import math_function
 import parentheses
 from utilities import writeout
@@ -46,18 +47,24 @@ def main():
 
     # Below: index_str writes to output file, math_string takes output file as input, and change_original
     # writes to the output based on the previous output file
-    index_str = math_function.index_spacing(fname, ofname)
-    my_string = math_function.math_string(ofname)
+    # print math_mode.find_math_ranges(open(fname).read())
 
-    math_string = remove_special(my_string)
+    unchanged_math = math_function.math_string(fname)
+    math_string = remove_special(unchanged_math)
+    changed_math = math_function.change_original(fname,math_string)
+    formatted = math_function.formatting(changed_math)
 
-    writeout(ofname, math_function.change_original(ofname, math_string))
+    writeout(ofname, formatted)
 
 
 def remove_special(content):
-    """Removes the excess pieces from the given content and returns the updated version as a string."""
-    print(content)
+    """Removes the excess pieces from the given content and returns the updated version as a string.
+    IN -> list
+    OUT -> string"""
+    if isinstance(content, str):
+        content = content.split('\n')
     counter = 0
+
     for function in content:
 
         lines = function.split('\n')
@@ -84,37 +91,12 @@ def remove_special(content):
         dollar_pat = re.compile(r'(?<!\\)\$')
 
         comment_str = ""
-        ind_str = ""
-
-        previous = ""
-        old = ""
 
         updated = []
-
         # go through content and make replacements where necessary
         for lnum, line in enumerate(lines):
 
             lnum += 1
-
-            # if this line is an index start storing it, or write it if we're done with the indexes
-            if IND_START in line:
-                in_ind = True
-                ind_str += line + "\n"
-                continue
-
-            elif in_ind:
-
-                in_ind = False
-
-                # add a preceding newline if one is not already present
-                if previous.strip() != "":
-                    ind_str = "\n" + ind_str
-
-                fullsplit = ind_str.split("\n")
-
-                updated.extend(fullsplit)
-                ind_str = ""
-
             # if this line marks the start of an equation, set the flag
             if EQ_START in line:
                 in_eq = True
@@ -154,8 +136,10 @@ def remove_special(content):
                 if not is_comment:
 
                     line = line.rstrip(".")
+
                     line = _replace_i(line)
 
+                    # print 'line2', line
                 elif any(info[SEEN] for info in inside.values()):
                     # ^we're in a special block, look for dollar signs to replace "i"s
 
@@ -193,12 +177,10 @@ def remove_special(content):
                         # ^ removed bc periods/ commas in comment necessary -oksana
                         updated.extend(comment_lines)
 
-                        comment_str = ""
 
+                        comment_str = ""
                     continue
 
-            old = previous
-            previous = line
             updated.append(line)
 
         function = '\n'.join(updated)
@@ -210,14 +192,15 @@ def remove_special(content):
         function = re.sub(r'\\index{(.*?)}\n\n\\index{(.*?)}', r'\\index{\1}\n\\index{\2}', function)
 
         content[counter] = function
+        # print 'content[counter]', content[counter]
         counter += 1
-    return content
+
+    return "\n".join(content)
 
 # replaces "i"s as necessary in words
 def _replace_i(words):
 
     text_pat = re.compile(r'\\text{.*?}')
-
 
     iloc = words.find("i")
 
@@ -226,14 +209,17 @@ def _replace_i(words):
 
         text_bounds = [(match.start(), match.end()) for match in text_pat.finditer(words)]
 
+
         # go through all the text lines
         for start, end in text_bounds:
 
             # if the "i" is in the \text tag, skip it
             if start < iloc < end:
+
                 iloc = words.find("i", end + 1)
 
-                continue
+                if len(text_bounds) > 1:
+                    continue
 
         surrounding = ""
 
@@ -265,13 +251,18 @@ def _replace_i(words):
                     if surrounding[0] != "\\":
                         replacement = r'\iunit '
 
-            else:  # neither of the characters surrounding the "i" are alphabetic, replace
-
+            else:
+                # neither of the characters surrounding the "i" are alphabetic, replace
                 replacement = r'\iunit'
-        # print("Surrounding: {0} - replacement made: {1}".format(surrounding, replacement != "i"))
-        words = words[:iloc] + replacement + words[iloc + 1:]
 
-        iloc = words.find("i", iloc + len(replacement))
+
+        # print("Surrounding: {0} - replacement made: {1}".format(surrounding, replacement != "i"))
+        if iloc != -1:
+            words = words[:iloc] + replacement + words[iloc + 1:]
+            iloc = words.find("i", iloc + len(replacement))
+        else:
+            words = words[:iloc] + replacement
+
     return words
 
 
