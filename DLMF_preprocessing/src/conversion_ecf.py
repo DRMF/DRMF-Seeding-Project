@@ -4,7 +4,7 @@ __status__ = "Development"
 import re
 
 # existing file named text.txt
-file = open('test1.txt', 'r').read()
+existing_file = open('test1.txt', 'r').read()
 
 # output written to newText.txt
 newFile = open('newIdentities.txt', 'w')
@@ -568,40 +568,40 @@ def equationSetUp(s):
     return (newFile + "\\end {equation} \n\n")
 
 
-file = removeInactive(file)
-file = replaceGreekVars(file)
-file = replaceSqrt(file)
-file = replacePolygamma(file)
-file = replaceCos(file)
-file = replaceSin(file)
-file = replaceTan(file)
-file = replaceCsc(file)
-file = replaceSec(file)
-file = replaceCot(file)
-file = replaceArcCos(file)
-file = replaceArcSin(file)
-file = replaceArcTan(file)
-file = replaceArcCsc(file)
-file = replaceArcSec(file)
-file = replaceArcCot(file)
-file = replaceCosh(file)
-file = replaceSinh(file)
-file = replaceTanh(file)
-file = replaceCsch(file)
-file = replaceSech(file)
-file = replaceCoth(file)
-file = replaceInfinity(file)
-file = ContinuedFractionK(file)
-file = replaceAbs(file)
-file = comparativeRelators(file)
+existing_file = removeInactive(existing_file)
+existing_file = replaceGreekVars(existing_file)
+existing_file = replaceSqrt(existing_file)
+existing_file = replacePolygamma(existing_file)
+existing_file = replaceCos(existing_file)
+existing_file = replaceSin(existing_file)
+existing_file = replaceTan(existing_file)
+existing_file = replaceCsc(existing_file)
+existing_file = replaceSec(existing_file)
+existing_file = replaceCot(existing_file)
+existing_file = replaceArcCos(existing_file)
+existing_file = replaceArcSin(existing_file)
+existing_file = replaceArcTan(existing_file)
+existing_file = replaceArcCsc(existing_file)
+existing_file = replaceArcSec(existing_file)
+existing_file = replaceArcCot(existing_file)
+existing_file = replaceCosh(existing_file)
+existing_file = replaceSinh(existing_file)
+existing_file = replaceTanh(existing_file)
+existing_file = replaceCsch(existing_file)
+existing_file = replaceSech(existing_file)
+existing_file = replaceCoth(existing_file)
+existing_file = replaceInfinity(existing_file)
+existing_file = ContinuedFractionK(existing_file)
+existing_file = replaceAbs(existing_file)
+existing_file = comparativeRelators(existing_file)
 
 count = 0
 position = 0
 yorn = False
-for index in range(len(file)):
-    if file[index: index + 2] == "(*":
+for index in range(len(existing_file)):
+    if existing_file[index: index + 2] == "(*":
         count = index
-        position = file.find("\n", index)
-        position = file.find("\n", position + 1)
-        newFile.write(equationSetUp(file[index: position]).replace("*", " "))
+        position = existing_file.find("\n", index)
+        position = existing_file.find("\n", position + 1)
+        newFile.write(equationSetUp(existing_file[index: position]).replace("*", " "))
 newFile.close()

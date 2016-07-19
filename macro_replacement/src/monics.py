@@ -4,7 +4,6 @@ __status__ = "Development"
 import re
 import sys
 
-global fullmacro
 fullmacro = ''
 
 

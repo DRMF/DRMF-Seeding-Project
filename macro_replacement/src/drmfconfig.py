@@ -3,7 +3,6 @@ __status__ = "Development"
 
 import os
 import sys
-from snippets import *
 from function import Function
 
 
