@@ -1,14 +1,16 @@
+"""
+This program begins with an unprocessed LaTeX file and removes parts that are
+unnecessary for the DLMF.
+"""
+
 __author__ = "Alex Danoff"
 __status__ = "Development"
-
-"""This program begins with an unprocessed LaTeX file and removes parts that are unnecessary for the DLMF."""
 
 import re
 import sys
 
 import parentheses
-from utilities import (writeout, readin, get_line_lengths,
-                       find_line)
+from utilities import writeout, readin, get_line_lengths, find_line
 
 EQ_START = r'\begin{equation}'
 EQ_END = r'\end{equation}'
@@ -94,8 +96,12 @@ def remove_excess(content):
     pattern = re.compile(r'\\acknowledgements{.*?}\n\n', re.DOTALL)
     content = re.sub(pattern, r'', content)
     content = re.sub(r'\\maketitle', r' ', content)
-    content = re.sub(r'\\bibliography{\.\./bib/DLMF}',
-                     r'\\bibliographystyle{plain}' + "\n" + r'\\bibliography{/home/hcohl/DRMF/DLMF/DLMF.bib}', content)
+    content = re.sub(
+        r'\\bibliography{\.\./bib/DLMF}',
+        r'\\bibliographystyle{plain}' +
+        "\n" +
+        r'\\bibliography{/home/hcohl/DRMF/DLMF/DLMF.bib}',
+        content)
     content = re.sub(r'\\acknowledgements{.*?}', r' ', content)
     content = re.sub(r'\{math}', r'{equation}', content)
     content = re.sub(r'\\galleryitem{.*?}{.*?}', r' ', content)
@@ -115,21 +121,43 @@ def remove_excess(content):
     content = re.sub(r'\\author\[.*?\]{.*?}', r' ', content)
 
     # modify labels, etc
-    content = re.sub(r'\\begin\{equation\}\[.*?\]+', r'\\begin{equation}', content, re.DOTALL)
+    content = re.sub(
+        r'\\begin\{equation\}\[.*?\]+',
+        r'\\begin{equation}',
+        content,
+        re.DOTALL)
 
     print(len(old) - len(content))
     old = content
 
     # remove from something to the start of the next section/part/etc
-    content = remove_section(r'\\section{Special Notation}', r'\\part', content)
-    content = remove_section(r'\\part{Computation}', r'\\bibliographystyle{plain}', content)
-    content = remove_section(r'\\part{References}', r'\\bibliographystyle{plain}', content)
+    content = remove_section(
+        r'\\section{Special Notation}',
+        r'\\part',
+        content)
+    content = remove_section(
+        r'\\part{Computation}',
+        r'\\bibliographystyle{plain}',
+        content)
+    content = remove_section(
+        r'\\part{References}',
+        r'\\bibliographystyle{plain}',
+        content)
     content = remove_section(r'\\section{Graphics}', r'\\section', content)
     content = remove_section(r'\\section{Graphics}', r'\\section', content)
-    content = remove_section(r'\\subsection{Graphics}', r'\\subsection', content)
+    content = remove_section(
+        r'\\subsection{Graphics}',
+        r'\\subsection',
+        content)
     content = remove_section(r'\\section{Integrals}', r'\\section', content)
-    content = remove_section(r'\\subsection{Integrals}', r'\\subsection', content)
-    content = remove_section(r'\\section{Physical Applications}', r'\\bibliographystyle{plain}', content)
+    content = remove_section(
+        r'\\subsection{Integrals}',
+        r'\\subsection',
+        content)
+    content = remove_section(
+        r'\\section{Physical Applications}',
+        r'\\bibliographystyle{plain}',
+        content)
 
     print(len(old) - len(content))
 
@@ -138,7 +166,8 @@ def remove_excess(content):
     # takes out comment lines first
     for line in content.split("\n"):
 
-        # if line only consists of % replace with nothing, otherwise don't add back
+        # if line only consists of % replace with nothing, otherwise don't add
+        # back
         if line.lstrip().startswith("%"):
             if line.rstrip().endswith("%"):
                 line = ""
@@ -193,9 +222,16 @@ def remove_excess(content):
 
             skip_lines.update(range(start, end + 1))
 
-            # define items that cannot be at the beginning of any line or be contined in any line
-    illegal_starts = [r'\documentclass{DLMF}', r'\thischapter', r'\part{Notation}', r'\begin{equationgroup',
-                      r'\end{equationgroup', r'\begin{onecolumn', r'\end{onecolumn']
+            # define items that cannot be at the beginning of any line or be
+            # contined in any line
+    illegal_starts = [
+        r'\documentclass{DLMF}',
+        r'\thischapter',
+        r'\part{Notation}',
+        r'\begin{equationgroup',
+        r'\end{equationgroup',
+        r'\begin{onecolumn',
+        r'\end{onecolumn']
     illegal_elements = [r'TwoToOneRule', r'OneToTwoRule', r'\citet']
 
     lines = content.split("\n")
@@ -208,7 +244,8 @@ def remove_excess(content):
     eqmix_label = ""
     const_str = ""
 
-    # remove trailing % and whitespace and add to updated - also remove lines that should be skipped
+    # remove trailing % and whitespace and add to updated - also remove lines
+    # that should be skipped
     for lnum, line in enumerate(lines):
 
         lnum += 1
@@ -218,8 +255,8 @@ def remove_excess(content):
             continue
 
         line = parentheses.insert(line, curly=True)
-        line_checks = [line.lstrip().startswith(start) for start in illegal_starts] + [element in line for element in
-                                                                                       illegal_elements]
+        line_checks = [line.lstrip().startswith(start) for start in illegal_starts] + \
+            [element in line for element in illegal_elements]
 
         # skip current line if it starts with or contains an illegal element
         if any(line_checks):
@@ -227,12 +264,14 @@ def remove_excess(content):
 
         cleaned = line.rstrip().rstrip("%").rstrip()
 
-        # line marks the start of an equationmix, set the flag and remove the line
+        # line marks the start of an equationmix, set the flag and remove the
+        # line
         if EQMIX_START in cleaned:
             eqmix_label = cleaned[cleaned.index(r'\label'):]
             continue
 
-        # line marks the end of an equationmix, set the flag and remove the line
+        # line marks the end of an equationmix, set the flag and remove the
+        # line
         if EQMIX_END in cleaned:
             eqmix_label = ""
             continue
@@ -259,7 +298,8 @@ def remove_excess(content):
         if CASES_END in cleaned:
             in_cases = False
 
-        # remove commas, periods, colons, and semi-colons from the end of equations
+        # remove commas, periods, colons, and semi-colons from the end of
+        # equations
         if in_eq and not in_const:
             to_strip = ":;,"
 
@@ -277,7 +317,8 @@ def remove_excess(content):
             # we're done with the constraint, make substitutions
             if cleaned.rstrip().rstrip(".,").endswith("}"):
 
-                const_str = re.sub(r'\$[;,](\s*(?:\$|or))', r'$ &\1', const_str)
+                const_str = re.sub(
+                    r'\$[;,](\s*(?:\$|or))', r'$ &\1', const_str)
                 in_const = False
 
                 # constraint ends with two }, put one on next line
@@ -330,11 +371,24 @@ def remove_excess(content):
 
 # returns the preamble as a list of it's lines
 def _get_preamble():
-    preamble = ['\\documentclass{article}', '\\usepackage{amsmath}', '\\usepackage{amsfonts}',
-                '\\usepackage{DLMFbreqn}',
-                '\\usepackage{DLMFmath}', '\\usepackage{DRMFfcns}', '', '\\oddsidemargin -0.7cm', '\\textwidth 18.3cm',
-                '\\textheight 26.0cm', '\\topmargin -2.0cm', '', '%  \constraint{', '%  \substitution{',
-                '%  \drmfnote{', '%  \drmfname{', '']
+    preamble = [
+        '\\documentclass{article}',
+        '\\usepackage{amsmath}',
+        '\\usepackage{amsfonts}',
+        '\\usepackage{DLMFbreqn}',
+        '\\usepackage{DLMFmath}',
+        '\\usepackage{DRMFfcns}',
+        '',
+        '\\oddsidemargin -0.7cm',
+        '\\textwidth 18.3cm',
+        '\\textheight 26.0cm',
+        '\\topmargin -2.0cm',
+        '',
+        '%  \constraint{',
+        '%  \substitution{',
+        '%  \drmfnote{',
+        '%  \drmfname{',
+        '']
 
     return preamble
 

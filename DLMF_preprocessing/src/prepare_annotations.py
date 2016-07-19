@@ -1,6 +1,3 @@
-__author__ = "Alex Danoff"
-__status__ = "Development"
-
 """
 Prepare the special annotations in the file by uncommenting them and further
 readying them to be converted to WikiText.
@@ -17,6 +14,9 @@ The Special Annotations are:
 *``proof``
 """
 
+__author__ = "Alex Danoff"
+__status__ = "Development"
+
 import re
 import sys
 
@@ -31,7 +31,10 @@ ANNOTATION_STR = r'\s*%\s*\\(?:constraint|substitution|drmf(?:note|name)|proof)'
 ANNOTATION_PAT = re.compile(ANNOTATION_STR, re.MULTILINE)
 
 BRACE_PAT = re.compile(
-    r'(?P<annotation>' + ANNOTATION_STR + r')###open_(\d+)###(?![$ ])(?P<content>.*?)(?![$ ])###close_\2###', re.DOTALL)
+    r'(?P<annotation>' +
+    ANNOTATION_STR +
+    r')###open_(\d+)###(?![$ ])(?P<content>.*?)(?![$ ])###close_\2###',
+    re.DOTALL)
 
 MEASURE_PAT = re.compile(r'(\S)\\\\\[0.2cm\]')
 
@@ -67,7 +70,8 @@ def prepare_annotations(content):
         r'\\begin{equation}(?P<before>\\label{(?P<eq_label>.*?)}.*?\n^[^%]*$)(?P<comment>\n^ *%[\w\s\\{}()<>[\]&=@%,.:;|\'~_^$/+-]*?\n)\\end{equation}',
         re.MULTILINE)
 
-    content = content[:docstart] + eq_comment_pattern.sub(replace_comments, content[docstart:])
+    content = content[:docstart] + \
+        eq_comment_pattern.sub(replace_comments, content[docstart:])
 
     special_annotations = {
         r'\\constraint': "C",
@@ -79,7 +83,8 @@ def prepare_annotations(content):
 
     # replace the annotations with their "code"
     for annotation, code in special_annotations.iteritems():
-        content = content[:docstart] + re.sub(annotation, r'{\\bf ' + code + '}:~', content[docstart:])
+        content = content[
+            :docstart] + re.sub(annotation, r'{\\bf ' + code + '}:~', content[docstart:])
 
     content = content.replace("~{", "~")
     content = content.replace("~ ", "~")
@@ -89,7 +94,8 @@ def prepare_annotations(content):
     return content
 
 
-# moves annotations from inside equation blocks to the end of them and wraps them in a flushright block
+# moves annotations from inside equation blocks to the end of them and
+# wraps them in a flushright block
 def replace_comments(match):
     """
     Processes each equation block that contains comments.
@@ -104,7 +110,7 @@ def replace_comments(match):
             \\RiemannZeta'@{s} = - \\sum_{n=2}^\\infty (\\ln@@{n}) n^{-s}
             %  \\constraint{$\\realpart{s} > 1$}
         \\end{equation}
- 
+
     becomes::
 
         \\begin{equation}\\label{eq:ZE.EX.ZE5}
@@ -144,11 +150,14 @@ def replace_comments(match):
         if not stripped.startswith("%"):
             replacement += comment_line + "\n"
 
-        else:  # otherwise, process it (take off % and add in \displaystyle) and add it to the comment
+        # otherwise, process it (take off % and add in \displaystyle) and add
+        # it to the comment
+        else:
 
             num_annotations = len(ANNOTATION_PAT.findall(comment_line))
 
-            # add measurement to the previous line if the current line is starting a new annotation
+            # add measurement to the previous line if the current line is
+            # starting a new annotation
             add_measure = num_annotations and annotations_left != total_annotations
 
             annotations_left -= num_annotations
@@ -188,7 +197,8 @@ def replace_comments(match):
                     previous = ""
                     disp_string = '${' + r'\displaystyle '
 
-                    # only try to look behind the $ if it isn't the first character in the line
+                    # only try to look behind the $ if it isn't the first
+                    # character in the line
                     if start != 0:
                         previous = comment_line[start - 1]
 
@@ -196,9 +206,8 @@ def replace_comments(match):
                     if previous == " ":
                         disp_string = " " + disp_string
 
-                    comment_line = comment_line[:start] + " " * extra_whitespace + disp_string + comment_line[
-                                                                                                 start + 1:end] + '}' + comment_line[
-                                                                                                                        end:]
+                    comment_line = comment_line[:start] + " " * extra_whitespace + \
+                        disp_string + comment_line[start + 1:end] + '}' + comment_line[end:]
                     comment_line = comment_line.rstrip().rstrip("}") + " "
 
                 dollar_locs = _get_dollar_locs(comment_line)

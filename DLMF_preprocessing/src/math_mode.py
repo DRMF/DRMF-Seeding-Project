@@ -1,17 +1,17 @@
 math_start = {"\\[": "\\]",
-             "\\(": "\\)",
-             "$$": "$$",
-             "$": "$",
-             "\\begin{equation}": "\\end{equation}",
-             "\\begin{equation*}": "\\end{equation*}",
-             "\\begin{align}": "\\end{align}",
-             "\\begin{align*}": "\\end{align*}",
-             "\\begin{multline}": "\\end{multline}",
-             "\\begin{multline*}": "\\end{multline*}"}
+              "\\(": "\\)",
+              "$$": "$$",
+              "$": "$",
+              "\\begin{equation}": "\\end{equation}",
+              "\\begin{equation*}": "\\end{equation*}",
+              "\\begin{align}": "\\end{align}",
+              "\\begin{align*}": "\\end{align*}",
+              "\\begin{multline}": "\\end{multline}",
+              "\\begin{multline*}": "\\end{multline*}"}
 
 math_end = ["\\hbox{",
-           "\\mbox{",
-           "\\text{"]
+            "\\mbox{",
+            "\\text{"]
 
 
 def find_first(string, delim, start=0):
@@ -138,7 +138,7 @@ def parse_non_math(string, start, ranges):
     return i
 
 
-def find_math_ranges(string,drmf):
+def find_math_ranges(string, drmf):
     # type: (str) -> list
     """
     Returns a list of tuples, each tuple denoting a range of math mode.
@@ -146,13 +146,13 @@ def find_math_ranges(string,drmf):
     :return: A list of tuples denoting math mode ranges.
     """
     global math_end
-    if drmf == True:
-        string = string.replace("\\drmfnote","\\drmfname")
+    if drmf:
+        string = string.replace("\\drmfnote", "\\drmfname")
         math_end.extend(["\\constraint{",
-                        "\\substitution"
-                        "\\drmfnote{",
-                        "\\drmfname{",
-                        "\\proof{",
+                         "\\substitution"
+                         "\\drmfnote{",
+                         "\\drmfname{",
+                         "\\proof{",
                          "\\label{"])
     ranges = []
     parse_non_math(string, 0, ranges)

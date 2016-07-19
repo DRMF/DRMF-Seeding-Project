@@ -1,7 +1,7 @@
+"""Replace i, e, and \pi with \iunit, \expe, and \cpi respectively."""
+
 __author__ = "Alex Danoff"
 __status__ = "Development"
-
-"""Replace i, e, and \pi with \iunit, \expe, and \cpi respectively."""
 
 import math_mode
 import re
@@ -17,6 +17,7 @@ except ImportError:
 from utilities import writeout
 from utilities import readin
 
+
 def main():
     if len(sys.argv) != 3:
 
@@ -31,6 +32,7 @@ def main():
 
     writeout(ofname, replace_special(string))
 
+
 def string_to_list(_line, _list):
 
     _output = []
@@ -44,7 +46,7 @@ def string_to_list(_line, _list):
 
             else:
 
-                _output.append(_line[_list[i-1][1]:_list[i][0]])
+                _output.append(_line[_list[i - 1][1]:_list[i][0]])
 
             _output.append(_line[_list[i][0]:_list[i][1]])
 
@@ -57,6 +59,7 @@ def string_to_list(_line, _list):
         _output.append(_line)
     return _output
 
+
 def list_to_string(list):
 
     output = ""
@@ -66,8 +69,9 @@ def list_to_string(list):
 
     return output
 
+
 def replace_special(string):
-    ranges = math_mode.find_math_ranges(string,"DRMF" in string)
+    ranges = math_mode.find_math_ranges(string, "DRMF" in string)
     _list = string_to_list(string, ranges)
     for i in range(1, len(_list), 2):
 
@@ -93,26 +97,32 @@ def replace_special(string):
             replacement = _list[i][iloc]
 
             if len(surrounding) == 1:
-                if flag == True:
+                if flag:
 
                     surrounding.append("\n")
 
                 else:
 
-                    surrounding.insert(0,"\n")
-            # at least one of the characters surrounding "i" is not alphabetic, we may need to replace
+                    surrounding.insert(0, "\n")
+            # at least one of the characters surrounding "i" is not alphabetic,
+            # we may need to replace
             if not (surrounding[0].isalpha() and surrounding[1].isalpha()):
-                # one (but not both) of the surrounding characters IS alphabetic, may need to replace
-                if surrounding[0].isalpha != surrounding[1].isalpha and surrounding[0].isalpha() and surrounding[0] in "aeiou":
+                # one (but not both) of the surrounding characters IS
+                # alphabetic, may need to replace
+                if surrounding[0].isalpha != surrounding[1].isalpha and surrounding[
+                        0].isalpha() and surrounding[0] in "aeiou":
                     replacement = r'\iunit'
 
-                if surrounding[0].isalpha != surrounding[1].isalpha and not surrounding[0].isalpha and surrounding[0] != "\\":
+                if surrounding[0].isalpha != surrounding[1].isalpha and not surrounding[
+                        0].isalpha and surrounding[0] != "\\":
                     replacement = r'\iunit '
 
-                if surrounding[0].isalpha == surrounding[1].isalpha:  # neither of the characters surrounding the "i" are alphabetic, replace
+                if surrounding[0].isalpha == surrounding[
+                        1].isalpha:  # neither of the characters surrounding the "i" are alphabetic, replace
                     replacement = r'\iunit'
 
-                if (surrounding[0] == " " and surrounding[1] == "}") or (surrounding[0] == "{" and surrounding[1] == " "):
+                if (surrounding[0] == " " and surrounding[1] == "}") or (
+                        surrounding[0] == "{" and surrounding[1] == " "):
                     replacement = r'\iunit'
 
             if "\iunit" in replacement and surrounding[1] == " ":
@@ -128,10 +138,3 @@ def replace_special(string):
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
