@@ -233,9 +233,9 @@ def translate(exp):
     exp = replace_strings(exp, {"functions:-": ""})
     exp = tokenize(exp)
 
-    for i in range(len(exp)):
+    for i, s in enumerate(exp):
         if exp[i] in SYMBOLS:
-            exp[i] = SYMBOLS[exp[i]]
+            exp[i] = SYMBOLS[s]
 
     i = len(exp) - 1
     while i >= 0:
