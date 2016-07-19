@@ -137,7 +137,7 @@ def findArgs(s, functionName):
 def replaceSqrt(s):
     arguments = findArgs(s, "Sqrt")
     for i in arguments:
-        s = s.replace("Sqrt" + i, "\\sqrt{" + i[1:len(i) - 1] + "}")
+        s = s.replace("Sqrt" + i, "\\sqrt{" + i[1:-1] + "}")
     return (s)
 
 
@@ -150,20 +150,18 @@ def replacePolygamma(s):
                           i, "\\polygamma{" +
                           i[1:commaLoc] +
                           "}@{" +
-                          i[commaLoc +
-                            1:len(i) -
-                              1] +
+                          i[commaLoc + 1:-1] +
                           "}")
         elif i[1:2] == "0":
             s = s.replace("Polygamma" + i,
-                          "\\digamma@{" + i[3:len(i) - 1] + "}")
+                          "\\digamma@{" + i[3:-1] + "}")
     return s
 
 
 def removeInactive(s):
     arguments = findArgs(s, "Inactive")
     for i in arguments:
-        s = s.replace("Inactive" + i, i[1:len(i) - 1])
+        s = s.replace("Inactive" + i, i[1:-1])
     return s
 
 
@@ -171,9 +169,9 @@ def replaceCos(s):
     arguments = findArgs(s, "Cos")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("Cos" + i, "\\cos@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Cos" + i, "\\cos@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("Cos" + i, "\\cos@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Cos" + i, "\\cos@{" + i[1:-1] + "}")
     return s
 
 
@@ -181,9 +179,9 @@ def replaceSin(s):
     arguments = findArgs(s, "Sin")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("Sin" + i, "\\sin@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Sin" + i, "\\sin@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("Sin" + i, "\\sin@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Sin" + i, "\\sin@{" + i[1:-1] + "}")
     return s
 
 
@@ -191,9 +189,9 @@ def replaceTan(s):
     arguments = findArgs(s, "Tan")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("Tan" + i, "\\tan@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Tan" + i, "\\tan@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("Tan" + i, "\\tan@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Tan" + i, "\\tan@{" + i[1:-1] + "}")
     return s
 
 
@@ -201,9 +199,9 @@ def replaceCsc(s):
     arguments = findArgs(s, "Csc")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("Csc" + i, "\\csc@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Csc" + i, "\\csc@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("Csc" + i, "\\csc@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Csc" + i, "\\csc@{" + i[1:-1] + "}")
     return s
 
 
@@ -211,9 +209,9 @@ def replaceSec(s):
     arguments = findArgs(s, "Sec")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("Sec" + i, "\\sec@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Sec" + i, "\\sec@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("Sec" + i, "\\sec@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Sec" + i, "\\sec@{" + i[1:-1] + "}")
     return s
 
 
@@ -221,9 +219,9 @@ def replaceCot(s):
     arguments = findArgs(s, "Cot")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("Cot" + i, "\\cot@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Cot" + i, "\\cot@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("Cot" + i, "\\cot@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Cot" + i, "\\cot@{" + i[1:-1] + "}")
     return s
 
 
@@ -231,9 +229,9 @@ def replaceCosh(s):
     arguments = findArgs(s, "Cosh")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("Cosh" + i, "\\cosh@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Cosh" + i, "\\cosh@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("Cosh" + i, "\\cosh@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Cosh" + i, "\\cosh@{" + i[1:-1] + "}")
     return s
 
 
@@ -241,9 +239,9 @@ def replaceSinh(s):
     arguments = findArgs(s, "Sinh")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("Sinh" + i, "\\sinh@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Sinh" + i, "\\sinh@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("Sinh" + i, "\\sinh@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Sinh" + i, "\\sinh@{" + i[1:-1] + "}")
     return s
 
 
@@ -251,9 +249,9 @@ def replaceTanh(s):
     arguments = findArgs(s, "Tanh")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("Tanh" + i, "\\tanh@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Tanh" + i, "\\tanh@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("Tanh" + i, "\\tanh@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Tanh" + i, "\\tanh@{" + i[1:-1] + "}")
     return s
 
 
@@ -261,9 +259,9 @@ def replaceCsch(s):
     arguments = findArgs(s, "Csch")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("Csch" + i, "\\csch@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Csch" + i, "\\csch@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("Csch" + i, "\\csch@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Csch" + i, "\\csch@{" + i[1:-1] + "}")
     return s
 
 
@@ -271,9 +269,9 @@ def replaceSech(s):
     arguments = findArgs(s, "Sech")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("Sech" + i, "\\sech@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Sech" + i, "\\sech@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("Sech" + i, "\\sech@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Sech" + i, "\\sech@{" + i[1:-1] + "}")
     return s
 
 
@@ -281,9 +279,9 @@ def replaceCoth(s):
     arguments = findArgs(s, "Coth")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("Coth" + i, "\\coth@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Coth" + i, "\\coth@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("Coth" + i, "\\coth@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("Coth" + i, "\\coth@{" + i[1:-1] + "}")
     return s
 
 
@@ -291,9 +289,9 @@ def replaceArcCos(s):
     arguments = findArgs(s, "ArcCos")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("ArcCos" + i, "\\acos@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("ArcCos" + i, "\\acos@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("ArcCos" + i, "\\acos@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("ArcCos" + i, "\\acos@{" + i[1:-1] + "}")
     return s
 
 
@@ -301,9 +299,9 @@ def replaceArcSin(s):
     arguments = findArgs(s, "ArcSin")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("ArcSin" + i, "\\asin@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("ArcSin" + i, "\\asin@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("ArcSin" + i, "\\asin@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("ArcSin" + i, "\\asin@{" + i[1:-1] + "}")
     return s
 
 
@@ -311,9 +309,9 @@ def replaceArcTan(s):
     arguments = findArgs(s, "ArcTan")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("ArcTan" + i, "\\atan@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("ArcTan" + i, "\\atan@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("ArcTan" + i, "\\atan@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("ArcTan" + i, "\\atan@{" + i[1:-1] + "}")
     return s
 
 
@@ -321,9 +319,9 @@ def replaceArcCsc(s):
     arguments = findArgs(s, "ArcCsc")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("ArcCsc" + i, "\\acsc@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("ArcCsc" + i, "\\acsc@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("ArcCsc" + i, "\\acsc@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("ArcCsc" + i, "\\acsc@{" + i[1:-1] + "}")
     return s
 
 
@@ -331,9 +329,9 @@ def replaceArcSec(s):
     arguments = findArgs(s, "ArcSec")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("ArcSec" + i, "\\asec@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("ArcSec" + i, "\\asec@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("ArcSec" + i, "\\asec@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("ArcSec" + i, "\\asec@{" + i[1:-1] + "}")
     return s
 
 
@@ -341,9 +339,9 @@ def replaceArcCot(s):
     arguments = findArgs(s, "ArcCot")
     for i in arguments:
         if len(i) == 3:
-            s = s.replace("ArcCot" + i, "\\acot@@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("ArcCot" + i, "\\acot@@{" + i[1:-1] + "}")
         else:
-            s = s.replace("ArcCot" + i, "\\acot@{" + i[1:len(i) - 1] + "}")
+            s = s.replace("ArcCot" + i, "\\acot@{" + i[1:-1] + "}")
     return s
 
 

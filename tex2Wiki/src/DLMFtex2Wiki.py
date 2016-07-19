@@ -84,7 +84,7 @@ def DLMF(ofname, mmd, llinks, n):
                 refEqs.append("")
                 math = True
             elif math:
-                refEqs[len(refEqs) - 1] += line
+                refEqs[-1] += line
                 if "\\end{equation}" in refLines[
                     i +
                     1] or "\\constraint" in refLines[
@@ -303,7 +303,7 @@ def DLMF(ofname, mmd, llinks, n):
                         "</div><br />\n")
             elif math and parse:
                 flagM = True
-                eqs[len(eqs) - 1] += line
+                eqs[-1] += line
 
                 if not (
                     (not (
@@ -342,7 +342,7 @@ def DLMF(ofname, mmd, llinks, n):
                 else:
                     append_text(line)
             elif math and not parse:
-                eqs[len(eqs) - 1] += line
+                eqs[-1] += line
                 if "\\end{equation}" in lines[
                     i +
                     1] or "\\constraint" in lines[

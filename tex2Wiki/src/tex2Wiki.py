@@ -336,7 +336,7 @@ def readin(ofname, glossary, mmd):
                 refEqs.append("")
                 math = True
             elif math:
-                refEqs[len(refEqs) - 1] += line
+                refEqs[-1] += line
                 if "\\end{equation}" in refLines[
                     i +
                     1] or "\\constraint" in refLines[
@@ -462,7 +462,7 @@ def readin(ofname, glossary, mmd):
                         "</div><br />\n")
             elif math and parse:
                 flagM = True
-                eqs[len(eqs) - 1] += line
+                eqs[-1] += line
 
                 if "\\end{equation}" in lines[
                     i +
@@ -499,7 +499,7 @@ def readin(ofname, glossary, mmd):
                 else:
                     append_text(line)
             elif math and not parse:
-                eqs[len(eqs) - 1] += line
+                eqs[-1] += line
                 if "\\end{equation}" in lines[
                     i +
                     1] or "\\constraint" in lines[
