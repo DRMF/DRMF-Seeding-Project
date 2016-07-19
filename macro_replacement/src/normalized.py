@@ -5,9 +5,10 @@ import re
 import sys
 from snippets import *
 
+
 def main():
 
-    #input from command line
+    # input from command line
     if len(sys.argv) != 3:
         print('Usage: programname.py inputfile outputfile')
         sys.exit()
@@ -19,10 +20,11 @@ def main():
 
     content = replace_normalized(content)
 
-    #writes output
+    # writes output
     file = open(outputfile, 'w')
     file.write(content)
     file.close()
+
 
 def replace_normalized(content):
 
@@ -31,26 +33,35 @@ def replace_normalized(content):
     global names
     names = {}
     name_pat = re.compile(r'section{(.*?)}\s(.+)')
-    
+
     lines = normalized_file.split('\n')
     for line in lines:
         if len(name_pat.findall(line)) > 0:
             list = name_pat.findall(line)[0]
             names[list[0]] = (list[1]).strip()
 
-    KLS_pat = re.compile(r'()section{([^\n]+)}\n(.+?){Symmetry}', re.DOTALL) #TODO: add recurrence relation
+    KLS_pat = re.compile(
+        r'()section{([^\n]+)}\n(.+?){Symmetry}',
+        re.DOTALL)  # TODO: add recurrence relation
     content = KLS_pat.sub(rpl_section, content)
 
-    section_pat = re.compile(r'(section{(.+?)}.+?{Orthogonality relation})(.+?\\subsection\*{Recurrence relation}.+?)(\\subsection)', re.DOTALL)
+    section_pat = re.compile(
+        r'(section{(.+?)}.+?{Orthogonality relation})(.+?\\subsection\*{Recurrence relation}.+?)(\\subsection)',
+        re.DOTALL)
     content = section_pat.sub(rpl_section, content)
 
-    section_pat = re.compile(r'(section{(.+?)}.+?{Orthogonality relation})(.+?)(\\subsection)', re.DOTALL)
+    section_pat = re.compile(
+        r'(section{(.+?)}.+?{Orthogonality relation})(.+?)(\\subsection)',
+        re.DOTALL)
     content = section_pat.sub(rpl_section, content)
 
-    section_pat = re.compile(r'(section{(.+?)}.+?{Recurrence relation})(.+?)(\\subsection)', re.DOTALL)
+    section_pat = re.compile(
+        r'(section{(.+?)}.+?{Recurrence relation})(.+?)(\\subsection)',
+        re.DOTALL)
     content = section_pat.sub(rpl_section, content)
 
     return content
+
 
 def rpl_section(match):
 
@@ -64,7 +75,7 @@ def rpl_section(match):
         # correct macro name not found
         return matchstr
 
-    macro_pat = names[section_n] # holds current pattern
+    macro_pat = names[section_n]  # holds current pattern
 
     # extracts macro name
     global full_macro
@@ -82,9 +93,10 @@ def rpl_section(match):
     # makes replacements in section
     normalized_pat = re.compile(macro_pat)
     search_in = normalized_pat.sub(replace_macro, search_in)
-    #print(search_in)
+    # print(search_in)
 
     return match.group(1) + search_in + match.group(4)
+
 
 def replace_macro(match):
 

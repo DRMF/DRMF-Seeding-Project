@@ -10,9 +10,6 @@ from tex2Wiki import append_text, append_revision, getString,\
     getSym, getEq, secLabel, getEqP, unmodLabel, isnumber
 
 
-
-
-
 def modLabel(label):
     isNumer = False
     newlabel = ""
@@ -38,7 +35,7 @@ def modLabel(label):
     return newlabel
 
 
-def DLMF(ofname,mmd,llinks,n):
+def DLMF(ofname, mmd, llinks, n):
     for iterations in range(0, 1):
         tex = open(ofname, 'r')
         main_file = open(mmd, "r")
@@ -59,9 +56,13 @@ def DLMF(ofname,mmd,llinks,n):
         parse = False
         head = False
         try:
-            chapRef = [("GA", open("../../data/GA.tex", 'r')), ("ZE", open("../../data/ZE.3.tex", 'r'))]
+            chapRef = [("GA", open("../../data/GA.tex", 'r')),
+                       ("ZE", open("../../data/ZE.3.tex", 'r'))]
         except IOError:
-            chapRef = [("GA", open("GA.tex", 'r')), ("ZE", open("ZE.3.tex", 'r'))]
+            chapRef = [
+                ("GA", open(
+                    "GA.tex", 'r')), ("ZE", open(
+                        "ZE.3.tex", 'r'))]
         refLabels = []
         for c in chapRef:
             refLines = refLines + (c[1].readlines())
@@ -84,8 +85,15 @@ def DLMF(ofname,mmd,llinks,n):
                 math = True
             elif math:
                 refEqs[len(refEqs) - 1] += line
-                if "\\end{equation}" in refLines[i + 1] or "\\constraint" in refLines[i + 1] or "\\substitution" in \
-                        refLines[i + 1] or "\\drmfn" in refLines[i + 1]:
+                if "\\end{equation}" in refLines[
+                    i +
+                    1] or "\\constraint" in refLines[
+                    i +
+                    1] or "\\substitution" in refLines[
+                    i +
+                    1] or "\\drmfn" in refLines[
+                    i +
+                        1]:
                     math = False
 
         startFlag = True
@@ -98,9 +106,10 @@ def DLMF(ofname,mmd,llinks,n):
                 mainText = mainPrepend
                 mainText = mainText.replace("drmf_bof\n", "")
                 mainText = mainText.replace("drmf_eof\n", "")
-                mainText = mainText.replace("\'\'\'Zeta and Related Functions\'\'\'\n", "")
+                mainText = mainText.replace(
+                    "\'\'\'Zeta and Related Functions\'\'\'\n", "")
                 mainText = mainText.replace("{{#set:Section=0}}\n", "")
-                append_revision('Zeta and Related Functions');
+                append_revision('Zeta and Related Functions')
                 mainText = "{{#set:Section=0}}\n" + mainText
                 mainWrite.write(mainText)
                 mainWrite.close()
@@ -121,15 +130,22 @@ def DLMF(ofname,mmd,llinks,n):
                     chapter = getString(line)
                     if startFlag:
                         mainPrepend += (
-                            "\n== Sections in " + chapter + " ==\n\n<div style=\"-moz-column-count:2; column-count:2;-webkit-column-count:2\">\n")
+                            "\n== Sections in " +
+                            chapter +
+                            " ==\n\n<div style=\"-moz-column-count:2; column-count:2;-webkit-column-count:2\">\n")
                         startFlag = False
                     else:
-                        mainPrepend += (
-                            "</div>\n\n== Sections in " + chapter + " ==\n\n<div style=\"-moz-column-count:2; "
-                                                                    "column-count:2;-webkit-column-count:2\">\n")
+                        mainPrepend += ("</div>\n\n== Sections in " +
+                                        chapter +
+                                        " ==\n\n<div style=\"-moz-column-count:2; "
+                                        "column-count:2;-webkit-column-count:2\">\n")
                     head = True
             elif "\\section" in line:
-                mainPrepend += ("* [[" + secLabel(getString(line)) + "|" + getString(line) + "]]\n")
+                mainPrepend += ("* [[" +
+                                secLabel(getString(line)) +
+                                "|" +
+                                getString(line) +
+                                "]]\n")
                 sections.append([getString(line)])
 
         secCounter = 0
@@ -140,32 +156,87 @@ def DLMF(ofname,mmd,llinks,n):
                 parse = True
                 secCounter += 1
                 append_revision(secLabel(getString(line)))
-                append_text("{{DISPLAYTITLE:" + (sections[secCounter][0]) + "}}\n")
+                append_text(
+                    "{{DISPLAYTITLE:" + (sections[secCounter][0]) + "}}\n")
                 append_text("<div id=\"drmf_head\">\n")
                 append_text(
-                    "<div id=\"alignleft\"> << [[" + secLabel(sections[secCounter - 1][0]) + "|" + secLabel(
-                        sections[secCounter - 1][0]) + "]] </div>\n")
-                append_text("<div id=\"aligncenter\"> [[Zeta_and_Related_Functions#" +
-                            "Sections_in_" + chapter.replace(" ", "_") + "|" + secLabel(
-                    sections[secCounter][0]) + "]] </div>\n")
+                    "<div id=\"alignleft\"> << [[" +
+                    secLabel(
+                        sections[
+                            secCounter -
+                            1][0]) +
+                    "|" +
+                    secLabel(
+                        sections[
+                            secCounter -
+                            1][0]) +
+                    "]] </div>\n")
                 append_text(
-                    "<div id=\"alignright\"> [[" + secLabel(sections[(secCounter + 1) % len(sections)][0]) +
-                    "|" + secLabel(sections[(secCounter + 1) % len(sections)][0]) + "]] >> </div>\n</div>\n\n")
+                    "<div id=\"aligncenter\"> [[Zeta_and_Related_Functions#" +
+                    "Sections_in_" +
+                    chapter.replace(
+                        " ",
+                        "_") +
+                    "|" +
+                    secLabel(
+                        sections[secCounter][0]) +
+                    "]] </div>\n")
+                append_text(
+                    "<div id=\"alignright\"> [[" +
+                    secLabel(
+                        sections[
+                            (secCounter +
+                             1) %
+                            len(sections)][0]) +
+                    "|" +
+                    secLabel(
+                        sections[
+                            (secCounter +
+                             1) %
+                            len(sections)][0]) +
+                    "]] >> </div>\n</div>\n\n")
                 head = True
                 append_text("== " + getString(line) + " ==\n")
             elif ("\\section" in lines[(i + 1) % len(lines)] or "\\end{document}" in lines[
                     (i + 1) % len(lines)]) and parse:
                 append_text("<div id=\"drmf_foot\">\n")
                 append_text(
-                    "<div id=\"alignleft\"> << [[" + secLabel(sections[secCounter - 1][0]) + "|" + secLabel(
-                        sections[secCounter - 1][0]) + "]] </div>\n")
-                append_text("<div id=\"aligncenter\"> [[Zeta_and_Related_Functions#" + "Sections_in_"
-                                                                                       "" + chapter.replace(" ",
-                                                                                                            "_") + "|" + secLabel(
-                    sections[secCounter][0]) + "]] </div>\n")
+                    "<div id=\"alignleft\"> << [[" +
+                    secLabel(
+                        sections[
+                            secCounter -
+                            1][0]) +
+                    "|" +
+                    secLabel(
+                        sections[
+                            secCounter -
+                            1][0]) +
+                    "]] </div>\n")
                 append_text(
-                    "<div id=\"alignright\"> [[" + secLabel(sections[(secCounter + 1) % len(sections)][0]) +
-                    "|" + secLabel(sections[(secCounter + 1) % len(sections)][0]) + "]] >> </div>\n</div>\n\n")
+                    "<div id=\"aligncenter\"> [[Zeta_and_Related_Functions#" +
+                    "Sections_in_"
+                    "" +
+                    chapter.replace(
+                        " ",
+                        "_") +
+                    "|" +
+                    secLabel(
+                        sections[secCounter][0]) +
+                    "]] </div>\n")
+                append_text(
+                    "<div id=\"alignright\"> [[" +
+                    secLabel(
+                        sections[
+                            (secCounter +
+                             1) %
+                            len(sections)][0]) +
+                    "|" +
+                    secLabel(
+                        sections[
+                            (secCounter +
+                             1) %
+                            len(sections)][0]) +
+                    "]] >> </div>\n</div>\n\n")
                 append_text("drmf_eof\n")
                 sections[secCounter].append(eqCounter)
                 eqCounter = 0
@@ -198,7 +269,10 @@ def DLMF(ofname,mmd,llinks,n):
                 label = modLabel(rlabel)
                 labels.append("Formula:" + rlabel)
                 eqs.append("")
-                append_text("<math id=\"" + rlabel.lstrip("Formula:") + "\">\n")
+                append_text(
+                    "<math id=\"" +
+                    rlabel.lstrip("Formula:") +
+                    "\">\n")
                 math = True
             elif "\\begin{equation}" in line and not parse:
                 sLabel = line.find("\\label{") + 7
@@ -223,21 +297,33 @@ def DLMF(ofname,mmd,llinks,n):
             elif "\\drmfn" in line and parse:
                 math = False
                 if "\\drmfname" in line and parse:
-                    append_text("<div align=\"right\">This formula has the name: " + getString(line) + "</div><br />\n")
+                    append_text(
+                        "<div align=\"right\">This formula has the name: " +
+                        getString(line) +
+                        "</div><br />\n")
             elif math and parse:
                 flagM = True
                 eqs[len(eqs) - 1] += line
 
-                if not ((not ("\\end{equation}" in lines[i + 1]) or "\\subsection" in lines[i + 3]) or "\\section" in \
-                        lines[i + 3]) and not "\\part" in lines[i + 3]:
+                if not (
+                    (not (
+                        "\\end{equation}" in lines[
+                            i +
+                            1]) or "\\subsection" in lines[
+                        i +
+                        3]) or "\\section" in lines[
+                        i +
+                        3]) and not "\\part" in lines[
+                            i +
+                        3]:
                     u = i
                     flagM2 = False
                     while flagM:
                         u += 1
                         if "\\begin{equation}" in lines[u] in lines[u]:
                             flagM = False
-                        if "\\section" in lines[u] or "\\subsection" in lines[i] or "\\part" in lines[
-                            u] or "\\end{document}" in lines[u]:
+                        if "\\section" in lines[u] or "\\subsection" in lines[
+                                i] or "\\part" in lines[u] or "\\end{document}" in lines[u]:
                             flagM = False
                             flagM2 = True
                     if not flagM2:
@@ -257,23 +343,53 @@ def DLMF(ofname,mmd,llinks,n):
                     append_text(line)
             elif math and not parse:
                 eqs[len(eqs) - 1] += line
-                if "\\end{equation}" in lines[i + 1] or "\\constraint" in lines[i + 1] or "\\substitution" in lines[
-                            i + 1] or "\\drmfn" in lines[i + 1]:
+                if "\\end{equation}" in lines[
+                    i +
+                    1] or "\\constraint" in lines[
+                    i +
+                    1] or "\\substitution" in lines[
+                    i +
+                    1] or "\\drmfn" in lines[
+                    i +
+                        1]:
                     math = False
             if substitution and parse:
                 subLine += line.replace("&", "&<br />")
-                if "\\end{equation}" in lines[i + 1] or "\\substitution" in lines[i + 1] \
-                        or "\\constraint" in lines[i + 1] or "\\drmfn" in lines[i + 1] or "\\proof" in lines[i + 1]:
+                if "\\end{equation}" in lines[
+                    i +
+                    1] or "\\substitution" in lines[
+                    i +
+                    1] or "\\constraint" in lines[
+                    i +
+                    1] or "\\drmfn" in lines[
+                    i +
+                    1] or "\\proof" in lines[
+                        i +
+                        1]:
                     substitution = False
-                    append_text("<div align=\"right\">Substitution(s): " + getEq(subLine) + "</div><br />\n")
+                    append_text(
+                        "<div align=\"right\">Substitution(s): " +
+                        getEq(subLine) +
+                        "</div><br />\n")
 
             if constraint and parse:
                 conLine += line.replace("&", "&<br />")
-                if "\\end{equation}" in lines[i + 1] or "\\substitution" \
-                        in lines[i + 1] or "\\constraint" in lines[i + 1] or "\\drmfn" in lines[i + 1] or "\\proof" in \
-                        lines[i + 1]:
+                if "\\end{equation}" in lines[
+                    i +
+                    1] or "\\substitution" in lines[
+                    i +
+                    1] or "\\constraint" in lines[
+                    i +
+                    1] or "\\drmfn" in lines[
+                    i +
+                    1] or "\\proof" in lines[
+                        i +
+                        1]:
                     constraint = False
-                    append_text("<div align=\"right\">Constraint(s): " + getEq(conLine) + "</div><br />\n")
+                    append_text(
+                        "<div align=\"right\">Constraint(s): " +
+                        getEq(conLine) +
+                        "</div><br />\n")
 
         eqCounter = n
         endNum = len(labels) - 1
@@ -320,46 +436,137 @@ def DLMF(ofname,mmd,llinks,n):
                 if eqCounter < endNum:  # FOR ANYTHING THAT IS NOT THE EXTRA EQUATIONS
                     append_text("<div id=\"drmf_head\">\n")
                     if newSec:
-                        append_text("<div id=\"alignleft\"> "
-                                    "<< [[" + secLabel(sections[secCount][0]).replace(" ",
-                                                                                      "_") + "|" + secLabel(
-                            sections[secCount][0]) + "]] </div>\n")
+                        append_text(
+                            "<div id=\"alignleft\"> "
+                            "<< [[" +
+                            secLabel(
+                                sections[secCount][0]).replace(
+                                " ",
+                                "_") +
+                            "|" +
+                            secLabel(
+                                sections[secCount][0]) +
+                            "]] </div>\n")
                     else:
-                        append_text("<div id=\"alignleft\"> "
-                                    "<< [[" + secLabel(labels[eqCounter - 1]).replace(" ",
-                                                                                      "_") + "|" + secLabel(
-                            labels[eqCounter - 1]) + "]] </div>\n")
-                    append_text("<div id=\"aligncenter\"> [[" + secLabel(sections[secCount + 1][0]).replace(" ",
-                                                                                                            "_") + "#" +
-                                secLabel(labels[eqCounter][len("Formula:"):]) + "|formula in " + secLabel(
-                        sections[secCount + 1][0]) + "]] </div>\n")
+                        append_text(
+                            "<div id=\"alignleft\"> "
+                            "<< [[" +
+                            secLabel(
+                                labels[
+                                    eqCounter -
+                                    1]).replace(
+                                " ",
+                                "_") +
+                            "|" +
+                            secLabel(
+                                labels[
+                                    eqCounter -
+                                    1]) +
+                            "]] </div>\n")
+                    append_text(
+                        "<div id=\"aligncenter\"> [[" +
+                        secLabel(
+                            sections[
+                                secCount +
+                                1][0]).replace(
+                            " ",
+                            "_") +
+                        "#" +
+                        secLabel(
+                            labels[eqCounter][
+                                len("Formula:"):]) +
+                        "|formula in " +
+                        secLabel(
+                            sections[
+                                secCount +
+                                1][0]) +
+                        "]] </div>\n")
                     if True:
                         append_text(
-                            "<div id=\"alignright\"> [[" + secLabel(labels[(eqCounter + 1) % (endNum + 1)]).replace(
-                                " ", "_") +
-                            "|" + secLabel(labels[(eqCounter + 1) % (endNum + 1)]) + "]] >> </div>\n")
+                            "<div id=\"alignright\"> [[" +
+                            secLabel(
+                                labels[
+                                    (eqCounter +
+                                     1) %
+                                    (endNum +
+                                     1)]).replace(
+                                " ",
+                                "_") +
+                            "|" +
+                            secLabel(
+                                labels[
+                                    (eqCounter +
+                                     1) %
+                                    (endNum +
+                                     1)]) +
+                            "]] >> </div>\n")
                     append_text("</div>\n\n")
                 elif eqCounter == endNum:
                     append_text("<div id=\"drmf_head\">\n")
                     if newSec:
                         newSec = False
                         append_text(
-                            "<div id=\"alignleft\"> << [[" + secLabel(sections[secCount][0]).replace(" ",
-                                                                                                     "_") + "|" +
-                            secLabel(sections[secCount][0]) + "]] </div>\n")
+                            "<div id=\"alignleft\"> << [[" +
+                            secLabel(
+                                sections[secCount][0]).replace(
+                                " ",
+                                "_") +
+                            "|" +
+                            secLabel(
+                                sections[secCount][0]) +
+                            "]] </div>\n")
                     else:
-                        append_text("<div id=\"alignleft\"> "
-                                    "<< [[" + secLabel(labels[eqCounter - 1]).replace(" ",
-                                                                                      "_") + "|" + secLabel(
-                            labels[eqCounter - 1]) + "]] </div>\n")
-                    append_text("<div id=\"aligncenter\"> [[" +
-                                secLabel(sections[secCount + 1][0]).replace(" ", "_") +
-                                "#" + secLabel(labels[eqCounter][len("Formula:"):]) +
-                                "|formula in " + secLabel(sections[secCount + 1][0]) +
-                                "]] </div>\n")
-                    append_text("<div id=\"alignright\"> [[" + secLabel(
-                        labels[(eqCounter + 1) % (endNum + 1)].replace(" ", "_")) +
-                                "|" + secLabel(labels[(eqCounter + 1) % (endNum + 1)]) + "]] </div>\n")
+                        append_text(
+                            "<div id=\"alignleft\"> "
+                            "<< [[" +
+                            secLabel(
+                                labels[
+                                    eqCounter -
+                                    1]).replace(
+                                " ",
+                                "_") +
+                            "|" +
+                            secLabel(
+                                labels[
+                                    eqCounter -
+                                    1]) +
+                            "]] </div>\n")
+                    append_text(
+                        "<div id=\"aligncenter\"> [[" +
+                        secLabel(
+                            sections[
+                                secCount +
+                                1][0]).replace(
+                            " ",
+                            "_") +
+                        "#" +
+                        secLabel(
+                            labels[eqCounter][
+                                len("Formula:"):]) +
+                        "|formula in " +
+                        secLabel(
+                            sections[
+                                secCount +
+                                1][0]) +
+                        "]] </div>\n")
+                    append_text(
+                        "<div id=\"alignright\"> [[" +
+                        secLabel(
+                            labels[
+                                (eqCounter +
+                                 1) %
+                                (endNum +
+                                 1)].replace(
+                                " ",
+                                "_")) +
+                        "|" +
+                        secLabel(
+                            labels[
+                                (eqCounter +
+                                 1) %
+                                (endNum +
+                                 1)]) +
+                        "]] </div>\n")
                     append_text("</div>\n\n")
 
                 append_text("<br /><div align=\"center\"><math> \n")
@@ -454,9 +661,19 @@ def DLMF(ofname,mmd,llinks,n):
                     checkFlag = False
                     get = False
                     try:
-                        gCSV = csv.reader(open(sys.argv[3], 'rb'), delimiter=',', quotechar='\"')
+                        gCSV = csv.reader(
+                            open(
+                                sys.argv[3],
+                                'rb'),
+                            delimiter=',',
+                            quotechar='\"')
                     except (IOError, IndexError):
-                        gCSV = csv.reader(open('../../data/new.Glossary.csv', 'rb'), delimiter=',', quotechar='\"')
+                        gCSV = csv.reader(
+                            open(
+                                '../../data/new.Glossary.csv',
+                                'rb'),
+                            delimiter=',',
+                            quotechar='\"')
                     preG = ""
                     if symbol == "\\&":
                         ampFlag = True
@@ -485,7 +702,7 @@ def DLMF(ofname,mmd,llinks,n):
                                         else:
                                             ArgCx += 1
                         if G[0].find(symbol) == 0 and (len(G[0]) == len(symbol) or not G[0][
-                            len(symbol)].isalpha()):  # and (numPar!=0 or numArg!=0):
+                                len(symbol)].isalpha()):  # and (numPar!=0 or numArg!=0):
                             checkFlag = True
                             get = True
                             preG = S
@@ -501,7 +718,8 @@ def DLMF(ofname,mmd,llinks,n):
                                 else:
                                     Q = symbolPar
                             listArgs = []
-                            if len(Q) > len(symbol) and (Q[len(symbol)] == "{" or Q[len(symbol)] == "["):
+                            if len(Q) > len(symbol) and (Q[
+                                    len(symbol)] == "{" or Q[len(symbol)] == "["):
                                 ap = ""
                                 for o in range(len(symbol), len(Q)):
                                     if Q[o] == "{" or z == "[":
@@ -515,7 +733,8 @@ def DLMF(ofname,mmd,llinks,n):
                             web1 = G[5]
                             for t in range(5, len(G)):
                                 if G[t] != "":
-                                    websiteF = websiteF + " [" + G[t] + " " + G[t] + "]"
+                                    websiteF = websiteF + \
+                                        " [" + G[t] + " " + G[t] + "]"
                             p1 = G[4].strip("$")
                             p1 = "<math>" + p1 + "</math>"
                             # if checkFlag:
@@ -533,7 +752,8 @@ def DLMF(ofname,mmd,llinks,n):
                                 else:
                                     new2 += p2[k]
                             p2 = new2
-                            finSym.append(web1 + " " + p1 + "]</span> : " + p2 + " :" + websiteF)
+                            finSym.append(
+                                web1 + " " + p1 + "]</span> : " + p2 + " :" + websiteF)
                             break
                     if not gFlag:
                         del newSym[s]
@@ -553,7 +773,8 @@ def DLMF(ofname,mmd,llinks,n):
 
                 append_text("\n<br />\n")
 
-                append_text("\n== Bibliography==\n\n")  # should there be a space between bibliography and ==?
+                # should there be a space between bibliography and ==?
+                append_text("\n== Bibliography==\n\n")
                 r = unmodLabel(labels[eqCounter])
                 q = r.find("DLMF:") + 5
                 p = r.find(":", q)
@@ -563,46 +784,124 @@ def DLMF(ofname,mmd,llinks,n):
                     equation = equation[0:equation.find(":")]
                 if isnumber(section) == False:
                     return eqCounter
-                append_text("<span class=\"plainlinks\">[HTTP://DLMF.NIST.GOV/" +
-                            section + "#" + equation + " Equation (" + equation[1:] + "), Section " + section +
-                            "]</span> of [[Bibliography#DLMF|'''DLMF''']].\n\n")
-                append_text("== URL links ==\n\nWe ask users to provide relevant URL links in this space.\n\n")
+                append_text(
+                    "<span class=\"plainlinks\">[HTTP://DLMF.NIST.GOV/" +
+                    section +
+                    "#" +
+                    equation +
+                    " Equation (" +
+                    equation[
+                        1:] +
+                    "), Section " +
+                    section +
+                    "]</span> of [[Bibliography#DLMF|'''DLMF''']].\n\n")
+                append_text(
+                    "== URL links ==\n\nWe ask users to provide relevant URL links in this space.\n\n")
                 if eqCounter < endNum:
                     append_text("<br /><div id=\"drmf_foot\">\n")
                     if newSec:
                         newSec = False
                         append_text(
-                            "<div id=\"alignleft\"> << [[" + secLabel(sections[secCount][0]).replace(" ", "_") +
-                            "|" + secLabel(sections[secCount][0]) + "]] </div>\n")
+                            "<div id=\"alignleft\"> << [[" +
+                            secLabel(
+                                sections[secCount][0]).replace(
+                                " ",
+                                "_") +
+                            "|" +
+                            secLabel(
+                                sections[secCount][0]) +
+                            "]] </div>\n")
                     else:
                         append_text(
-                            "<div id=\"alignleft\"> << [[" + secLabel(labels[eqCounter - 1]).replace(" ",
-                                                                                                     "_") + "|" +
-                            secLabel(labels[eqCounter - 1]) + "]] </div>\n")
-                    append_text("<div id=\"aligncenter\"> [[" + secLabel(sections[secCount + 1][0]).replace(" ",
-                                                                                                            "_") + "#" +
-                                secLabel(labels[eqCounter][len("Formula:"):]) + "|formula in " + secLabel(
-                        sections[secCount + 1][0]) + "]] </div>\n")
+                            "<div id=\"alignleft\"> << [[" +
+                            secLabel(
+                                labels[
+                                    eqCounter -
+                                    1]).replace(
+                                " ",
+                                "_") +
+                            "|" +
+                            secLabel(
+                                labels[
+                                    eqCounter -
+                                    1]) +
+                            "]] </div>\n")
+                    append_text(
+                        "<div id=\"aligncenter\"> [[" +
+                        secLabel(
+                            sections[
+                                secCount +
+                                1][0]).replace(
+                            " ",
+                            "_") +
+                        "#" +
+                        secLabel(
+                            labels[eqCounter][
+                                len("Formula:"):]) +
+                        "|formula in " +
+                        secLabel(
+                            sections[
+                                secCount +
+                                1][0]) +
+                        "]] </div>\n")
                     if True:
-                        append_text("<div id=\"alignright\"> [[" + secLabel(labels[(eqCounter + 1) %
-                                                                                   (endNum + 1)]).replace(" ",
-                                                                                                          "_") + "|" + secLabel(
-                            labels[(eqCounter + 1) % (endNum + 1)]) + "]] >> </div>\n")
+                        append_text(
+                            "<div id=\"alignright\"> [[" +
+                            secLabel(
+                                labels[
+                                    (eqCounter +
+                                     1) %
+                                    (endNum +
+                                     1)]).replace(
+                                " ",
+                                "_") +
+                            "|" +
+                            secLabel(
+                                labels[
+                                    (eqCounter +
+                                     1) %
+                                    (endNum +
+                                     1)]) +
+                            "]] >> </div>\n")
                     append_text("</div>\n\ndrmf_eof\n")
                 else:  # FOR EXTRA EQUATIONS
                     append_text("<br /><div id=\"drmf_foot\">\n")
                     append_text(
-                        "<div id=\"alignleft\"> << [[" + labels[endNum - 1].replace(" ", "_") + "|" + labels[
-                            endNum - 1] + "]] </div>\n")
-                    append_text("<div id=\"aligncenter\"> [[" + labels[0].replace(" ", "_") + "#" + labels[endNum][
-                                                                                                    8:] + "|formula in " +
-                                labels[0] + "]] </div>\n")
+                        "<div id=\"alignleft\"> << [[" +
+                        labels[
+                            endNum -
+                            1].replace(
+                            " ",
+                            "_") +
+                        "|" +
+                        labels[
+                            endNum -
+                            1] +
+                        "]] </div>\n")
                     append_text(
-                        "<div id=\"alignright\"> [[" + labels[(0) % endNum].replace(" ", "_") + "|" + labels[
-                            0 % endNum] + "]] </div>\n")
+                        "<div id=\"aligncenter\"> [[" +
+                        labels[0].replace(
+                            " ",
+                            "_") +
+                        "#" +
+                        labels[endNum][
+                            8:] +
+                        "|formula in " +
+                        labels[0] +
+                        "]] </div>\n")
+                    append_text(
+                        "<div id=\"alignright\"> [[" +
+                        labels[
+                            (0) %
+                            endNum].replace(
+                            " ",
+                            "_") +
+                        "|" +
+                        labels[
+                            0 %
+                            endNum] +
+                        "]] </div>\n")
                     append_text("</div>\n\ndrmf_eof\n")
-
-
 
             elif "\\constraint" in line and parse:
                 symLine = line.strip("\n")
@@ -622,8 +921,8 @@ def DLMF(ofname,mmd,llinks,n):
                 subLine = ""
             elif "\\drmfname" in line and parse:
                 math = False
-                comToWrite = "\n== Name ==\n\n<div align=\"left\">" + getString(
-                    line) + "</div><br />\n" + comToWrite
+                comToWrite = "\n== Name ==\n\n<div align=\"left\">" + \
+                    getString(line) + "</div><br />\n" + comToWrite
 
             elif "\\drmfnote" in line and parse:
                 symbols = symbols + getSym(line)
@@ -661,16 +960,26 @@ def DLMF(ofname,mmd,llinks,n):
                         z = line[line.find("}", ind + 7) + 1]
                         if z == "." or z == ",":
                             pauseP = True
-                            proofLine += ("<br /> \n<math id=\"" + label + "\">\n" + refEqs[
-                                eInd] + "</math>" + z + "<br />\n")
+                            proofLine += ("<br /> \n<math id=\"" +
+                                          label +
+                                          "\">\n" +
+                                          refEqs[eInd] +
+                                          "</math>" +
+                                          z +
+                                          "<br />\n")
                         else:
                             if z == "}":
-                                proofLine += (
-                                    "<br /> \n<math id=\"" + rlabel + "\">\n" + refEqs[
-                                    eInd] + "</math><br />")
+                                proofLine += ("<br /> \n<math id=\"" +
+                                              rlabel +
+                                              "\">\n" +
+                                              refEqs[eInd] +
+                                              "</math><br />")
                             else:
-                                proofLine += ("<br /> \n<math id=\"" + rlabel + "\">\n" + refEqs[
-                                    eInd] + "</math><br />\n")
+                                proofLine += ("<br /> \n<math id=\"" +
+                                              rlabel +
+                                              "\">\n" +
+                                              refEqs[eInd] +
+                                              "</math><br />\n")
                     else:
                         if pause:
                             if line[ind] == "}":
@@ -683,7 +992,10 @@ def DLMF(ofname,mmd,llinks,n):
                             proofLine += (line[ind])
                 if "\\end{equation}" in lines[i + 1]:
                     proof = False
-                    append_text(comToWrite + getEqP(proofLine) + "</div>\n<br />\n")
+                    append_text(
+                        comToWrite +
+                        getEqP(proofLine) +
+                        "</div>\n<br />\n")
                     comToWrite = ""
                     symbols = symbols + getSym(symLine)
                     symLine = ""
@@ -707,11 +1019,19 @@ def DLMF(ofname,mmd,llinks,n):
                         z = line[line.find("}", ind + 7) + 1]
                         if z == "." or z == ",":
                             pauseP = True
-                            proofLine += ("<br /> \n<math id=\"" + rlabel + "\">\n" + refEqs[
-                                eInd] + "</math>" + z + "<br />\n")
+                            proofLine += ("<br /> \n<math id=\"" +
+                                          rlabel +
+                                          "\">\n" +
+                                          refEqs[eInd] +
+                                          "</math>" +
+                                          z +
+                                          "<br />\n")
                         else:
-                            proofLine += ("<br /> \n<math id=\"" + rlabel + "\">\n" + refEqs[
-                                eInd] + "</math><br />\n")
+                            proofLine += ("<br /> \n<math id=\"" +
+                                          rlabel +
+                                          "\">\n" +
+                                          refEqs[eInd] +
+                                          "</math><br />\n")
 
                     else:
                         if pause:
@@ -726,15 +1046,28 @@ def DLMF(ofname,mmd,llinks,n):
                             proofLine += (line[ind])
                 if "\\end{equation}" in lines[i + 1]:
                     proof = False
-                    append_text(comToWrite + getEqP(proofLine).rstrip("\n") + "</div>\n<br />\n")
+                    append_text(
+                        comToWrite +
+                        getEqP(proofLine).rstrip("\n") +
+                        "</div>\n<br />\n")
                     comToWrite = ""
                     symbols = symbols + getSym(symLine)
                     symLine = ""
 
             elif math:
-                if "\\end{equation}" in lines[i + 1] or "\\constraint" in lines[i + 1] \
-                        or "\\substitution" in lines[i + 1] or "\\proof" in lines[i + 1] or "\\drmfnote" in lines[
-                            i + 1] or "\\drmfname" in lines[i + 1]:
+                if "\\end{equation}" in lines[
+                    i +
+                    1] or "\\constraint" in lines[
+                    i +
+                    1] or "\\substitution" in lines[
+                    i +
+                    1] or "\\proof" in lines[
+                    i +
+                    1] or "\\drmfnote" in lines[
+                        i +
+                        1] or "\\drmfname" in lines[
+                            i +
+                        1]:
                     append_text(line.rstrip("\n"))
                     symLine += line.strip("\n")
                     symbols = symbols + getSym(symLine)
@@ -746,47 +1079,77 @@ def DLMF(ofname,mmd,llinks,n):
             if note and parse:
                 noteLine = noteLine + line
                 symbols = symbols + getSym(line)
-                if "\\end{equation}" in lines[i + 1] or "\\drmfn" in lines[i + 1] \
-                        or "\\constraint" in lines[i + 1] \
-                        or "\\substitution" in lines[i + 1] \
-                        or "\\proof" in lines[i + 1]:
+                if "\\end{equation}" in lines[
+                    i +
+                    1] or "\\drmfn" in lines[
+                    i +
+                    1] or "\\constraint" in lines[
+                    i +
+                    1] or "\\substitution" in lines[
+                    i +
+                    1] or "\\proof" in lines[
+                        i +
+                        1]:
                     note = False
                     if "\\emph" in noteLine:
-                        noteLine = noteLine[0:noteLine.find("\\emph{")] + "\'\'" + noteLine[
-                                                                                   noteLine.find("\\emph{") + len(
-                                                                                       "\\emph{"):
-                                                                                   noteLine.find("}", noteLine.find(
-                                                                                       "\\emph{") + len(
-                                                                                       "\\emph{"))] + "\'\'" + \
-                                   noteLine[noteLine.find("}", noteLine.find("\\emph{") + len("\\emph{")) + 1:]
-                    comToWrite = comToWrite + "<div align=\"left\">" + getEq(noteLine) + "</div><br />\n"
+                        noteLine = noteLine[
+                            0:noteLine.find("\\emph{")] + "\'\'" + noteLine[
+                            noteLine.find("\\emph{") + len("\\emph{"): noteLine.find(
+                                "}", noteLine.find("\\emph{") + len("\\emph{"))] + "\'\'" + noteLine[
+                            noteLine.find(
+                                "}", noteLine.find("\\emph{") + len("\\emph{")) + 1:]
+                    comToWrite = comToWrite + "<div align=\"left\">" + \
+                        getEq(noteLine) + "</div><br />\n"
 
             if constraint and parse:
                 conLine += line.replace("&", "&<br />")
 
                 symLine += line.strip("\n")
                 # symbols=symbols+getSym(line)
-                if "\\end{equation}" in lines[i + 1] or "\\drmfn" in lines[i + 1] \
-                        or "\\constraint" in lines[i + 1] \
-                        or "\\substitution" in lines[i + 1] \
-                        or "\\proof" in lines[i + 1]:
+                if "\\end{equation}" in lines[
+                    i +
+                    1] or "\\drmfn" in lines[
+                    i +
+                    1] or "\\constraint" in lines[
+                    i +
+                    1] or "\\substitution" in lines[
+                    i +
+                    1] or "\\proof" in lines[
+                        i +
+                        1]:
                     constraint = False
                     symbols = symbols + getSym(symLine)
                     symLine = ""
-                    append_text(comToWrite + "<div align=\"left\">" + getEq(conLine) + "</div><br />\n")
+                    append_text(
+                        comToWrite +
+                        "<div align=\"left\">" +
+                        getEq(conLine) +
+                        "</div><br />\n")
                     comToWrite = ""
             if substitution and parse:
                 subLine = subLine + line.replace("&", "&<br />")
 
                 symLine += line.strip("\n")
                 # symbols=symbols+getSym(line)
-                if "\\end{equation}" in lines[i + 1] or "\\drmfn" in lines[i + 1] or \
-                                "\\substitution" in lines[i + 1] or "\\constraint" in lines[i + 1] or "\\proof" in \
-                        lines[i + 1]:
+                if "\\end{equation}" in lines[
+                    i +
+                    1] or "\\drmfn" in lines[
+                    i +
+                    1] or "\\substitution" in lines[
+                    i +
+                    1] or "\\constraint" in lines[
+                    i +
+                    1] or "\\proof" in lines[
+                        i +
+                        1]:
                     substitution = False
                     symbols = symbols + getSym(symLine)
                     symLine = ""
-                    append_text(comToWrite + "<div align=\"left\">" + getEq(subLine) + "</div><br />\n")
+                    append_text(
+                        comToWrite +
+                        "<div align=\"left\">" +
+                        getEq(subLine) +
+                        "</div><br />\n")
                     comToWrite = ""
 
 

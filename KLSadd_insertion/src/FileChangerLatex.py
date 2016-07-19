@@ -1,6 +1,3 @@
-__author__ = "Rahul Shah"
-__status__ = "Development"
-
 """
 Rahul Shah
 11/20/15
@@ -8,6 +5,9 @@ FileChangerLatex.py
 Reads in from KLSadd.tex, finds places to be changed and adds
 to end of section
 """
+
+__author__ = "Rahul Shah"
+__status__ = "Development"
 
 # Open the document to be read
 # Figure out which chapter to read
@@ -59,9 +59,6 @@ with open("KLSadd.tex", "rb") as file:
 
         # numFile now contains the right number of the file to access
         # stored in fileList
-
-
-
 
         file.close()
 # end of FileChangerLatex.py

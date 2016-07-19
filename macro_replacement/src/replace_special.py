@@ -13,10 +13,22 @@ import parentheses
 from utilities import writeout
 from utilities import readin
 
-EQ_STARTS = [r'\begin{equation}', r'\begin{equation*}', r'\begin{align}', r'\begin{eqnarray}', r'\begin{eqnarray*}',
-             r'\begin{multline}', r'\begin{multline*}']
-EQ_ENDS = [r'\end{equation}', r'\end{equation*}', r'\end{align}', r'\end{eqnarray}', r'\begin{eqnarray*}',
-           r'\begin{multline}', r'\begin{multline*}']
+EQ_STARTS = [
+    r'\begin{equation}',
+    r'\begin{equation*}',
+    r'\begin{align}',
+    r'\begin{eqnarray}',
+    r'\begin{eqnarray*}',
+    r'\begin{multline}',
+    r'\begin{multline*}']
+EQ_ENDS = [
+    r'\end{equation}',
+    r'\end{equation*}',
+    r'\end{align}',
+    r'\end{eqnarray}',
+    r'\begin{eqnarray*}',
+    r'\begin{multline}',
+    r'\begin{multline*}']
 
 IND_START = r'\index{'
 
@@ -49,7 +61,8 @@ def main():
 def remove_special(content):
     """Removes the excess pieces from the given content and returns the updated version as a string."""
 
-    # various flags that will help us keep track of what elements we are inside of currently
+    # various flags that will help us keep track of what elements we are
+    # inside of currently
     inside = {
         "constraint": [r'\constraint{', False],
         "substitution": [r'\substitution{', False],
@@ -88,19 +101,50 @@ def remove_special(content):
     Znonneg_pat = re.compile(r'\\Znonneg')
 
     pattern_set = [
-        pi_pat, expe_kk, expe_pat, cc_pat, rr_pat, zz_pat, thalf_pat, half_pat, beta_pat, gamma_pat, delta_pat,
+        pi_pat,
+        expe_kk,
+        expe_pat,
+        cc_pat,
+        rr_pat,
+        zz_pat,
+        thalf_pat,
+        half_pat,
+        beta_pat,
+        gamma_pat,
+        delta_pat,
         theta_pat,
-        omega_pat, alpha_pat, lambda_pat, const_pat, infty_pat, widetilde_pat, Zpos_pat, Znonneg_pat
-    ]
+        omega_pat,
+        alpha_pat,
+        lambda_pat,
+        const_pat,
+        infty_pat,
+        widetilde_pat,
+        Zpos_pat,
+        Znonneg_pat]
 
     # r'\1\\expe^'
 
     replacement_set = [
-        r'\1\\cpi\2', r'\\expe^', r'\\expe^', r'\\mathbb{C}', r'\\mathbb{R}', r'\\mathbb{Z}', r'\\frac12', r'\\frac12',
-        r'\1\\beta', r'\\gamma', r'\\delta', r'\\theta', r'\\omega', r'\\alpha', r'\\lambda', r'\\mathrm const',
+        r'\1\\cpi\2',
+        r'\\expe^',
+        r'\\expe^',
+        r'\\mathbb{C}',
+        r'\\mathbb{R}',
+        r'\\mathbb{Z}',
+        r'\\frac12',
+        r'\\frac12',
+        r'\1\\beta',
+        r'\\gamma',
+        r'\\delta',
+        r'\\theta',
+        r'\\omega',
+        r'\\alpha',
+        r'\\lambda',
+        r'\\mathrm const',
         r'\\infty',
-        r'\\widetilde', r'\\ZZ_{>0}', r'\\ZZ_{\\ge0}'
-    ]
+        r'\\widetilde',
+        r'\\ZZ_{>0}',
+        r'\\ZZ_{\\ge0}']
 
     spaces_pat = re.compile(r' {2,}')
     paren_pat = re.compile(r'\(\s*(.*?)\s*\)')
@@ -144,7 +188,8 @@ def remove_special(content):
 
         lnum += 1
 
-        # if this line is an index start storing it, or write it if we're done with the indexes
+        # if this line is an index start storing it, or write it if we're done
+        # with the indexes
         if IND_START in line:
             in_ind = True
             ind_str += line
@@ -198,11 +243,13 @@ def remove_special(content):
                 # go through each possible flag and see if it should be set
                 for flag, info in inside.iteritems():
 
-                    # name is present in this line, remember that we're in the block
+                    # name is present in this line, remember that we're in the
+                    # block
                     if info[NAME] in line:
                         inside[flag][SEEN] = True
 
-                comment_str += parentheses.remove(line, curly=True, cached=True) + "\n"
+                comment_str += parentheses.remove(line,
+                                                  curly=True, cached=True) + "\n"
 
             # only try to make replacements if this line isn't a comment
             if not is_comment:
@@ -211,8 +258,8 @@ def remove_special(content):
                     line = line.rstrip(".")
                 line = _replace_i(line)
 
-            elif any(info[SEEN] for info in
-                     inside.values()):  # we're in a special block, look for dollar signs to replace "i"s
+            # we're in a special block, look for dollar signs to replace "i"s
+            elif any(info[SEEN] for info in inside.values()):
 
                 # if we're done with a special block
                 if comment_str.rstrip().endswith("###close_0###"):
@@ -227,11 +274,14 @@ def remove_special(content):
 
                     # print(comment_str + "\n")
 
-                    dollar_locs = [match.start() for match in dollar_pat.finditer(comment_str)]
+                    dollar_locs = [match.start()
+                                   for match in dollar_pat.finditer(comment_str)]
                     locs_iter = iter(dollar_locs)
 
-                    dollar_pairs = [(first, second) for first, second in
-                                    izip(locs_iter, locs_iter)]  # create a list of ranges that are between dollar signs
+                    # create a list of ranges that are between dollar signs
+                    dollar_pairs = [
+                        (first, second) for first, second in izip(
+                            locs_iter, locs_iter)]
 
                     if len(dollar_locs) % 2:
                         print("MISMATCHED $ in:\n{0}".format(comment_str))
@@ -242,8 +292,10 @@ def remove_special(content):
                         comment_str = comment_str[:dollar_pair[0]] + _replace_i(
                             comment_str[dollar_pair[0]:dollar_pair[1]]) + comment_str[dollar_pair[1]:]
 
-                    comment_lines = parentheses.insert(comment_str, curly=True).split("\n")
-                    comment_lines[-1] = re.sub(r'[.,]}[.,]?', r'}', comment_lines[-1])
+                    comment_lines = parentheses.insert(
+                        comment_str, curly=True).split("\n")
+                    comment_lines[-1] = re.sub(r'[.,]}[.,]?',
+                                               r'}', comment_lines[-1])
                     updated.extend(comment_lines)
 
                     comment_str = ""
@@ -260,7 +312,10 @@ def remove_special(content):
     spaces_pat = re.compile(r'\n{2,}[ ]?\n+')
     content = spaces_pat.sub('\n\n', content)
 
-    content = re.sub(r'\\index{(.*?)}\n\n\\index{(.*?)}', r'\\index{\1}\n\\index{\2}', content)
+    content = re.sub(
+        r'\\index{(.*?)}\n\n\\index{(.*?)}',
+        r'\\index{\1}\n\\index{\2}',
+        content)
     content = re.sub(r'\n\n\\index{(.*?)}\n\n', r'\n\\index{\1}\n', content)
 
     return content
@@ -277,9 +332,12 @@ def _replace_i(words):
     # go through every occurence of "i" in the content
     while iloc != -1:
 
-        text_bounds = [(match.start(), match.end()) for match in text_pat.finditer(words)]
-        mathrm_bounds = [(match.start(), match.end()) for match in mathrm_pat.finditer(words)]
-        textrm_bounds = [(match.start(), match.end()) for match in textrm_pat.finditer(words)]
+        text_bounds = [(match.start(), match.end())
+                       for match in text_pat.finditer(words)]
+        mathrm_bounds = [(match.start(), match.end())
+                         for match in mathrm_pat.finditer(words)]
+        textrm_bounds = [(match.start(), match.end())
+                         for match in textrm_pat.finditer(words)]
 
         avoid_bounds = text_bounds + mathrm_bounds + textrm_bounds
         avoid_bounds = sorted(avoid_bounds)
@@ -309,16 +367,33 @@ def _replace_i(words):
 
         replacement = words[iloc]
 
-        # at least one of the characters surrounding "i" is not alphabetic, we may need to replace
+        # at least one of the characters surrounding "i" is not alphabetic, we
+        # may need to replace
         if not surrounding.isalpha():
 
             # avoids 'infty', 'is', 'it', 'in', 'instead', 'immediately'
-            if not (' ' in words[iloc - 1] and (
-                            'nfty' in words[iloc + 1:iloc + 5] or 's' in words[iloc + 1] or 't' in words[
-                        iloc + 1] or 'n' in words[iloc + 1]) or 'mmed' in words[iloc + 1:iloc + 5] or 'label{' in words[
-                                                                                                                  iloc - 6:iloc]):
+            if not (
+                ' ' in words[
+                    iloc -
+                    1] and (
+                    'nfty' in words[
+                        iloc +
+                        1:iloc +
+                        5] or 's' in words[
+                    iloc +
+                    1] or 't' in words[
+                        iloc +
+                        1] or 'n' in words[
+                            iloc +
+                            1]) or 'mmed' in words[
+                                iloc +
+                                1:iloc +
+                                5] or 'label{' in words[
+                                    iloc -
+                    6:iloc]):
 
-                # one (but not both) of the surrounding characters IS alphabetic, may need to replace
+                # one (but not both) of the surrounding characters IS
+                # alphabetic, may need to replace
                 if any(s.isalpha() for s in surrounding):
 
                     # character before is alphabetic

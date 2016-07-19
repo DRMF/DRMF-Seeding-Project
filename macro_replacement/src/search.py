@@ -39,7 +39,8 @@ def run(inputfile, outputfile, all_funcs):
 
     seen = set()
 
-    # go through each function and add an entry to the correct frequency list for every match found
+    # go through each function and add an entry to the correct frequency list
+    # for every match found
     for func in all_funcs:
 
         occurences = defaultdict(int)
@@ -51,7 +52,8 @@ def run(inputfile, outputfile, all_funcs):
             line_num = find_line(start_byte, line_lengths)
             occurences[line_num] += 1
 
-        # go through each line with the current function on it and add an entry to the frequency list for that line
+        # go through each line with the current function on it and add an entry
+        # to the frequency list for that line
         for line_num in occurences:
             new_entry = (occurences[line_num], func.abbr)
             frequencies[line_num].append(new_entry)
@@ -65,7 +67,8 @@ def find_line(byte, line_lengths):
     return _find_line_helper(byte, line_lengths, 0, len(line_lengths))
 
 
-# uses recursive binary-search-esque algorithm to find what line the given byte is on
+# uses recursive binary-search-esque algorithm to find what line the given
+# byte is on
 def _find_line_helper(byte, line_lengths, start, end):
     mid = (start + end) // 2
 
@@ -113,7 +116,8 @@ def write_results(outputfile, frequencies, identifiers_info, seen):
             if len(frequencies[line_num]) == 0:
                 continue
 
-            # for every function on the line, output the number of times it occured on that line and its abbreviation
+            # for every function on the line, output the number of times it
+            # occured on that line and its abbreviation
             for occurences, abbr in frequencies[line_num]:
                 to_write += ":{0} {1}".format(abbr, occurences)
 
@@ -139,7 +143,8 @@ def create_usage_table(identifiers_info, seen):
     layout = layout.replace("^", "<")
     format = "<70"
 
-    # go through each identifier that we have seen and add its entry to the table
+    # go through each identifier that we have seen and add its entry to the
+    # table
     for identifier in seen:
         macro = identifiers_info[identifier][0]
         description = identifiers_info[identifier][1]

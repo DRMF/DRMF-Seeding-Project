@@ -8,14 +8,15 @@ import re
 
 _last_val = 0
 
+
 def remove(input, curly=False, cached=False):
     """Goes through input and replaces any opening and closing parentheses with numbered markers."""
-    
+
     global _last_val
 
     counter = 0
 
-    #resume from previous count
+    # resume from previous count
     if cached:
         counter = _last_val
 
@@ -24,21 +25,21 @@ def remove(input, curly=False, cached=False):
     open = "("
     close = ")"
 
-    #if client wants to replace curly braces, adjust accordingly
+    # if client wants to replace curly braces, adjust accordingly
     if curly:
         open = "{"
         close = "}"
 
-    #go through input and replace parentheses with labels
+    # go through input and replace parentheses with labels
     for character in input:
 
-        #found an opening parenthesis, replace it with its label
+        # found an opening parenthesis, replace it with its label
         if character == open:
 
             character = "###open_{0}###".format(counter)
             counter += 1
 
-        #found a closing parenthesis, replace it with its label
+        # found a closing parenthesis, replace it with its label
         if character == close:
             counter -= 1
 
@@ -49,17 +50,18 @@ def remove(input, curly=False, cached=False):
 
         updated += character
 
-    _last_val = counter   #store our spot
+    _last_val = counter  # store our spot
 
     return updated
+
 
 def insert(input, curly=False):
     """Goes through input and replaces any numbered markers with opening and closing parentheses."""
 
     o_rep = "("
-    c_rep = ")" 
-    
-    #adjust for curly braces
+    c_rep = ")"
+
+    # adjust for curly braces
     if curly:
         o_rep = "{"
         c_rep = "}"

@@ -9,7 +9,11 @@ def main():
     title.text = 'the Title & stuff'
     ET.dump(root)
     tree = ET.ElementTree(root)
-    tree.write("page.xhtml", xml_declaration=True, encoding='utf-8', method='xml')
+    tree.write(
+        "page.xhtml",
+        xml_declaration=True,
+        encoding='utf-8',
+        method='xml')
 
 
 if __name__ == "__main__":

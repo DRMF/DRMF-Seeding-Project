@@ -26,91 +26,106 @@ Edward Bian
 Currently under heavy modification; sections may not work and/or look inefficient/confusing
 """
 
-#start out by reading KLSadd.tex to get all of the paragraphs that must be added to the chapter files
-#also keep track of which chapter each one is in
+# start out by reading KLSadd.tex to get all of the paragraphs that must be added to the chapter files
+# also keep track of which chapter each one is in
 
-#variables: chapNums for the chapter number each section belongs to paras will hold the sections that will be copied over
-#chapNums is needed to know which file to open (9 or 14)
-#mathPeople is just the name for the sections that are used, like Wilson, Racah, etc. I know some are not people, its just a var name
+# variables: chapNums for the chapter number each section belongs to paras will hold the sections that will be copied over
+# chapNums is needed to know which file to open (9 or 14)
+# mathPeople is just the name for the sections that are used, like Wilson,
+# Racah, etc. I know some are not people, its just a var name
 chapNums = []
 paras = []
 klsparas = []
 mathPeople = []
-newCommands = [] #used to hold the indexes of the commands
-ref9II = [] #Hold section search indexes
+newCommands = []  # used to hold the indexes of the commands
+ref9II = []  # Hold section search indexes
 ref14II = []
-ref9III = [] #Holds all indexes
+ref9III = []  # Holds all indexes
 ref14III = []
 specref9 = []
 specref14 = []
-comms = "" #holds the ACTUAL STRINGS of the commands
-#2/18/16 this method addresses the goal of hardcoding in the necessary packages to let the chapter files run as pdf's.
-#Currently only works with chapter 9, ask Dr. Cohl to help port your chapter 14 output file into a pdf
+comms = ""  # holds the ACTUAL STRINGS of the commands
+# 2/18/16 this method addresses the goal of hardcoding in the necessary packages to let the chapter files run as pdf's.
+# Currently only works with chapter 9, ask Dr. Cohl to help port your
+# chapter 14 output file into a pdf
+
 
 def prepareForPDF(chap):
     footmiscIndex = 0
     index = 0
     for word in chap:
-        index+=1
+        index += 1
         if("footmisc" in word):
-            footmiscIndex+= index
-    #edits the chapter string sent to include hyperref, xparse, and cite packages
+            footmiscIndex += index
+    # edits the chapter string sent to include hyperref, xparse, and cite packages
     #str[footmiscIndex] += "\\usepackage[pdftex]{hyperref} \n\\usepackage {xparse} \n\\usepackage{cite} \n"
-    chap.insert(footmiscIndex, "\\usepackage[pdftex]{hyperref} \n\\usepackage {xparse} \n\\usepackage{cite} \n")
+    chap.insert(
+        footmiscIndex,
+        "\\usepackage[pdftex]{hyperref} \n\\usepackage {xparse} \n\\usepackage{cite} \n")
     return chap
 
-#2/18/16 this method reads in relevant commands that are in KLSadd.tex and returns them as a list
+# 2/18/16 this method reads in relevant commands that are in KLSadd.tex
+# and returns them as a list
+
 
 def getCommands(kls):
     index = 0
     for word in kls:
-        index+=1
+        index += 1
         if("smallskipamount" in word):
-            newCommands.append(index-1)
+            newCommands.append(index - 1)
         if("mybibitem[1]" in word):
             newCommands.append(index)
     comms = kls[newCommands[0]:newCommands[1]]
     return comms
 
-#2/18/16 this method addresses the goal of hardcoding in the necessary commands to let the chapter files run as pdf's. Currently only works with chapter 9
+# 2/18/16 this method addresses the goal of hardcoding in the necessary
+# commands to let the chapter files run as pdf's. Currently only works
+# with chapter 9
+
 
 def insertCommands(kls, chap, cms):
-    #reads in the newCommands[] and puts them in chap
-    beginIndex = -1 #the index of the "begin document" keyphrase, this is where the new commands need to be inserted.
-    #find index of begin document in KLSadd
+    # reads in the newCommands[] and puts them in chap
+    # the index of the "begin document" keyphrase, this is where the new
+    # commands need to be inserted.
+    beginIndex = -1
+    # find index of begin document in KLSadd
     index = 0
     for word in kls:
-        index+=1
+        index += 1
         if("begin{document}" in word):
             beginIndex += index
     tempIndex = 0
     for i in cms:
-        chap.insert(beginIndex+tempIndex,i)
-        tempIndex +=1
+        chap.insert(beginIndex + tempIndex, i)
+        tempIndex += 1
     return chap
 
-#method to find the indices of the reference paragraphs
+# method to find the indices of the reference paragraphs
+
+
 def findReferences(chapter):
     references = []
     index = -1
-    #chaptercheck designates which chapter is being searched for references
+    # chaptercheck designates which chapter is being searched for references
     chaptercheck = 0
     if chapticker == 0:
         chaptercheck = str(9)
     elif chapticker == 1:
         chaptercheck = str(14)
-    #canAdd tells the program whether the next section is a reference
+    # canAdd tells the program whether the next section is a reference
     canAdd = False
     for word in chapter:
-        index+=1
-        #check sections and subsections
+        index += 1
+        # check sections and subsections
         if("section{" in word or "subsection*{" in word) and ("subsubsection*{" not in word):
-            w = word[word.find("{")+1: word.find("}")]
-            ws = word[word.find("{")+1: word.find("~")]
+            w = word[word.find("{") + 1: word.find("}")]
+            ws = word[word.find("{") + 1: word.find("~")]
             for unit in mathPeople:
-                subunit = unit[unit.find(" ")+1: unit.find("#")]
+                subunit = unit[unit.find(" ") + 1: unit.find("#")]
                 # System of checks that verifies if section is in chapter
-                if ((w in subunit) or (ws in subunit)) and (chaptercheck in unit) and (len(w) == len(subunit)) or (("Pseudo Jacobi" in w) and ("Pseudo Jacobi (or Routh-Romanovski)" in subunit)):
+                if ((w in subunit) or (ws in subunit)) and (chaptercheck in unit) and (len(w) == len(
+                        subunit)) or (("Pseudo Jacobi" in w) and ("Pseudo Jacobi (or Routh-Romanovski)" in subunit)):
                     canAdd = True
                     if chapticker == 0:
                         ref9II.append(index)
@@ -118,7 +133,7 @@ def findReferences(chapter):
                     elif chapticker == 1:
                         ref14II.append(index)
                         ref14III.append(index)
-        if("\\subsection*{References}" in word) and (canAdd == True):
+        if("\\subsection*{References}" in word) and (canAdd):
             # Appends valid locations
             references.append(index)
             if chapticker == 0:
@@ -139,7 +154,8 @@ def findReferences(chapter):
     print(ref14III)
     return references
 
-def referencePlacer(chap, references, p, kls,refII,refIII,specref):
+
+def referencePlacer(chap, references, p, kls, refII, refIII, specref):
     # count is used to represent the values in count
     count = 0
     # Tells which chapter it's on
@@ -151,15 +167,18 @@ def referencePlacer(chap, references, p, kls,refII,refIII,specref):
     for i in references:
         # Place before References paragraph
         word1 = str(p[count])
-        if (designator in word1[word1.find("\\subsection*{") + 1: word1.find("}")]):
+        if (designator in word1[word1.find(
+                "\\subsection*{") + 1: word1.find("}")]):
             chap[i - 2] += "%Begin KLSadd additions"
             chap[i - 2] += p[count]
             chap[i - 2] += "%End of KLSadd additions"
             count += 1
         else:
-            while (designator not in word1[word1.find("\\subsection*{") + 1: word1.find("}")]):
+            while (designator not in word1[word1.find(
+                    "\\subsection*{") + 1: word1.find("}")]):
                 word1 = str(p[count])
-                if (designator in word1[word1.find("\\subsection*{") + 1: word1.find("}")]):
+                if (designator in word1[word1.find(
+                        "\\subsection*{") + 1: word1.find("}")]):
                     chap[i - 2] += "%Begin KLSadd additions"
                     chap[i - 2] += p[count]
                     chap[i - 2] += "%End of KLSadd additions"
@@ -167,7 +186,8 @@ def referencePlacer(chap, references, p, kls,refII,refIII,specref):
                 else:
                     count += 1
 
-def referencePlacerII(chap, references, p, kls,refII,refIII,specref):
+
+def referencePlacerII(chap, references, p, kls, refII, refIII, specref):
     if chapticker2 == 0:
         designator = "9."
     elif chapticker2 == 1:
@@ -179,20 +199,21 @@ def referencePlacerII(chap, references, p, kls,refII,refIII,specref):
         pass
 
 
-
-#method to change file string(actually a list right now), returns string to be written to file
-#If you write a method that changes something, it is preffered that you call the method in here
-def fixChapter(chap, references, p, kls,refII,refIII,specref):
-    #chap is the file string(actually a list), references is the specific references for the file,
-    #and p is the paras variable(not sure if needed) kls is the KLSadd.tex as a list
-    referencePlacer(chap, references, p, kls, refII,refIII,specref)
+# method to change file string(actually a list right now), returns string to be written to file
+# If you write a method that changes something, it is preffered that you
+# call the method in here
+def fixChapter(chap, references, p, kls, refII, refIII, specref):
+    # chap is the file string(actually a list), references is the specific references for the file,
+    # and p is the paras variable(not sure if needed) kls is the KLSadd.tex as
+    # a list
+    referencePlacer(chap, references, p, kls, refII, refIII, specref)
     chap = prepareForPDF(chap)
     cms = getCommands(kls)
-    chap = insertCommands(kls,chap, cms)
+    chap = insertCommands(kls, chap, cms)
     commentticker = 0
     # Hard coded command remover
     for word in chap:
-        word2 = chap[chap.index(word)-1]
+        word2 = chap[chap.index(word) - 1]
         if ("\\newcommand{\qhypK}[5]{\,\mbox{}_{#1}\phi_{#2}\!\left(" not in word2):
             if ("\\newcommand\\half{\\frac12}" in word):
                 wordtoadd = "%" + word
@@ -215,78 +236,100 @@ def fixChapter(chap, references, p, kls,refII,refIII,specref):
         ticker1 += 1
     return chap
 
-#open the KLSadd file to do things with
+# open the KLSadd file to do things with
 with open("KLSadd.tex", "r") as add:
-    #store the file as a string
+    # store the file as a string
     addendum = add.readlines()
-    #Makes sections look like other sections
+    # Makes sections look like other sections
     for word in addendum:
         if ("paragraph{" in word):
             lenword = len(word) - 1
-            temp = word[0:word.find("{") + 1] + "\large\\bf KLSadd: " + word[word.find("{") + 1: lenword]
+            temp = word[0:word.find(
+                "{") + 1] + "\large\\bf KLSadd: " + word[word.find("{") + 1: lenword]
             addendum[addendum.index(word)] = temp
         if ("subsubsection*{" in word):
             lenword = len(word) - 1
-            addendum[addendum.index(word)] = word[0:word.find("{") + 1] + "\large\\bf KLSadd: " + word[word.find("{") + 1: lenword]
+            addendum[addendum.index(word)] = word[0:word.find(
+                "{") + 1] + "\large\\bf KLSadd: " + word[word.find("{") + 1: lenword]
     index = 0
     indexes = []
     # Designates sections that need stuff added
     # get the index
     for word in addendum:
-        index+=1
+        index += 1
         if("." in word and "\\subsection*{" in word):
             if ("9." in word):
                 chapNums.append(9)
-                name = word[word.find("{") + 1: word.find("}") ]
+                name = word[word.find("{") + 1: word.find("}")]
                 mathPeople.append(name + "#")
-                specref9.append(index-1)
+                specref9.append(index - 1)
             if("14." in word):
                 chapNums.append(14)
-                name = word[word.find("{") + 1: word.find("}") ]
+                name = word[word.find("{") + 1: word.find("}")]
                 mathPeople.append(name + "#")
                 specref14.append(index - 1)
-            indexes.append(index-1)
+            indexes.append(index - 1)
         if ("paragraph{" in word) and (index > 313):
-            klsparas.append(index-1)
+            klsparas.append(index - 1)
     print(indexes)
     print(specref9)
     print(specref14)
     print(klsparas)
     print(mathPeople)
-    #now indexes holds all of the places there is a section
-    #using these indexes, get all of the words in between and add that to the paras[]
-    for i in range(len(indexes)-1):
-        box = ''.join(addendum[indexes[i]: indexes[i+1]-1])
+    # now indexes holds all of the places there is a section
+    # using these indexes, get all of the words in between and add that to the
+    # paras[]
+    for i in range(len(indexes) - 1):
+        box = ''.join(addendum[indexes[i]: indexes[i + 1] - 1])
         paras.append(box)
     box2 = ''.join(addendum[indexes[35]: 2245])
     paras.append(box2)
-    #paras now holds the paragraphs that need to go into the chapter files, but they need to go in the appropriate
-    #section(like Wilson, Racah, Hahn, etc.) so we use the mathPeople variable
-    #we can use the section names to place the relevant paragraphs in the right place
+    # paras now holds the paragraphs that need to go into the chapter files, but they need to go in the appropriate
+    # section(like Wilson, Racah, Hahn, etc.) so we use the mathPeople variable
+    # we can use the section names to place the relevant paragraphs in the
+    # right place
 
-    #as of 2/8/16 the paragraphs will go before the References paragraph of the relevant section
-    #parse both files 9 and 14 as strings
+    # as of 2/8/16 the paragraphs will go before the References paragraph of the relevant section
+    # parse both files 9 and 14 as strings
 
-    #chapter 9
+    # chapter 9
     with open("chap09.tex", "r") as ch9:
-        entire9 = ch9.readlines() #reads in as a list of strings
+        entire9 = ch9.readlines()  # reads in as a list of strings
     ch9.close()
 
-    #chapter 14
+    # chapter 14
     with open("chap14.tex", "r") as ch14:
         entire14 = ch14.readlines()
     ch14.close()
-    #call the findReferences method to find the index of the References paragraph in the two file strings
-    #two variables for the references lists one for chapter 9 one for chapter 14
+    # call the findReferences method to find the index of the References paragraph in the two file strings
+    # two variables for the references lists one for chapter 9 one for chapter
+    # 14
     chapticker = 0
     references9 = findReferences(entire9)
     chapticker += 1
     references14 = findReferences(entire14)
-    #call the fixChapter method to get a list with the addendum paragraphs added in
+    # call the fixChapter method to get a list with the addendum paragraphs
+    # added in
     chapticker2 = 0
-    str9 = ''.join(fixChapter(entire9, references9, paras, addendum,ref9II,ref9III,specref9))
+    str9 = ''.join(
+        fixChapter(
+            entire9,
+            references9,
+            paras,
+            addendum,
+            ref9II,
+            ref9III,
+            specref9))
     chapticker2 += 1
-    str14 = ''.join(fixChapter(entire14, references14, paras, addendum,ref14II,ref14III,specref14))
+    str14 = ''.join(
+        fixChapter(
+            entire14,
+            references14,
+            paras,
+            addendum,
+            ref14II,
+            ref14III,
+            specref14))
 
 """
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -296,9 +339,9 @@ is where the lists representing the words/strings in the chapter are joined toge
 """
 
 
-#write to files
-#new output files for safety
-with open("updated9.tex","w") as temp9:
+# write to files
+# new output files for safety
+with open("updated9.tex", "w") as temp9:
     temp9.write(str9)
 
 with open("updated14.tex", "w") as temp14:
