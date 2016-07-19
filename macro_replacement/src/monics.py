@@ -4,6 +4,9 @@ __status__ = "Development"
 import re
 import sys
 
+# If there are errors it probably has to do with the missing import below
+# from snippets import *
+
 fullmacro = ''
 
 

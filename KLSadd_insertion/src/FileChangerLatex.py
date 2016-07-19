@@ -15,7 +15,7 @@ __status__ = "Development"
 subsection = ""
 a = -1
 chapter = ""
-list = []
+chapters = []
 with open("KLSadd.tex", "rb") as file:
     for line in file:
         # finds all mentions of subsections in KLSadd
@@ -37,7 +37,7 @@ with open("KLSadd.tex", "rb") as file:
                     chapter += "."
 
             if chapter is not "":
-                list.append(chapter)
+                chapters.append(chapter)
     # END OF LOOP why can't I have nice brackets like java :(
     """
     list contains all of the subsections. Begin chapter file searching
@@ -49,7 +49,7 @@ with open("KLSadd.tex", "rb") as file:
     print(words)
     numFile = ""
     fileList = []
-    for s in list:
+    for s in chapters:
         numFile = ""
         if ("." in s[0:2]):
             numFile = s[0]

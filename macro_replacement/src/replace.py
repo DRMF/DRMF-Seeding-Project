@@ -8,7 +8,10 @@ import identifiers
 import sys
 import re
 import os
-from snippets import *
+
+# If there are errors it probably has to do with the missing import below
+# from snippets import *
+
 from function import Function
 from replace_special import remove_special
 from monics import replace_monics

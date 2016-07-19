@@ -3,7 +3,8 @@ __status__ = "Development"
 
 import re
 import sys
-from snippets import *
+# If there are errors it probably has to do with the missing import below
+# from snippets import *
 
 
 def main():

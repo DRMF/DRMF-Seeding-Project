@@ -5,6 +5,9 @@ import os
 import sys
 from function import Function
 
+# If there are errors it probably has to do with the missing import below
+# from snippets import *
+
 
 class ConfigFile(object):
     """Represents a configuration file (containing regular expressions) used for seeding the DRMF"""
