@@ -22,6 +22,7 @@ class MapleEquation(object):
         self.fields = {"category": "", "constraints": "", "begin": "", "factor": "", "front": "", "parameters": "",
                        "type": inp.pop(0).split("'")[1]}
 
+        # read data from the Maple create() statement
         for i, line in enumerate(inp):
             line = line.split(" = ", 1)
 
@@ -133,36 +134,44 @@ def basic_translate(exp):
     # type: (list) -> str
     """Translates basic mathematical operations."""
 
-    for order in range(3):
+    # translates operations in place
+    for order in range(3): # order of operations
         i = 0
         while i < len(exp):
             modified = False
 
+            # the imaginary number
             if exp[i] == "I":
                 exp[i] = "i"
 
+            # factorial
             elif exp[i] == "!" and order == 0:
                 exp[i - 1] += "!"
                 modified = True
 
+            # power
             elif exp[i] == "^" and order == 0:
                 power = trim_parens(exp.pop(i + 1))
                 exp[i - 1] += "^{" + power + "}"
                 modified = True
 
+            # multiplication
             elif exp[i] == "*" and order == 1:
+                # adds spacing when necessary
                 if exp[i - 1][-1] not in "}]" and "\\" in exp[i - 1] and exp[i + 1][0] != "\\":
                     exp[i - 1] += " "
 
                 exp[i - 1] += exp.pop(i + 1)
                 modified = True
 
+            # division
             elif exp[i] == "/" and order == 1:
-                for index in [i - 1, i + 1]:
+                for index in [i - 1, i + 1]: # removes extra parentheses
                     exp[index] = trim_parens(exp[index])
                 exp[i - 1] = "\\frac{" + exp[i - 1] + "}{" + exp.pop(i + 1) + "}"
                 modified = True
 
+            # removes extra characters
             if modified:
                 exp.pop(i)
                 i -= 1
@@ -176,9 +185,11 @@ def get_arguments(function, arg_string):
     # type: (str, list) -> list
     """Obtains the arguments of a function."""
 
+    # no arguments
     if arg_string == ["(", ")"]:
         return []
 
+    # handling for hypergeometric, q-hypergeometric functions
     elif function in ["hypergeom", "qhyper"]:
         args = list()
         for s in ' '.join(arg_string[1:-1]).split("] , "):
@@ -194,6 +205,7 @@ def get_arguments(function, arg_string):
 
             args.insert(0, str(arg_count))
 
+    # handling for sums
     elif function == "sum":
         args = basic_translate(arg_string[1:-1]).split(",")
         args = args.pop(1).split("..") + [args[0]]
@@ -216,6 +228,7 @@ def generate_function(name, args):
             if name == n and len(args) == variant["args"]:
                 result = copy.copy(variant["repr"])
 
+    # places arguments between shell of function
     for n in range(1, len(result)):
         result.insert(2 * n - 1, args[n - 1])
 
@@ -229,6 +242,7 @@ def translate(exp):
     if exp == "":
         return ""
 
+    # initial formatting of input string
     exp = replace_strings(exp.strip(), CONSTRAINTS)
     exp = replace_strings(exp, {"functions:-": ""})
     exp = tokenize(exp)
@@ -239,22 +253,23 @@ def translate(exp):
 
     i = len(exp) - 1
     while i >= 0:
-        if exp[i] == "(":
+        if exp[i] == "(":  # handle contents between parentheses
             r = i + exp[i:].index(")")
             piece = exp[i:r + 1]
 
-            if exp[i - 1] == "]":
+            if exp[i - 1] == "]":  # for logarithm function
                 sq = i - 2 - exp[:i - 1][::-1].index("[")
                 piece = [piece[0]] + exp[sq + 1:i - 1] + [","] + piece[1:]
                 i = sq
 
-            if exp[i - 1] in FUNCTIONS:
+            if exp[i - 1] in FUNCTIONS:  # handling for functions
                 i -= 1
                 piece = generate_function(exp[i], get_arguments(exp[i], piece))
 
             else:
                 piece = basic_translate(piece)
 
+            # remove unnecessary parentheses around fractions
             if "frac" in replace_strings(piece, {"(": ""})[:6] and (r + 2 > len(exp) or exp[r + 1] != "^"):
                 while piece != trim_parens(piece):
                     piece = trim_parens(piece)
@@ -270,6 +285,7 @@ def make_equation(eq, view_metadata=False):
     # type: (MapleEquation{, bool}) -> str
     """Make a LaTeX equation based on a MapleEquation object."""
 
+    # modify fields
     eq.lhs = translate(eq.lhs)
     eq.factor = translate(eq.fields["factor"])
     eq.front = translate(eq.fields["front"])
@@ -306,6 +322,7 @@ def make_equation(eq, view_metadata=False):
     elif eq.eq_type == "contfrac":
         start = 1  # in case the value of start isn't assigned
 
+        # add terms before general
         if eq.front != "":
             equation += eq.front + "+"
             start = 1
@@ -321,6 +338,7 @@ def make_equation(eq, view_metadata=False):
             else:
                 equation += eq.factor + " "
 
+        # trim unnecessary parentheses
         for i, element in enumerate(eq.general):
             eq.general[i] = trim_parens(translate(element))
 

@@ -7,14 +7,14 @@ import os
 import copy
 from src.translator import MapleEquation, make_equation
 
-TABLE = dict()
+TABLE = dict()  # stores meaning of folder names
 with open("data/section_names") as name_info:
     for line in name_info.read().split("\n"):
         if line != "" and "%" not in line:
             key, value = line.split(" : ")
             TABLE[key] = value
 
-FILES = [
+FILES = [  # files to be translated
     "bessel", "modbessel",
     "confluent", "confluentlimit", "kummer", "parabolic", "whittaker",
     "apery", "archimedes", "catalan", "delian", "eulersconstant", "eulersnumber", "goldenratio", "gompertz",
@@ -28,7 +28,7 @@ FILES = [
     "qhyper"
 ]
 
-ROOT = "functions"
+ROOT = "functions"  # root directory
 
 
 class MapleFile(object):
@@ -67,7 +67,7 @@ def translate_directories():
 
     result = ""
 
-    for info in dirs:
+    for info in dirs:  # search through directories
         depth = len(["" for ch in info[0] if ch == "/"])
 
         if depth == root_depth:  # section
@@ -75,13 +75,13 @@ def translate_directories():
 
             for file_name in info[2]:
                 folder = ''.join(file_name.split(".")[:-1])
-                if folder in FILES:
+                if folder in FILES:  # subsection
                     result += "\\subsection{" + TABLE[folder] + "}\n" + \
                               MapleFile(info[0] + "/" + file_name).convert_formulae() + "\n\n"
 
+    # write output to file
     with open("out/test.tex", "w") as test, open("out/primer") as primer:
-        result = primer.read() + result + "\n\\end{document}"
-        test.write(result)
+        test.write(primer.read() + result + "\n\\end{document}")
 
 if __name__ == '__main__':
     translate_directories()
