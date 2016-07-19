@@ -1,5 +1,5 @@
 from unittest import TestCase
-from remove_excess import remove_section
+from src.remove_excess import remove_section
 
 
 class TestRemoveExcess(TestCase):

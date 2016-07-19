@@ -1,9 +1,8 @@
-"""Replace i, e, and \pi with \iunit, \expe, and \cpi respectively."""
+"""Replace i, e, and \pi with \iunit, \expe, and \cpi respectively. Creates proper spacing for indexes and removes
+unnecessary characters."""
 
-import math_mode
 import re
 import sys
-
 
 # for compatibility with Python 3
 try:
@@ -11,124 +10,261 @@ try:
 except ImportError:
     izip = zip
 
+import math_mode
+import math_function
+import parentheses
 from utilities import writeout
 from utilities import readin
+
+
+EQ_START = r'\begin{equation}'
+EQ_END = r'\end{equation}'
+
+IND_START = r'\index{'
+
+NAME = 0
+SEEN = 1
+
+CASES_START = r'\begin{cases}'
+CASES_END = r'\end{cases}'
+
+EQMIX_START = r'\begin{equationmix}'
+EQMIX_END = r'\end{equationmix}'
+
+STD_REGEX = r'.*?###open_(\d+)###.*?###close_\1###'
+
 
 def main():
     if len(sys.argv) != 3:
 
-        fname = "ZE.1.tex"
-        ofname = "ZE.2.tex"
+        fname = "../../data/ZE.1.tex"
+        ofname = "../../data/ZE.2.tex"
+
     else:
 
         fname = sys.argv[1]
         ofname = sys.argv[2]
 
-    string = open(fname).read()
+    # Below: index_str writes to output file, math_string takes output file as input, and change_original
+    # writes to the output based on the previous output file
+    # print math_mode.find_math_ranges(open(fname).read())
 
-    writeout(ofname, replace_special(string))
+    unchanged_math = math_function.math_string(fname)
+    math_string = remove_special(unchanged_math)
+    changed_math = math_function.change_original(fname,math_string)
+    formatted = math_function.formatting(changed_math)
 
-def string_to_list(_line, _list):
+    writeout(ofname, formatted)
 
-    _output = []
 
-    if _list != []:
+def remove_special(content):
+    """Removes the excess pieces from the given content and returns the updated version as a string.
+    IN -> list
+    OUT -> string"""
+    if isinstance(content, str):
+        content = content.split('\n')
+    counter = 0
 
-        for i in range(0, len(_list)):
-            if i == 0:
+    for function in content:
 
-                _output.append(_line[0:_list[i][0]])
+        lines = function.split('\n')
 
-            else:
+        # various flags that will help us keep track of what elements we are inside of currently
+        inside = {
+            "constraint": [r'\constraint{', False],
+            "substitution": [r'\substitution{', False],
+            "drmfnote": [r'\drmfnote{', False],
+            "drmfname": [r'\drmfname{', False],
+            "proof": [r'\proof{', False]
+        }
 
-                _output.append(_line[_list[i-1][1]:_list[i][0]])
+        should_replace = False
+        in_ind = False
+        in_eq = True
 
-            _output.append(_line[_list[i][0]:_list[i][1]])
-
-        if len(_line) != _list[i][1] + 1:
-
-            length = len(_line)
-            _output.append(_line[_list[i][1]:length])
-
-    else:
-        _output.append(_line)
-    return _output
-
-def list_to_string(list):
-
-    output = ""
-    for i in list:
-
-        output += i
-
-    return output
-
-def replace_special(string):
-    ranges = math_mode.find_math_ranges(string,"DRMF" in string)
-    _list = string_to_list(string, ranges)
-    for i in range(1, len(_list), 2):
-
-        iloc = _list[i].find("i", 0, len(_list[i]))
         pi_pat = re.compile(r'(\s*)\\pi(\s*\b|[aeiou])')
         expe_pat = re.compile(r'\b([^\\]?\W*)\s*e\s*\^')
-        _list[i] = pi_pat.sub(r'\1\\cpi\2', _list[i])
-        _list[i] = expe_pat.sub(r'\1\\expe^', _list[i])
 
-        while iloc != -1:
-            surrounding = []
+        spaces_pat = re.compile(r' {2,}')
+        paren_pat = re.compile(r'\(\s*(.*?)\s*\)')
 
-            # ensure "i" does not occur at the beginning of the string
-            if iloc != 0:
+        dollar_pat = re.compile(r'(?<!\\)\$')
 
-                surrounding.append(_list[i][iloc - 1])
-                flag = True
-                # ensure "i" does not occur at the end of the line
-            if iloc != len(_list[i]) - 1:
+        comment_str = ""
 
-                surrounding.append(_list[i][iloc + 1])
+        updated = []
+        # go through content and make replacements where necessary
+        for lnum, line in enumerate(lines):
 
-            replacement = _list[i][iloc]
+            lnum += 1
+            # if this line marks the start of an equation, set the flag
+            if EQ_START in line:
+                in_eq = True
 
-            if len(surrounding) == 1:
-                if flag == True:
+                # if this line marks the end of an equation, set the flag
+            if EQ_END in line:
 
-                    surrounding.append("\n")
+                # remove other flags too
+                for flag in inside:
+                    inside[flag][SEEN] = False
 
-                else:
+                comment_str = ""
 
-                    surrounding.insert(0,"\n")
-            # at least one of the characters surrounding "i" is not alphabetic, we may need to replace
-            if not (surrounding[0].isalpha() and surrounding[1].isalpha()):
-                # one (but not both) of the surrounding characters IS alphabetic, may need to replace
-                if surrounding[0].isalpha != surrounding[1].isalpha and surrounding[0].isalpha() and surrounding[0] in "aeiou":
-                    replacement = r'\iunit'
+                in_eq = True
 
-                if surrounding[0].isalpha != surrounding[1].isalpha and not surrounding[0].isalpha and surrounding[0] != "\\":
-                    replacement = r'\iunit '
+            # we need to make the replacements in equations
+            if in_eq:
 
-                if surrounding[0].isalpha == surrounding[1].isalpha:  # neither of the characters surrounding the "i" are alphabetic, replace
-                    replacement = r'\iunit'
+                is_comment = line.lstrip().startswith("%")
 
-                if (surrounding[0] == " " and surrounding[1] == "}") or (surrounding[0] == "{" and surrounding[1] == " "):
-                    replacement = r'\iunit'
+                line = pi_pat.sub(r'\1\\cpi\2', line)
+                line = expe_pat.sub(r'\1\\expe^', line)
 
-            if "\iunit" in replacement and surrounding[1] == " ":
+                # only check for flags if the line is comment
+                if is_comment:
+
+                    # go through each possible flag and see if it should be set
+                    for flag, info in inside.iteritems():
+
+                        # name is present in this line, remember that we're in the block
+                        if info[NAME] in line:
+                            inside[flag][SEEN] = True
+
+                    comment_str += parentheses.remove(line, curly=True, cached=True) + "\n"
+
+                # only try to make replacements if this line isn't a comment
+                if not is_comment:
+
+                    line = line.rstrip(".")
+
+                    line = _replace_i(line)
+
+                    # print 'line2', line
+                elif any(info[SEEN] for info in inside.values()):
+                    # ^we're in a special block, look for dollar signs to replace "i"s
+
+                    # if we're done with a special block
+                    if comment_str.rstrip().endswith("###close_0###"):
+
+                        comment_str = comment_str[:-1]
+
+                        # print([x for x in inside if inside[x][SEEN]])
+
+                        # reset special block flags
+                        for flag in inside:
+                            inside[flag][SEEN] = False
+
+                        # print(comment_str + "\n")
+
+                        dollar_locs = [match.start() for match in dollar_pat.finditer(comment_str)]
+                        locs_iter = iter(dollar_locs)
+
+                        dollar_pairs = [(first, second) for first, second in izip(locs_iter, locs_iter)]
+                        # create a list of ranges that are between dollar signs
+
+                        if len(dollar_locs) % 2:
+                            print("MISMATCHED $ in:\n{0}".format(comment_str))
+                            sys.exit(-1)
+
+                        # replace "i"s within dollar signs
+                        for dollar_pair in dollar_pairs:
+                            comment_str = comment_str[:dollar_pair[0]] + _replace_i(
+                                comment_str[dollar_pair[0]:dollar_pair[1]]) + comment_str[dollar_pair[1]:]
+
+                        comment_lines = parentheses.insert(comment_str, curly=True).split("\n")
+
+                        # comment_lines[-1] = re.sub(r'[.,]}[.,]?', r'}', comment_lines[-1])
+                        # ^ removed bc periods/ commas in comment necessary -oksana
+                        updated.extend(comment_lines)
+
+
+                        comment_str = ""
+                    continue
+
+            updated.append(line)
+
+        function = '\n'.join(updated)
+
+        # remove consecutive blank lines and blank lines between \index groups
+        spaces_pat = re.compile(r'\n{2,}[ ]?\n+')
+        function = spaces_pat.sub('\n\n', function)
+
+        function = re.sub(r'\\index{(.*?)}\n\n\\index{(.*?)}', r'\\index{\1}\n\\index{\2}', function)
+
+        content[counter] = function
+        # print 'content[counter]', content[counter]
+        counter += 1
+
+    return "\n".join(content)
+
+# replaces "i"s as necessary in words
+def _replace_i(words):
+
+    text_pat = re.compile(r'\\text{.*?}')
+
+    iloc = words.find("i")
+
+    # go through every occurence of "i" in the content
+    while iloc != -1:
+
+        text_bounds = [(match.start(), match.end()) for match in text_pat.finditer(words)]
+
+
+        # go through all the text lines
+        for start, end in text_bounds:
+
+            # if the "i" is in the \text tag, skip it
+            if start < iloc < end:
+
+                iloc = words.find("i", end + 1)
+
+                if len(text_bounds) > 1:
+                    continue
+
+        surrounding = ""
+
+        # ensure "i" does not occur at the beginning of the string
+        if iloc != 0:
+            surrounding += words[iloc - 1]
+
+            # ensure "i" does not occur at the end of the line
+        if iloc != len(words) - 1:
+            surrounding += words[iloc + 1]
+
+        replacement = words[iloc]
+
+        # at least one of the characters surrounding "i" is not alphabetic, we may need to replace
+        if not surrounding.isalpha():
+
+            # one (but not both) of the surrounding characters IS alphabetic, may need to replace
+            if any(s.isalpha() for s in surrounding):
+
+                """"# character before is alphabetic
+                if surrounding[0].isalpha():
+                    print('caught')  # below was replacing i in ch 16 commands, shraeya wrote unnecessary if char before is vowel
+                    # if surrounding[0] in "aeiou":
+                        # replacement = r'\iunit'"""
+
+                if surrounding[1].isalpha():  # character after is alphabetic
+
+                    # make sure we're not starting a macro
+                    if surrounding[0] != "\\":
+                        replacement = r'\iunit '
+
+            else:
+                # neither of the characters surrounding the "i" are alphabetic, replace
                 replacement = r'\iunit'
 
-            # print("Surrounding: {0} - replacement made: {1}".format(surrounding, replacement != "i"))
-            _list[i] = _list[i][:iloc] + replacement + _list[i][iloc + 1:]
-            if replacement == r'\iunit':
-                iloc = _list[i].find("i", iloc + 1, len(_list[i]))
-                iloc = _list[i].find("i", iloc + 1, len(_list[i]))
-            iloc = _list[i].find("i", iloc + 1, len(_list[i]))
-    return list_to_string(_list)
+
+        # print("Surrounding: {0} - replacement made: {1}".format(surrounding, replacement != "i"))
+        if iloc != -1:
+            words = words[:iloc] + replacement + words[iloc + 1:]
+            iloc = words.find("i", iloc + len(replacement))
+        else:
+            words = words[:iloc] + replacement
+
+    return words
+
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
