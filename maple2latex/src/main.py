@@ -4,10 +4,11 @@ __author__ = "Joon Bang"
 __status__ = "Development"
 
 import os
-from classes import MapleFile
+import copy
+from src.translator import MapleEquation, make_equation
 
 TABLE = dict()
-with open("info/section_names") as name_info:
+with open("data/section_names") as name_info:
     for line in name_info.read().split("\n"):
         if line != "" and "%" not in line:
             key, value = line.split(" : ")
@@ -30,7 +31,26 @@ FILES = [
 ROOT = "functions"
 
 
-def translate_file(filename: str):
+class MapleFile(object):
+    def __init__(self, filename):
+        self.filename = filename
+        self.formulae = self.obtain_formulae()
+
+    def obtain_formulae(self):
+        contents = open(self.filename).read()
+
+        return [MapleEquation(piece.split("\n")) for piece in contents.split("create(")
+                if "):" in piece or ");" in piece]
+
+    def convert_formulae(self):
+        return '\n\n'.join([make_equation(copy.copy(formula)) for formula in self.formulae])
+
+    def __str__(self):
+        return "MapleFile of " + self.filename
+
+
+def translate_file(filename):
+    # type: (str)
     """Translates all the formulae in a file."""
 
     with open("out/test.tex", "w") as test, open("out/primer") as primer:
@@ -38,6 +58,7 @@ def translate_file(filename: str):
 
 
 def translate_directories():
+    # type: ()
     """Generates and writes the results of traversing the root directory and translating all Maple files."""
 
     root_depth = len(ROOT.split("/"))
@@ -59,7 +80,8 @@ def translate_directories():
                               MapleFile(info[0] + "/" + file_name).convert_formulae() + "\n\n"
 
     with open("out/test.tex", "w") as test, open("out/primer") as primer:
-        test.write(primer.read() + result + "\n\\end{document}")
+        result = primer.read() + result + "\n\\end{document}"
+        test.write(result)
 
 if __name__ == '__main__':
     translate_directories()

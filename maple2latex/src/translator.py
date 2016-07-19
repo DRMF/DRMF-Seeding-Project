@@ -3,9 +3,9 @@
 __author__ = "Joon Bang"
 __status__ = "Development"
 
+import copy
 import json
-from maple_tokenize import tokenize
-from copy import copy
+from src.maple_tokenize import tokenize
 
 INFO = json.loads(open("data/keys.json").read())
 
@@ -16,19 +16,68 @@ CONSTRAINTS = INFO["constraints"]
 SPECIAL = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin"}
 
 
-def replace_strings(string: str, keys: dict) -> str:
-    """
-    Replaces multiple strings with multiple other strings, stored in lists of length two in li.
-    The first element is the string to find, and the second element is the replacement string.
-    A dictionary can also be given.
-    """
+class MapleEquation(object):
+    def __init__(self, inp):
+        # creates a dictionary called "fields", containing all the Maple fields
+        self.fields = {"category": "", "constraints": "", "begin": "", "factor": "", "front": "", "parameters": "",
+                       "type": inp.pop(0).split("'")[1]}
+
+        for i, line in enumerate(inp):
+            line = line.split(" = ", 1)
+
+            if len(line) > 1:
+                line[0] = line[0].strip()
+
+                if line[0] in ["category"]:
+                    line[1] = line[1].strip()[1:-1].strip()
+
+                elif line[0] == "begin" and "proc (x) [1, x] end proc" in line[1]:
+                    temp = [[1, int(d)] for d in inp[i + 2].split(",")]
+                    if len(temp) > 10:
+                        temp = temp[:10]
+                    line[1] = str(temp)[1:-1]
+
+                elif line[0] == "booklabelv1" and line[1] == '"",':
+                    line[1] = "No label"
+
+                elif line[0] in ["booklabelv1", "booklabelv2", "general", "constraints", "begin", "parameters"]:
+                    line[1] = line[1].strip()[1:-2].strip()
+
+                elif line[0] in ["lhs", "factor", "front", "even", "odd"]:
+                    if line[1].strip()[-1] == ",":
+                        line[1] = line[1].strip()[:-1]
+                    line[1] = line[1].strip()
+                self.fields[line[0]] = line[1]
+
+        # assign fields containing information about the equation
+        self.eq_type = self.fields["type"]
+        self.category = self.fields["category"]
+        self.label = self.fields["booklabelv1"]
+        self.lhs = self.fields["lhs"]
+        self.factor = self.fields["factor"]
+        self.front = self.fields["front"]
+        self.begin = self.fields["begin"]
+        self.constraints = self.fields["constraints"]
+        self.parameters = self.fields["parameters"]
+
+        # even-odd case handling
+        if "general" in self.fields:
+            self.general = [self.fields["general"]]
+        elif "even" in self.fields and "odd" in self.fields:
+            self.general = [self.fields["even"], self.fields["odd"]]
+
+
+def replace_strings(string, keys):
+    # type: (str, dict) -> str
+    """Replaces key strings with their mapped value."""
     for key in list(keys):
         string = string.replace(key, keys[key])
 
     return string
 
 
-def parse_brackets(exp: (str, list)) -> list:
+def parse_brackets(exp):
+    # type: ((str, list)) -> list
     """Obtains the contents from data encapsulated in square brackets."""
 
     exp = exp[1:-1].split(",")
@@ -43,7 +92,8 @@ def parse_brackets(exp: (str, list)) -> list:
     return exp
 
 
-def trim_parens(exp: str) -> str:
+def trim_parens(exp):
+    # type: (str) -> str
     """Removes unnecessary parentheses."""
 
     if exp == "":
@@ -72,13 +122,15 @@ def trim_parens(exp: str) -> str:
     return exp
 
 
-def make_frac(parts: list):
+def make_frac(parts):
+    # type: (list) -> str
     """Generate a LaTeX fraction from its numerator and denominator."""
 
     return translate("(" + parts[0] + ") / (" + parts[1] + ")")
 
 
-def basic_translate(exp: list) -> str:
+def basic_translate(exp):
+    # type: (list) -> str
     """Translates basic mathematical operations."""
 
     for order in range(3):
@@ -95,11 +147,11 @@ def basic_translate(exp: list) -> str:
 
             elif exp[i] == "^" and order == 0:
                 power = trim_parens(exp.pop(i + 1))
-                exp[i - 1] += "^{%s}" % power
+                exp[i - 1] += "^{" + power + "}"
                 modified = True
 
             elif exp[i] == "*" and order == 1:
-                if "\\" in exp[i - 1] and exp[i + 1][0] != "\\":
+                if exp[i - 1][-1] not in "}]" and "\\" in exp[i - 1] and exp[i + 1][0] != "\\":
                     exp[i - 1] += " "
 
                 exp[i - 1] += exp.pop(i + 1)
@@ -120,15 +172,8 @@ def basic_translate(exp: list) -> str:
     return ''.join(exp)
 
 
-def count_args(string: str, pattern: str) -> int:
-    """Counts the arguments contained in a string, based on a delimiter pattern."""
-    if string == "":
-        return 0
-
-    return string.count(pattern) + 1
-
-
-def get_arguments(function: str, arg_string: str) -> list:
+def get_arguments(function, arg_string):
+    # type: (str, list) -> list
     """Obtains the arguments of a function."""
 
     if arg_string == ["(", ")"]:
@@ -142,10 +187,10 @@ def get_arguments(function: str, arg_string: str) -> list:
         if function == "qhyper":
             args += args.pop(2).split(",")
 
-        for i in [1, 0]:
+        for p, i in enumerate([1, 0]):
             arg_count = 0
-            if args[i] != "":
-                arg_count = arg_string.count(",") + 1
+            if args[i + p] != "":
+                arg_count = args[i + p].count(",") + 1
 
             args.insert(0, str(arg_count))
 
@@ -161,14 +206,15 @@ def get_arguments(function: str, arg_string: str) -> list:
     return args
 
 
-def generate_function(name: str, args: list) -> str:
+def generate_function(name, args):
+    # type: (str, list) -> str
     """Generate a function with the provided function name and arguments."""
 
     result = list()
     for n in FUNCTIONS:
         for variant in FUNCTIONS[n]:
             if name == n and len(args) == variant["args"]:
-                result = copy(variant["repr"])
+                result = copy.copy(variant["repr"])
 
     for n in range(1, len(result)):
         result.insert(2 * n - 1, args[n - 1])
@@ -176,7 +222,8 @@ def generate_function(name: str, args: list) -> str:
     return ''.join(result)
 
 
-def translate(exp: str) -> str:
+def translate(exp):
+    # type: (str) -> str
     """Format Maple code as LaTeX."""
 
     if exp == "":
@@ -191,7 +238,8 @@ def translate(exp: str) -> str:
             if exp[i] == s:
                 exp[i] = SYMBOLS[s]
 
-    for i in range(len(exp)-1, -1, -1):
+    i = len(exp) - 1
+    while i >= 0:
         if exp[i] == "(":
             r = i + exp[i:].index(")")
             piece = exp[i:r + 1]
@@ -214,10 +262,13 @@ def translate(exp: str) -> str:
 
             exp = exp[0:i] + [piece] + exp[r + 1:]
 
+        i -= 1
+
     return basic_translate(exp)
 
 
-def make_equation(eq: "MapleEquation") -> str:
+def make_equation(eq, view_metadata=False):
+    # type: (MapleEquation{, bool}) -> str
     """Make a LaTeX equation based on a MapleEquation object."""
 
     eq.lhs = translate(eq.lhs)
@@ -233,7 +284,7 @@ def make_equation(eq: "MapleEquation") -> str:
         if eq.begin != "":
             eq.begin = parse_brackets(eq.begin)
 
-    equation = "\\begin{equation*}\\tag{%s}\n  %s\n  = " % (eq.label, eq.lhs)
+    equation = "\\begin{equation*}\\tag{" + eq.label + "}\n  " + eq.lhs + "\n  = "
 
     if eq.factor == "1":
         eq.factor = ""
@@ -280,14 +331,12 @@ def make_equation(eq: "MapleEquation") -> str:
             equation += "\\dots"
 
     # adds metadata
-    view_metadata = False
-
     if view_metadata:
         equation += "\n\\end{equation*}"
         equation += "\n\\begin{center}"
         equation += "\nParameters: $$" + eq.parameters + "$$"
         equation += "\n$$" + translate(eq.constraints) + "$$"
-        equation += eq.category
+        equation += "\n" + eq.category
         equation += "\n\\end{center}"
     else:
         equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"

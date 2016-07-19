@@ -1,485 +1,485 @@
 {
-  "functions": {
-    "sqrt": [
-      {
-        "args": 1,
-        "repr": ["\\sqrt{", "}"]
-      }
-    ],
-
-    "sin": [
-      {
-        "args": 1,
-        "repr": ["\\sin(", ")"]
-      }
-    ],
-
-    "cos": [
-      {
-        "args": 1,
-        "repr": ["\\cos(", ")"]
-      }
-    ],
-
-    "tan": [
-      {
-        "args": 1,
-        "repr": ["\\tan(", ")"]
-      }
-    ],
-
-    "abs": [
-      {
-        "args": 1,
-        "repr": ["\\abs{", "}"]
-      }
-    ],
-
-    "exp": [
-      {
-        "args": 1,
-        "repr": ["e^{", "}"]
-      }
-    ],
-
-    "log": [
-      {
-        "args": 1,
-        "repr": ["\\log{(", ")}"]
-      },
-
-      {
-      "args": 2,
-      "repr": ["\\log_{", "} (", ")"]
-      }
-    ],
-
-    "ln": [
-      {
-        "args": 1,
-        "repr": ["\\ln{(", ")}"]
-      }
-    ],
-
-    "floor": [
-      {
-        "args": 1,
-        "repr": ["\\floor{", "}"]
-      }
-    ],
-
-    "sum": [
-      {
-        "args": 3,
-        "repr": ["\\sum_{", "}^{", "} (", ")"]
-      }
-    ],
-
-    "GAMMA": [
-      {
-        "args": 1,
-        "repr": ["\\EulerGamma@{", "}"]
-      }
-    ],
-
-    "bernoulli": [
-      {
-        "args": 1,
-        "repr": ["\\BernoulliB{", "}"]
-      }
-    ],
-
-    "BesselI": [
-      {
-        "args": 2,
-        "repr": ["\\BesselI{", "}@{", "}"]
-      }
-    ],
-
-    "BesselJ": [
-      {
-        "args": 2,
-        "repr": ["\\BesselJ{", "}@{", "}"]
-      }
-    ],
-
-    "BesselK": [
-      {
-        "args": 2,
-        "repr": ["\\BesselK{", "}@{", "}"]
-      }
-    ],
-
-    "BesselY": [
-      {
-        "args": 2,
-        "repr": ["\\BesselY{", "}@{", "}"]
-      }
-    ],
-
-    "dawson": [
-      {
-        "args": 1,
-        "repr": ["\\DawsonsInt@{", "}"]
-      }
-    ],
-
-    "Ei": [
-      {
-        "args": 2,
-        "repr": ["\\ExpIntn{", "}@{", "}"]
-      },
-
-      {
-        "args": 1,
-        "repr": ["\\ExpInt@{", "}"]
-      }
-    ],
-
-    "erfc": [
-      {
-        "args": 1,
-        "repr": ["\\erfc@@{(", ")}"]
-      }
-    ],
-
-    "erf": [
-      {
-        "args": 1,
-        "repr": ["\\erf@@{(", ")}"]
-      }
-    ],
-
-    "FresnelC": [
-      {
-        "args": 1,
-        "repr": ["\\FresnelCos@{", "}"]
-      }
-    ],
-
-    "FresnelS": [
-      {
-        "args": 1,
-        "repr": ["\\FresnelSin@{", "}"]
-      }
-    ],
-
-    "HankelH1": [
-      {
-        "args": 2,
-        "repr": ["\\HankelHi{", "}@{", "}"]
-      }
-    ],
-
-    "KummerU": [
-      {
-        "args": 3,
-        "repr": ["\\KummerU@{", "}{", "}{", "}"]
-      }
-    ],
-
-    "CylinderU": [
-      {
-        "args": 2,
-        "repr": ["\\ParabolicU@{", "}{", "}"]
-      }
-    ],
-
-    "Psi": [
-      {
-        "args": 2,
-        "repr": ["\\polygamma{", "}@{", "}"]
-      },
-
-      {
-        "args": 1,
-        "repr": ["\\digamma@{", "}"]
-      }
-    ],
-
-    "WhittakerW": [
-      {
-        "args": 3,
-        "repr": ["\\WhitW{", "}{", "}@{", "}"]
-      }
-    ],
-
-    "Zeta": [
-      {
-        "args": 1,
-        "repr": ["\\RiemannZeta@{", "}"]
-      }
-    ],
-
-    "arccos": [
-      {
-        "args": 1,
-        "repr": ["\\Acos@@{(", ")}"]
-      }
-    ],
-
-    "arccosh": [
-      {
-        "args": 1,
-        "repr": ["\\Acosh@@{(", ")}"]
-      }
-    ],
-
-    "arcsin": [
-      {
-        "args": 1,
-        "repr": ["\\Asin@@{(", ")}"]
-      }
-    ],
-
-    "arcsinh": [
-      {
-        "args": 1,
-        "repr": ["\\Asinh@@{(", ")}"]
-      }
-    ],
-
-    "arctan": [
-      {
-        "args": 1,
-        "repr": ["\\Atan@@{(", ")}"]
-      }
-    ],
-
-    "arctanh": [
-      {
-        "args": 1,
-        "repr": ["\\Atanh@@{(", ")}"]
-      }
-    ],
-
-    "sinh": [
-      {
-        "args": 1,
-        "repr": ["\\sinh@@{(", ")}"]
-      }
-    ],
-
-    "cosh": [
-      {
-        "args": 1,
-        "repr": ["\\cosh@@{(", ")}"]
-      }
-    ],
-
-    "coth": [
-      {
-        "args": 1,
-        "repr": ["\\coth@@{(", ")}"]
-      }
-    ],
-
-    "tanh": [
-      {
-        "args": 1,
-        "repr": ["\\tanh@@{(", ")}"]
-      }
-    ],
-
-    "Re": [
-      {
-        "args": 1,
-        "repr": ["\\Re(", ")"]
-      }
-    ],
-
-    "Im": [
-      {
-        "args": 1,
-        "repr": ["\\Im(", ")"]
-      }
-    ],
-
-    "doublefactorial": [
-      {
-        "args": 1,
-        "repr": ["(", ")!!"]
-      }
-    ],
-
-    "hypergeom": [
-      {
-        "args": 5,
-        "repr": ["\\HyperpFq{", "}{", "}@@{", "}{", "}{", "}"]
-      }
-    ],
-
-    "pochhammer": [
-      {
-        "args": 2,
-        "repr": ["\\pochhammer{", "}{", "}"]
-      }
-    ],
-
-    "Besseli": [
-      {
-        "args": 2,
-        "repr": ["\\SphBesselIi{", "}@{", "}"]
-      }
-    ],
-
-    "Besselj": [
-      {
-        "args": 2,
-        "repr": ["\\SphBesselJ{", "}@{", "}"]
-      }
-    ],
-
-    "cerf": [
-      {
-        "args": 1,
-        "repr": ["\\erfw@@{(", ")}"]
-      }
-    ],
-
-    "Ein": [
-      {
-        "args": 1,
-        "repr": ["\\ExpIntEin@{", "}"]
-      }
-    ],
-
-    "erfcI": [
-      {
-        "args": 2,
-        "repr": ["I^{", "} \\erfc@@{(", ")}"]
-      }
-    ],
-
-    "hankelsymb": [
-      {
-        "args": 2,
-        "repr": ["\\HankelSym{", "}{", "}"]
-      }
-    ],
-
-    "lincgamma": [
-      {
-        "args": 2,
-        "repr": ["\\incgamma@{", "}{", "}"]
-      }
-    ],
-
-    "qhyper": [
-      {
-        "args": 6,
-        "repr": ["\\qHyperrphis{", "}{", "}@@{", "}{", "}{", "}{", "}"]
-      }
-    ],
-
-    "uincgamma": [
-      {
-        "args": 2,
-        "repr": ["\\IncGamma@{", "}{", "}"]
-      }
-    ],
-
-    "WhittakerPsi": [
-      {
-        "args": 3,
-        "repr": ["\\WhitPsi{", "}{", "}@{", "}"]
-      }
-    ],
-
-    "goldenratio": [
-      {
-        "args": 0,
-        "repr": ["\\GoldenRatio"]
-      }
-    ],
-
-    "Gompertz": [
-      {
-        "args": 0,
-        "repr": ["\\GompertzConstant"]
-      }
-    ],
-
-    "rabbit": [
-      {
-        "args": 0,
-        "repr": ["\\rabbitConstant"]
-      }
-    ],
-
-    "combinatfibonacci": [
-      {
-        "args": 1,
-        "repr": ["\\FibonacciNumber{", "}"]
-      }
-    ],
-
-    "argument": [
-      {
-        "args": 1,
-        "repr": ["\\arg{(", ")}"]
-      }
-    ],
-
-    "RealRange": [
-      {
-        "args": 2,
-        "repr": ["(", ", ", ")"]
-      }
-    ],
-
-    "Open": [
-      {
-        "args": 1,
-        "repr": ["(", ")"]
-      }
-    ]
-  },
-
-  "symbols": {
-    "alpha": "n",
-    "beta": "\\beta",
-    "gamma": "\\gamma",
-    "delta": "\\delta",
-    "epsilon": "\\epsilon",
-    "zeta": "\\zeta",
-    "eta": "\\eta",
-    "theta": "\\theta",
-    "iota": "\\iota",
-    "kappa": "\\kappa",
-    "lambda": "\\lambda",
-    "mu": "\\mu",
-    "nu": "\\nu",
-    "xi": "\\xi",
-    "pi": "\\pi",
-    "rho": "\\rho",
-    "sigma": "\\sigma",
-    "tau": "\\tau",
-    "upsilon": "\\upsilon",
-    "phi": "\\phi",
-    "chi": "\\chi",
-    "psi": "\\psi",
-    "omega": "\\omega",
-    "Pi": "\\pi",
-    "I": "i",
-    "Catalan": "\\CatalansConstant",
-    "infinity": "\\infty",
-    "Delian": "\\sqrt[\\leftroot{-2}\\uproot{2} 3]{2}",
-    "Theodorus": "\\sqrt{3}",
-    "integer": "\\mathbb{Z}"
-  },
-
-  "constraints": {
-    "Not(negint)": "\\CC\\backslash\\ZZ^-",
-    "Not(nonposint)": "\\CC\\backslash\\ZZ_0^-",
-    "Not(posint)": "\\CC\\backslash\\ZZ^+",
-    "::Not(positive)": "< 0",
-    "Not(integer)": "\\CC\\backslash\\ZZ",
-    "posint": "\\mathbb{Z^+}",
-    "nonnegint": "\\ZZ\\backslash\\ZZ^-",
-    "::positive": "> 0",
-    "::nonnegative": "\\geq 0",
-    "::nonneg": "\\geq 0",
-    "::": "\\in "
-  }
+    "functions": {
+        "sqrt": [
+            {
+                "args": 1,
+                "repr": ["\\sqrt{", "}"]
+            }
+        ],
+
+        "sin": [
+            {
+                "args": 1,
+                "repr": ["\\sin(", ")"]
+            }
+        ],
+
+        "cos": [
+            {
+                "args": 1,
+                "repr": ["\\cos(", ")"]
+            }
+        ],
+
+        "tan": [
+            {
+                "args": 1,
+                "repr": ["\\tan(", ")"]
+            }
+        ],
+
+        "abs": [
+            {
+                "args": 1,
+                "repr": ["\\abs{", "}"]
+            }
+        ],
+
+        "exp": [
+            {
+                "args": 1,
+                "repr": ["e^{", "}"]
+            }
+        ],
+
+        "log": [
+            {
+                "args": 1,
+                "repr": ["\\log{(", ")}"]
+            },
+
+            {
+                "args": 2,
+                "repr": ["\\log_{", "} {(", ")}"]
+            }
+        ],
+
+        "ln": [
+            {
+                "args": 1,
+                "repr": ["\\ln{(", ")}"]
+            }
+        ],
+
+        "floor": [
+            {
+                "args": 1,
+                "repr": ["\\floor{", "}"]
+            }
+        ],
+
+        "sum": [
+            {
+                "args": 3,
+                "repr": ["\\sum_{", "}^{", "} (", ")"]
+            }
+        ],
+
+        "GAMMA": [
+            {
+                "args": 1,
+                "repr": ["\\EulerGamma@{", "}"]
+            }
+        ],
+
+        "bernoulli": [
+            {
+                "args": 1,
+                "repr": ["\\BernoulliB{", "}"]
+            }
+        ],
+
+        "BesselI": [
+            {
+                "args": 2,
+                "repr": ["\\BesselI{", "}@{", "}"]
+            }
+        ],
+
+        "BesselJ": [
+            {
+                "args": 2,
+                "repr": ["\\BesselJ{", "}@{", "}"]
+            }
+        ],
+
+        "BesselK": [
+            {
+                "args": 2,
+                "repr": ["\\BesselK{", "}@{", "}"]
+            }
+        ],
+
+        "BesselY": [
+            {
+                "args": 2,
+                "repr": ["\\BesselY{", "}@{", "}"]
+            }
+        ],
+
+        "dawson": [
+            {
+                "args": 1,
+                "repr": ["\\DawsonsInt@{", "}"]
+            }
+        ],
+
+        "Ei": [
+            {
+                "args": 2,
+                "repr": ["\\ExpIntn{", "}@{", "}"]
+            },
+
+            {
+                "args": 1,
+                "repr": ["\\ExpInt@{", "}"]
+            }
+        ],
+
+        "erfc": [
+            {
+                "args": 1,
+                "repr": ["\\erfc@@{(", ")}"]
+            }
+        ],
+
+        "erf": [
+            {
+                "args": 1,
+                "repr": ["\\erf@@{(", ")}"]
+            }
+        ],
+
+        "FresnelC": [
+            {
+                "args": 1,
+                "repr": ["\\FresnelCos@{", "}"]
+            }
+        ],
+
+        "FresnelS": [
+            {
+                "args": 1,
+                "repr": ["\\FresnelSin@{", "}"]
+            }
+        ],
+
+        "HankelH1": [
+            {
+                "args": 2,
+                "repr": ["\\HankelHi{", "}@{", "}"]
+            }
+        ],
+
+        "KummerU": [
+            {
+                "args": 3,
+                "repr": ["\\KummerU@{", "}{", "}{", "}"]
+            }
+        ],
+
+        "CylinderU": [
+            {
+                "args": 2,
+                "repr": ["\\ParabolicU@{", "}{", "}"]
+            }
+        ],
+
+        "Psi": [
+            {
+                "args": 2,
+                "repr": ["\\polygamma{", "}@{", "}"]
+            },
+
+            {
+                "args": 1,
+                "repr": ["\\digamma@{", "}"]
+            }
+        ],
+
+        "WhittakerW": [
+            {
+                "args": 3,
+                "repr": ["\\WhitW{", "}{", "}@{", "}"]
+            }
+        ],
+
+        "Zeta": [
+            {
+                "args": 1,
+                "repr": ["\\RiemannZeta@{", "}"]
+            }
+        ],
+
+        "arccos": [
+            {
+                "args": 1,
+                "repr": ["\\Acos@@{(", ")}"]
+            }
+        ],
+
+        "arccosh": [
+            {
+                "args": 1,
+                "repr": ["\\Acosh@@{(", ")}"]
+            }
+        ],
+
+        "arcsin": [
+            {
+                "args": 1,
+                "repr": ["\\Asin@@{(", ")}"]
+            }
+        ],
+
+        "arcsinh": [
+            {
+                "args": 1,
+                "repr": ["\\Asinh@@{(", ")}"]
+            }
+        ],
+
+        "arctan": [
+            {
+                "args": 1,
+                "repr": ["\\Atan@@{(", ")}"]
+            }
+        ],
+
+        "arctanh": [
+            {
+                "args": 1,
+                "repr": ["\\Atanh@@{(", ")}"]
+            }
+        ],
+
+        "sinh": [
+            {
+                "args": 1,
+                "repr": ["\\sinh@@{(", ")}"]
+            }
+        ],
+
+        "cosh": [
+            {
+                "args": 1,
+                "repr": ["\\cosh@@{(", ")}"]
+            }
+        ],
+
+        "coth": [
+            {
+                "args": 1,
+                "repr": ["\\coth@@{(", ")}"]
+            }
+        ],
+
+        "tanh": [
+            {
+                "args": 1,
+                "repr": ["\\tanh@@{(", ")}"]
+            }
+        ],
+
+        "Re": [
+            {
+                "args": 1,
+                "repr": ["\\Re(", ")"]
+            }
+        ],
+
+        "Im": [
+            {
+                "args": 1,
+                "repr": ["\\Im(", ")"]
+            }
+        ],
+
+        "doublefactorial": [
+            {
+                "args": 1,
+                "repr": ["(", ")!!"]
+            }
+        ],
+
+        "hypergeom": [
+            {
+                "args": 5,
+                "repr": ["\\HyperpFq{", "}{", "}@@{", "}{", "}{", "}"]
+            }
+        ],
+
+        "pochhammer": [
+            {
+                "args": 2,
+                "repr": ["\\pochhammer{", "}{", "}"]
+            }
+        ],
+
+        "Besseli": [
+            {
+                "args": 2,
+                "repr": ["\\SphBesselIi{", "}@{", "}"]
+            }
+        ],
+
+        "Besselj": [
+            {
+                "args": 2,
+                "repr": ["\\SphBesselJ{", "}@{", "}"]
+            }
+        ],
+
+        "cerf": [
+            {
+                "args": 1,
+                "repr": ["\\erfw@@{(", ")}"]
+            }
+        ],
+
+        "Ein": [
+            {
+                "args": 1,
+                "repr": ["\\ExpIntEin@{", "}"]
+            }
+        ],
+
+        "erfcI": [
+            {
+                "args": 2,
+                "repr": ["I^{", "} \\erfc@@{(", ")}"]
+            }
+        ],
+
+        "hankelsymb": [
+            {
+                "args": 2,
+                "repr": ["\\HankelSym{", "}{", "}"]
+            }
+        ],
+
+        "lincgamma": [
+            {
+                "args": 2,
+                "repr": ["\\incgamma@{", "}{", "}"]
+            }
+        ],
+
+        "qhyper": [
+            {
+                "args": 6,
+                "repr": ["\\qHyperrphis{", "}{", "}@@{", "}{", "}{", "}{", "}"]
+            }
+        ],
+
+        "uincgamma": [
+            {
+                "args": 2,
+                "repr": ["\\IncGamma@{", "}{", "}"]
+            }
+        ],
+
+        "WhittakerPsi": [
+            {
+                "args": 3,
+                "repr": ["\\WhitPsi{", "}{", "}@{", "}"]
+            }
+        ],
+
+        "goldenratio": [
+            {
+                "args": 0,
+                "repr": ["\\GoldenRatio"]
+            }
+        ],
+
+        "Gompertz": [
+            {
+                "args": 0,
+                "repr": ["\\GompertzConstant"]
+            }
+        ],
+
+        "rabbit": [
+            {
+                "args": 0,
+                "repr": ["\\rabbitConstant"]
+            }
+        ],
+
+        "combinatfibonacci": [
+            {
+                "args": 1,
+                "repr": ["\\FibonacciNumber{", "}"]
+            }
+        ],
+
+        "argument": [
+            {
+                "args": 1,
+                "repr": ["\\arg{(", ")}"]
+            }
+        ],
+
+        "RealRange": [
+            {
+                "args": 2,
+                "repr": ["(", ", ", ")"]
+            }
+        ],
+
+        "Open": [
+            {
+                "args": 1,
+                "repr": ["(", ")"]
+            }
+        ]
+    },
+
+    "symbols": {
+        "alpha": "n",
+        "beta": "\\beta",
+        "gamma": "\\gamma",
+        "delta": "\\delta",
+        "epsilon": "\\epsilon",
+        "zeta": "\\zeta",
+        "eta": "\\eta",
+        "theta": "\\theta",
+        "iota": "\\iota",
+        "kappa": "\\kappa",
+        "lambda": "\\lambda",
+        "mu": "\\mu",
+        "nu": "\\nu",
+        "xi": "\\xi",
+        "pi": "\\pi",
+        "rho": "\\rho",
+        "sigma": "\\sigma",
+        "tau": "\\tau",
+        "upsilon": "\\upsilon",
+        "phi": "\\phi",
+        "chi": "\\chi",
+        "psi": "\\psi",
+        "omega": "\\omega",
+        "Pi": "\\pi",
+        "I": "i",
+        "Catalan": "\\CatalansConstant",
+        "infinity": "\\infty",
+        "Delian": "\\sqrt[\\leftroot{-2}\\uproot{2} 3]{2}",
+        "Theodorus": "\\sqrt{3}",
+        "integer": "\\mathbb{Z}"
+    },
+
+    "constraints": {
+        "Not(negint)": "\\CC\\backslash\\ZZ^-",
+        "Not(nonposint)": "\\CC\\backslash\\ZZ_0^-",
+        "Not(posint)": "\\CC\\backslash\\ZZ^+",
+        "::Not(positive)": "< 0",
+        "Not(integer)": "\\CC\\backslash\\ZZ",
+        "posint": "\\mathbb{Z^+}",
+        "nonnegint": "\\ZZ\\backslash\\ZZ^-",
+        "::positive": "> 0",
+        "::nonnegative": "\\geq 0",
+        "::nonneg": "\\geq 0",
+        "::": "\\in "
+    }
 }
