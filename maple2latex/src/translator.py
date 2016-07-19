@@ -7,7 +7,7 @@ import copy
 import json
 from src.maple_tokenize import tokenize
 
-INFO = json.loads(open("data/keys.json").read())
+INFO = json.loads(open("maple2latex/data/keys.json").read())
 
 FUNCTIONS = INFO["functions"]
 SYMBOLS = INFO["symbols"]
