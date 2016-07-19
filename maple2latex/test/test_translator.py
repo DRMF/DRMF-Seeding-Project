@@ -7,7 +7,7 @@ import json
 from unittest import TestCase
 import src.translator as t
 
-TEST_CASES = json.loads(open("test/test_cases.json").read())["translator"]
+TEST_CASES = json.loads(open("maple2latex/test/test_cases.json").read())["translator"]
 
 parse_brackets_test_cases = TEST_CASES["parse_brackets"]
 trim_parens_test_cases = TEST_CASES["trim_parens"]
