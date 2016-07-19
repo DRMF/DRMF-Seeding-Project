@@ -2,7 +2,7 @@ __author__ = "Alex Danoff"
 __status__ = "Development"
 
 from unittest import TestCase
-from parentheses import insert, remove
+from src.parentheses import insert, remove
 
 test_cases = [{
     'normal': '\\sin(x)',
