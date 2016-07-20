@@ -100,6 +100,7 @@ def parse_math(string, start, ranges):
                     ranges.append((begin, start + i))
                 i += parse_non_math(string[i:], start + i, ranges)
                 begin = start + i
+                i -= 1
             if string[i:].startswith(MATH_START[delim]):
                 if begin != start + i:
                     ranges.append((begin, start + i))
