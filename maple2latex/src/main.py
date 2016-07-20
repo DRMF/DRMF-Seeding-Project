@@ -5,10 +5,10 @@ __status__ = "Development"
 
 import os
 import copy
-from src.translator import MapleEquation, make_equation
+from translator import MapleEquation, make_equation
 
 TABLE = dict()  # stores meaning of folder names
-with open("data/section_names") as name_info:
+with open("maple2latex/data/section_names") as name_info:
     for line in name_info.read().split("\n"):
         if line != "" and "%" not in line:
             key, value = line.split(" : ")
@@ -28,7 +28,7 @@ FILES = [  # files to be translated
     "qhyper"
 ]
 
-ROOT = "functions"  # root directory
+ROOT = "maple2latex/functions"  # root directory
 
 
 class MapleFile(object):
@@ -53,8 +53,9 @@ def translate_file(filename):
     # type: (str)
     """Translates all the formulae in a file."""
 
-    with open("out/test.tex", "w") as test, open("out/primer") as primer:
-        test.write(primer.read() + MapleFile(filename).convert_formulae() + "\n\\end{document}")
+    with open("maple2latex/out/test.tex", "w") as test:
+        with open("maple2latex/out/primer") as primer:
+            test.write(primer.read() + MapleFile(filename).convert_formulae() + "\n\\end{document}")
 
 
 def translate_directories():
@@ -80,8 +81,9 @@ def translate_directories():
                               MapleFile(info[0] + "/" + file_name).convert_formulae() + "\n\n"
 
     # write output to file
-    with open("out/test.tex", "w") as test, open("out/primer") as primer:
-        test.write(primer.read() + result + "\n\\end{document}")
+    with open("maple2latex/out/test.tex", "w") as test:
+        with open("maple2latex/out/primer") as primer:
+            test.write(primer.read() + result + "\n\\end{document}")
 
 if __name__ == '__main__':
     translate_directories()

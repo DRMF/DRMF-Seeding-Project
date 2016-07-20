@@ -5,7 +5,7 @@ __status__ = "Development"
 
 import copy
 import json
-from src.maple_tokenize import tokenize
+from maple_tokenize import tokenize
 
 INFO = json.loads(open("maple2latex/data/keys.json").read())
 
