@@ -7,7 +7,6 @@ def math_string(file):
     string = open(file).read()
     output = []
     ranges = math_mode.find_math_ranges(string)
-    #print ranges
     for i in ranges:
         new = string[i[0]:i[1]]
         output.append(new)
@@ -100,7 +99,6 @@ def formatting(file_str):
         previous = line
 
     wrote = "\n".join(updated)
-    wrote = wrote
 
     # remove consecutive blank lines and blank lines between \index groups
     spaces_pat = re.compile(r'\n{2,}[ ]?\n+')
@@ -108,5 +106,3 @@ def formatting(file_str):
     wrote = re.sub(r'\\index{(.*?)}\n\n\\index{(.*?)}', r'\\index{\1}\n\\index{\2}', wrote)
 
     return wrote
-
-#formatting(open('/home/ont1/DLMF/25.ZE/newMoritz').read())
