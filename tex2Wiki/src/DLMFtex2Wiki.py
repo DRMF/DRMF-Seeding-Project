@@ -6,113 +6,102 @@ __status__ = "Development"
 import csv  # imported for using csv format
 import sys  # imported for getting args
 from shutil import copyfile
-from tex2Wiki import append_text, append_revision, getString,\
-    getSym, getEq, secLabel, getEqP, unmodLabel, isnumber
+from tex2Wiki import append_text, append_revision, get_string_within_, getSym, getEq, secLabel, getEqP, unmodLabel, isnumber
 
 
-def modLabel(label):
-    isNumer = False
-    newlabel = ""
+def mod_label(label):
+    is_numeric = False
+    new_label = ""
     num = ""
-    for i in range(0, len(label)):
-        if isNumer and not isnumber(label[i]):
+    for i in range(len(label)):
+        if is_numeric and not isnumber(label[i]):
             if len(num) > 1:
-                newlabel += num
+                new_label += num
                 num = ""
             else:
-                newlabel += "0" + str(num)
+                new_label += "0" + str(num)
                 num = ""
         if isnumber(label[i]):
-            isNumer = True
+            is_numeric = True
             num += str(label[i])
         else:
-            isNumer = False
-            newlabel += label[i]
+            is_numeric = False
+            new_label += label[i]
     if len(num) > 1:
-        newlabel += num
+        new_label += num
     elif len(num) == 1:
-        newlabel += "0" + num
-    return newlabel
+        new_label += "0" + num
+    return new_label
 
 
-def DLMF(ofname, mmd, llinks, n):
+def dlmf(of_name, mmd, llinks, n):
     for iterations in range(0, 1):
-        tex = open(ofname, 'r')
+        tex = open(of_name, 'r')
         main_file = open(mmd, "r")
-        lLinks = open(llinks, 'r')
-        mainPrepend = ""
-        mainWrite = open("ZetaFunctions.mmd.new", "w")
-        lLink = lLinks.readlines()
+        l_links = open(llinks, 'r')
+        main_prepend = ""
+        main_write = open("ZetaFunctions.mmd.new", "w")
+        l_link_list = l_links.readlines()
         math = False
         constraint = False
         substitution = False
         symbols = []
         lines = tex.readlines()
-        refLines = []
+        ref_lines = []
         sections = []
         labels = []
         eqs = []
-        refEqs = []
+        ref_eqs = []
         parse = False
         head = False
         try:
-            chapRef = [("GA", open("../../data/GA.tex", 'r')),
-                       ("ZE", open("../../data/ZE.3.tex", 'r'))]
+            chap_ref = [("GA", open("../../data/GA.tex", 'r')),
+                        ("ZE", open("../../data/ZE.3.tex", 'r'))]
         except IOError:
-            chapRef = [
-                ("GA", open(
-                    "GA.tex", 'r')), ("ZE", open(
-                        "ZE.3.tex", 'r'))]
-        refLabels = []
-        for c in chapRef:
-            refLines = refLines + (c[1].readlines())
-            c[1].close()
-        for i in range(0, len(refLines)):
-            line = refLines[i]
+            chap_ref = [("GA", open("GA.tex", 'r')), ("ZE", open("ZE.3.tex", 'r'))]
+        ref_labels = []
+        for chap in chap_ref:
+            ref_lines = ref_lines + (chap[1].readlines())
+            chap[1].close()
+        for i in range(len(ref_lines)):
+            line = ref_lines[i]
             if "\\begin{equation}" in line:
-                sLabel = line.find("\\label{") + 7
-                eLabel = line.find("}", sLabel)
-                label = line[sLabel:eLabel]
-                for l in lLink:
-                    if l.find(label) != -1 and l[len(label) + 1] == "=":
-                        rlabel = l[l.find("=>") + 3:l.find("\\n")]
-                        rlabel = rlabel.replace("/", "")
-                        rlabel = rlabel.replace("#", ":")
+                s_label = line.find("\\label{") + 7
+                e_label = line.find("}", s_label)
+                label = line[s_label:e_label]
+                for l_link in l_link_list:
+                    if l_link.find(label) != -1 and l_link[len(label) + 1] == "=":
+                        r_label = l_link[l_link.find("=>") + 3:l_link.find("\\n")]
+                        r_label = r_label.replace("/", "")
+                        r_label = r_label.replace("#", ":")
                         break
-                label = rlabel
-                refLabels.append(label)
-                refEqs.append("")
+                label = r_label
+                ref_labels.append(label)
+                ref_eqs.append("")
                 math = True
             elif math:
-                refEqs[-1] += line
-                if "\\end{equation}" in refLines[
-                    i +
-                    1] or "\\constraint" in refLines[
-                    i +
-                    1] or "\\substitution" in refLines[
-                    i +
-                    1] or "\\drmfn" in refLines[
-                    i +
-                        1]:
+                ref_eqs[-1] += line
+                if any([item in ref_lines[i + 1]
+                        for item in ["\\end{equation}", "\\constraint", "\\substitution", "\\drmfn"]]):
                     math = False
 
-        startFlag = True
-        for i in range(0, len(lines)):
+        start_flag = True
+        for i in range(len(lines)):
             line = lines[i]
             if "\\begin{document}" in line:
                 parse = True
             elif "\\end{document}" in line:
-                mainPrepend += "</div>\n"
-                mainText = mainPrepend
-                mainText = mainText.replace("drmf_bof\n", "")
-                mainText = mainText.replace("drmf_eof\n", "")
-                mainText = mainText.replace(
+                main_prepend += "</div>\n"
+                main_text = main_prepend
+                main_text = main_text.replace("drmf_bof\n", "")
+                main_text = main_text.replace("drmf_eof\n", "")
+                main_text = main_text.replace(
                     "\'\'\'Zeta and Related Functions\'\'\'\n", "")
-                mainText = mainText.replace("{{#set:Section=0}}\n", "")
+                main_text = main_text.replace("{{#set:Section=0}}\n", "")
                 append_revision('Zeta and Related Functions')
-                mainText = "{{#set:Section=0}}\n" + mainText
-                mainWrite.write(mainText)
-                mainWrite.close()
+                main_text = "{{#set:Section=0}}\n" + main_text
+                main_write.write(main_text)
+                main_write.close()
                 main_file.close()
                 copyfile(mmd, 'ZetaFunctions.mmd.new')
                 parse = False
@@ -128,24 +117,24 @@ def DLMF(ofname, mmd, llinks, n):
                     stringWrite = "\'\'\'"
                     stringWrite += getString(line) + "\'\'\'\n"
                     chapter = getString(line)
-                    if startFlag:
-                        mainPrepend += (
+                    if start_flag:
+                        main_prepend += (
                             "\n== Sections in " +
                             chapter +
                             " ==\n\n<div style=\"-moz-column-count:2; column-count:2;-webkit-column-count:2\">\n")
-                        startFlag = False
+                        start_flag = False
                     else:
-                        mainPrepend += ("</div>\n\n== Sections in " +
-                                        chapter +
-                                        " ==\n\n<div style=\"-moz-column-count:2; "
-                                        "column-count:2;-webkit-column-count:2\">\n")
+                        main_prepend += ("</div>\n\n== Sections in " +
+                                         chapter +
+                                         " ==\n\n<div style=\"-moz-column-count:2; "
+                                         "column-count:2;-webkit-column-count:2\">\n")
                     head = True
             elif "\\section" in line:
-                mainPrepend += ("* [[" +
-                                secLabel(getString(line)) +
-                                "|" +
-                                getString(line) +
-                                "]]\n")
+                main_prepend += ("* [[" +
+                                 secLabel(getString(line)) +
+                                 "|" +
+                                 getString(line) +
+                                 "]]\n")
                 sections.append([getString(line)])
 
         secCounter = 0
@@ -255,29 +244,29 @@ def DLMF(ofname, mmd, llinks, n):
                 if head:
                     append_text("\n")
                     head = False
-                sLabel = line.find("\\label{") + 7
-                eLabel = line.find("}", sLabel)
-                label = (line[sLabel:eLabel])
+                s_label = line.find("\\label{") + 7
+                e_label = line.find("}", s_label)
+                label = (line[s_label:e_label])
                 eqCounter += 1
-                for l in lLink:
-                    if label == l[0:l.find("=") - 1]:
-                        rlabel = l[l.find("=>") + 3:l.find("\\n")]
-                        rlabel = rlabel.replace("/", "")
-                        rlabel = rlabel.replace("#", ":")
-                        rlabel = rlabel.replace("!", ":")
+                for l_link in l_link_list:
+                    if label == l_link[0:l_link.find("=") - 1]:
+                        r_label = l_link[l_link.find("=>") + 3:l_link.find("\\n")]
+                        r_label = r_label.replace("/", "")
+                        r_label = r_label.replace("#", ":")
+                        r_label = r_label.replace("!", ":")
                         break
-                label = modLabel(rlabel)
-                labels.append("Formula:" + rlabel)
+                label = mod_label(r_label)
+                labels.append("Formula:" + r_label)
                 eqs.append("")
                 append_text(
                     "<math id=\"" +
-                    rlabel.lstrip("Formula:") +
+                    r_label.lstrip("Formula:") +
                     "\">\n")
                 math = True
             elif "\\begin{equation}" in line and not parse:
-                sLabel = line.find("\\label{") + 7
-                eLabel = line.find("}", sLabel)
-                label = modLabel(line[sLabel:eLabel])
+                s_label = line.find("\\label{") + 7
+                e_label = line.find("}", s_label)
+                label = mod_label(line[s_label:e_label])
                 labels.append("*" + label)  # special marker
                 eqs.append("")
                 math = True
@@ -306,16 +295,16 @@ def DLMF(ofname, mmd, llinks, n):
                 eqs[-1] += line
 
                 if not (
-                    (not (
-                        "\\end{equation}" in lines[
+                            (not (
+                                        "\\end{equation}" in lines[
+                                            i +
+                                            1]) or "\\subsection" in lines[
+                                    i +
+                                    3]) or "\\section" in lines[
+                                i +
+                                3]) and not "\\part" in lines[
                             i +
-                            1]) or "\\subsection" in lines[
-                        i +
-                        3]) or "\\section" in lines[
-                        i +
-                        3]) and not "\\part" in lines[
-                            i +
-                        3]:
+                            3]:
                     u = i
                     flagM2 = False
                     while flagM:
@@ -323,7 +312,7 @@ def DLMF(ofname, mmd, llinks, n):
                         if "\\begin{equation}" in lines[u] in lines[u]:
                             flagM = False
                         if "\\section" in lines[u] or "\\subsection" in lines[
-                                i] or "\\part" in lines[u] or "\\end{document}" in lines[u]:
+                            i] or "\\part" in lines[u] or "\\end{document}" in lines[u]:
                             flagM = False
                             flagM2 = True
                     if not flagM2:
@@ -344,28 +333,28 @@ def DLMF(ofname, mmd, llinks, n):
             elif math and not parse:
                 eqs[-1] += line
                 if "\\end{equation}" in lines[
-                    i +
-                    1] or "\\constraint" in lines[
-                    i +
-                    1] or "\\substitution" in lines[
-                    i +
-                    1] or "\\drmfn" in lines[
-                    i +
-                        1]:
+                            i +
+                            1] or "\\constraint" in lines[
+                            i +
+                            1] or "\\substitution" in lines[
+                            i +
+                            1] or "\\drmfn" in lines[
+                            i +
+                            1]:
                     math = False
             if substitution and parse:
                 subLine += line.replace("&", "&<br />")
                 if "\\end{equation}" in lines[
-                    i +
-                    1] or "\\substitution" in lines[
-                    i +
-                    1] or "\\constraint" in lines[
-                    i +
-                    1] or "\\drmfn" in lines[
-                    i +
-                    1] or "\\proof" in lines[
-                        i +
-                        1]:
+                            i +
+                            1] or "\\substitution" in lines[
+                            i +
+                            1] or "\\constraint" in lines[
+                            i +
+                            1] or "\\drmfn" in lines[
+                            i +
+                            1] or "\\proof" in lines[
+                            i +
+                            1]:
                     substitution = False
                     append_text(
                         "<div align=\"right\">Substitution(s): " +
@@ -375,16 +364,16 @@ def DLMF(ofname, mmd, llinks, n):
             if constraint and parse:
                 conLine += line.replace("&", "&<br />")
                 if "\\end{equation}" in lines[
-                    i +
-                    1] or "\\substitution" in lines[
-                    i +
-                    1] or "\\constraint" in lines[
-                    i +
-                    1] or "\\drmfn" in lines[
-                    i +
-                    1] or "\\proof" in lines[
-                        i +
-                        1]:
+                            i +
+                            1] or "\\substitution" in lines[
+                            i +
+                            1] or "\\constraint" in lines[
+                            i +
+                            1] or "\\drmfn" in lines[
+                            i +
+                            1] or "\\proof" in lines[
+                            i +
+                            1]:
                     constraint = False
                     append_text(
                         "<div align=\"right\">Constraint(s): " +
@@ -474,7 +463,7 @@ def DLMF(ofname, mmd, llinks, n):
                         "#" +
                         secLabel(
                             labels[eqCounter][
-                                len("Formula:"):]) +
+                            len("Formula:"):]) +
                         "|formula in " +
                         secLabel(
                             sections[
@@ -542,7 +531,7 @@ def DLMF(ofname, mmd, llinks, n):
                         "#" +
                         secLabel(
                             labels[eqCounter][
-                                len("Formula:"):]) +
+                            len("Formula:"):]) +
                         "|formula in " +
                         secLabel(
                             sections[
@@ -702,7 +691,7 @@ def DLMF(ofname, mmd, llinks, n):
                                         else:
                                             ArgCx += 1
                         if G[0].find(symbol) == 0 and (len(G[0]) == len(symbol) or not G[0][
-                                len(symbol)].isalpha()):  # and (numPar!=0 or numArg!=0):
+                            len(symbol)].isalpha()):  # and (numPar!=0 or numArg!=0):
                             checkFlag = True
                             get = True
                             preG = S
@@ -719,7 +708,7 @@ def DLMF(ofname, mmd, llinks, n):
                                     Q = symbolPar
                             listArgs = []
                             if len(Q) > len(symbol) and (Q[
-                                    len(symbol)] == "{" or Q[len(symbol)] == "["):
+                                                             len(symbol)] == "{" or Q[len(symbol)] == "["):
                                 ap = ""
                                 for o in range(len(symbol), len(Q)):
                                     if Q[o] == "{" or z == "[":
@@ -734,7 +723,7 @@ def DLMF(ofname, mmd, llinks, n):
                             for t in range(5, len(G)):
                                 if G[t] != "":
                                     websiteF = websiteF + \
-                                        " [" + G[t] + " " + G[t] + "]"
+                                               " [" + G[t] + " " + G[t] + "]"
                             p1 = G[4].strip("$")
                             p1 = "<math>" + p1 + "</math>"
                             # if checkFlag:
@@ -791,7 +780,7 @@ def DLMF(ofname, mmd, llinks, n):
                     equation +
                     " Equation (" +
                     equation[
-                        1:] +
+                    1:] +
                     "), Section " +
                     section +
                     "]</span> of [[Bibliography#DLMF|'''DLMF''']].\n\n")
@@ -837,7 +826,7 @@ def DLMF(ofname, mmd, llinks, n):
                         "#" +
                         secLabel(
                             labels[eqCounter][
-                                len("Formula:"):]) +
+                            len("Formula:"):]) +
                         "|formula in " +
                         secLabel(
                             sections[
@@ -885,7 +874,7 @@ def DLMF(ofname, mmd, llinks, n):
                             "_") +
                         "#" +
                         labels[endNum][
-                            8:] +
+                        8:] +
                         "|formula in " +
                         labels[0] +
                         "]] </div>\n")
@@ -922,7 +911,7 @@ def DLMF(ofname, mmd, llinks, n):
             elif "\\drmfname" in line and parse:
                 math = False
                 comToWrite = "\n== Name ==\n\n<div align=\"left\">" + \
-                    getString(line) + "</div><br />\n" + comToWrite
+                             getString(line) + "</div><br />\n" + comToWrite
 
             elif "\\drmfnote" in line and parse:
                 symbols = symbols + getSym(line)
@@ -948,37 +937,37 @@ def DLMF(ofname, mmd, llinks, n):
                         pause = True
                         eqR = line[ind:line.find("}", ind) + 1]
                         rLab = getString(eqR)
-                        for l in lLink:
-                            if rLab == l[0:l.find("=") - 1]:
-                                rlabel = l[l.find("=>") + 3:l.find("\\n")]
-                                rlabel = rlabel.replace("/", "")
-                                rlabel = rlabel.replace("#", ":")
-                                rlabel = rlabel.replace("!", ":")
+                        for l_link in l_link_list:
+                            if rLab == l_link[0:l_link.find("=") - 1]:
+                                r_label = l_link[l_link.find("=>") + 3:l_link.find("\\n")]
+                                r_label = r_label.replace("/", "")
+                                r_label = r_label.replace("#", ":")
+                                r_label = r_label.replace("!", ":")
                                 break
 
-                        eInd = refLabels.index("" + rlabel)
+                        eInd = ref_labels.index("" + r_label)
                         z = line[line.find("}", ind + 7) + 1]
                         if z == "." or z == ",":
                             pauseP = True
                             proofLine += ("<br /> \n<math id=\"" +
                                           label +
                                           "\">\n" +
-                                          refEqs[eInd] +
+                                          ref_eqs[eInd] +
                                           "</math>" +
                                           z +
                                           "<br />\n")
                         else:
                             if z == "}":
                                 proofLine += ("<br /> \n<math id=\"" +
-                                              rlabel +
+                                              r_label +
                                               "\">\n" +
-                                              refEqs[eInd] +
+                                              ref_eqs[eInd] +
                                               "</math><br />")
                             else:
                                 proofLine += ("<br /> \n<math id=\"" +
-                                              rlabel +
+                                              r_label +
                                               "\">\n" +
-                                              refEqs[eInd] +
+                                              ref_eqs[eInd] +
                                               "</math><br />\n")
                     else:
                         if pause:
@@ -1007,30 +996,30 @@ def DLMF(ofname, mmd, llinks, n):
                         pause = True
                         eqR = line[ind:line.find("}", ind) + 1]
                         rLab = getString(eqR)
-                        for l in lLink:
-                            if rLab == l[0:l.find("=") - 1]:
-                                rlabel = l[l.find("=>") + 3:l.find("\\n")]
-                                rlabel = rlabel.replace("/", "")
-                                rlabel = rlabel.replace("#", ":")
-                                rlabel = rlabel.replace("!", ":")
+                        for l_link in l_link_list:
+                            if rLab == l_link[0:l_link.find("=") - 1]:
+                                r_label = l_link[l_link.find("=>") + 3:l_link.find("\\n")]
+                                r_label = r_label.replace("/", "")
+                                r_label = r_label.replace("#", ":")
+                                r_label = r_label.replace("!", ":")
                                 break
 
-                        eInd = refLabels.index("" + rlabel.lstrip("Formula:"))
+                        eInd = ref_labels.index("" + r_label.lstrip("Formula:"))
                         z = line[line.find("}", ind + 7) + 1]
                         if z == "." or z == ",":
                             pauseP = True
                             proofLine += ("<br /> \n<math id=\"" +
-                                          rlabel +
+                                          r_label +
                                           "\">\n" +
-                                          refEqs[eInd] +
+                                          ref_eqs[eInd] +
                                           "</math>" +
                                           z +
                                           "<br />\n")
                         else:
                             proofLine += ("<br /> \n<math id=\"" +
-                                          rlabel +
+                                          r_label +
                                           "\">\n" +
-                                          refEqs[eInd] +
+                                          ref_eqs[eInd] +
                                           "</math><br />\n")
 
                     else:
@@ -1056,18 +1045,18 @@ def DLMF(ofname, mmd, llinks, n):
 
             elif math:
                 if "\\end{equation}" in lines[
-                    i +
-                    1] or "\\constraint" in lines[
-                    i +
-                    1] or "\\substitution" in lines[
-                    i +
-                    1] or "\\proof" in lines[
-                    i +
-                    1] or "\\drmfnote" in lines[
-                        i +
-                        1] or "\\drmfname" in lines[
                             i +
-                        1]:
+                            1] or "\\constraint" in lines[
+                            i +
+                            1] or "\\substitution" in lines[
+                            i +
+                            1] or "\\proof" in lines[
+                            i +
+                            1] or "\\drmfnote" in lines[
+                            i +
+                            1] or "\\drmfname" in lines[
+                            i +
+                            1]:
                     append_text(line.rstrip("\n"))
                     symLine += line.strip("\n")
                     symbols = symbols + getSym(symLine)
@@ -1080,26 +1069,31 @@ def DLMF(ofname, mmd, llinks, n):
                 noteLine = noteLine + line
                 symbols = symbols + getSym(line)
                 if "\\end{equation}" in lines[
-                    i +
-                    1] or "\\drmfn" in lines[
-                    i +
-                    1] or "\\constraint" in lines[
-                    i +
-                    1] or "\\substitution" in lines[
-                    i +
-                    1] or "\\proof" in lines[
-                        i +
-                        1]:
+                            i +
+                            1] or "\\drmfn" in lines[
+                            i +
+                            1] or "\\constraint" in lines[
+                            i +
+                            1] or "\\substitution" in lines[
+                            i +
+                            1] or "\\proof" in lines[
+                            i +
+                            1]:
                     note = False
                     if "\\emph" in noteLine:
                         noteLine = noteLine[
-                            0:noteLine.find("\\emph{")] + "\'\'" + noteLine[
-                            noteLine.find("\\emph{") + len("\\emph{"): noteLine.find(
-                                "}", noteLine.find("\\emph{") + len("\\emph{"))] + "\'\'" + noteLine[
-                            noteLine.find(
-                                "}", noteLine.find("\\emph{") + len("\\emph{")) + 1:]
+                                   0:noteLine.find("\\emph{")] + "\'\'" + noteLine[
+                                                                          noteLine.find("\\emph{") + len(
+                                                                              "\\emph{"): noteLine.find(
+                                                                              "}", noteLine.find("\\emph{") + len(
+                                                                                  "\\emph{"))] + "\'\'" + noteLine[
+                                                                                                          noteLine.find(
+                                                                                                              "}",
+                                                                                                              noteLine.find(
+                                                                                                                  "\\emph{") + len(
+                                                                                                                  "\\emph{")) + 1:]
                     comToWrite = comToWrite + "<div align=\"left\">" + \
-                        getEq(noteLine) + "</div><br />\n"
+                                 getEq(noteLine) + "</div><br />\n"
 
             if constraint and parse:
                 conLine += line.replace("&", "&<br />")
@@ -1107,16 +1101,16 @@ def DLMF(ofname, mmd, llinks, n):
                 symLine += line.strip("\n")
                 # symbols=symbols+getSym(line)
                 if "\\end{equation}" in lines[
-                    i +
-                    1] or "\\drmfn" in lines[
-                    i +
-                    1] or "\\constraint" in lines[
-                    i +
-                    1] or "\\substitution" in lines[
-                    i +
-                    1] or "\\proof" in lines[
-                        i +
-                        1]:
+                            i +
+                            1] or "\\drmfn" in lines[
+                            i +
+                            1] or "\\constraint" in lines[
+                            i +
+                            1] or "\\substitution" in lines[
+                            i +
+                            1] or "\\proof" in lines[
+                            i +
+                            1]:
                     constraint = False
                     symbols = symbols + getSym(symLine)
                     symLine = ""
@@ -1132,16 +1126,16 @@ def DLMF(ofname, mmd, llinks, n):
                 symLine += line.strip("\n")
                 # symbols=symbols+getSym(line)
                 if "\\end{equation}" in lines[
-                    i +
-                    1] or "\\drmfn" in lines[
-                    i +
-                    1] or "\\substitution" in lines[
-                    i +
-                    1] or "\\constraint" in lines[
-                    i +
-                    1] or "\\proof" in lines[
-                        i +
-                        1]:
+                            i +
+                            1] or "\\drmfn" in lines[
+                            i +
+                            1] or "\\substitution" in lines[
+                            i +
+                            1] or "\\constraint" in lines[
+                            i +
+                            1] or "\\proof" in lines[
+                            i +
+                            1]:
                     substitution = False
                     symbols = symbols + getSym(symLine)
                     symLine = ""
@@ -1157,4 +1151,4 @@ if __name__ == "__main__":
     tex = "../../data/ZE.3.tex"
     mainFile = "../../data/OrthogonalPolynomials.mmd"
     lLinks = "../../data/BruceLabelLinks"
-    DLMF(tex, mainFile, lLinks, 0)
+    dlmf(tex, mainFile, lLinks, 0)
