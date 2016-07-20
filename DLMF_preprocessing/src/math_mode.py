@@ -1,3 +1,6 @@
+__author__ = "Jagan Prem"
+__status__ = "Production"
+
 # Dictionary containing math mode delimiters and their respective endpoints.
 MATH_START = {"\\[": "\\]",
               "\\(": "\\)",
@@ -97,6 +100,7 @@ def parse_math(string, start, ranges):
                     ranges.append((begin, start + i))
                 i += parse_non_math(string[i:], start + i, ranges)
                 begin = start + i
+                i -= 1
             if string[i:].startswith(MATH_START[delim]):
                 if begin != start + i:
                     ranges.append((begin, start + i))
