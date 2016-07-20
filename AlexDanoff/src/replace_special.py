@@ -47,7 +47,6 @@ def main():
 
     # Below: index_str writes to output file, math_string takes output file as input, and change_original
     # writes to the output based on the previous output file
-    # print math_mode.find_math_ranges(open(fname).read())
 
     unchanged_math = math_function.math_string(fname)
     math_string = remove_special(unchanged_math)
@@ -192,7 +191,6 @@ def remove_special(content):
         function = re.sub(r'\\index{(.*?)}\n\n\\index{(.*?)}', r'\\index{\1}\n\\index{\2}', function)
 
         content[counter] = function
-        # print 'content[counter]', content[counter]
         counter += 1
 
     return "\n".join(content)
@@ -239,11 +237,6 @@ def _replace_i(words):
             # one (but not both) of the surrounding characters IS alphabetic, may need to replace
             if any(s.isalpha() for s in surrounding):
 
-                """"# character before is alphabetic
-                if surrounding[0].isalpha():
-                    print('caught')  # below was replacing i in ch 16 commands, shraeya wrote unnecessary if char before is vowel
-                    # if surrounding[0] in "aeiou":
-                        # replacement = r'\iunit'"""
 
                 if surrounding[1].isalpha():  # character after is alphabetic
 
