@@ -1,0 +1,278 @@
+def getSym(line): #Gets all symbols on a line for symbols list
+	   symList=[]
+	   symbol=""
+	   symFlag=False
+	   argFlag=False
+	   cC=0
+	   for i in range(0,len(line)):
+		#if "Laguerre[-\\frac{1}{2}]{n}@{x^2}" in line:
+			#print symbol
+		c=line[i]
+		if symFlag:
+			if c=="{" or c=="[":
+				cC+=1
+				argFlag=True
+			if c!="}" and c!="]":
+				if argFlag or c.isalpha():
+					symbol+=c
+				else:
+					symFlag=False
+					argFlag=False
+					symList.append(symbol)
+					symList+=(getSym(symbol))
+					symbol=""
+			else:
+				cC-=1
+				symbol+=c
+				if i+1==len(line):
+				    p=""
+				else:
+				    p=line[i+1]
+				if cC==0 and p!="{" and p!="[" and p!="@":
+					symFlag=False
+					#if "Laguerre[-\\frac{1}{2}]{n}@{x^2}" in line:
+						  #print(symbol,p)
+					symList.append(symbol)
+					symList+=(getSym(symbol))
+					argFlag=False
+					symbol=""	
+				
+		elif c=="\\":
+			symFlag=True	
+			
+	   #if "Laguerre[-\\frac{1}{2}]{n}@{x^2}" in line:
+			 #print symbol
+	   return(symList)
+import os
+files_in_dir=os.listdire(".")
+for g in files_in_dir:
+	   if not ".py" in g and not ".new" in g:
+			 f=open(g,"r")
+			 w=open(g+".new","w")
+			 t=f.read()
+			 w.write(t)
+			 t=t.replace("\n","")
+			 symbols=getSym(t)
+			 if True:
+				wiki.write("<br />\n== Symbols List ==\n<br />\n")
+				newSym=[]
+				#if "09.12:21" in label:
+				    #print(symbols)
+				for x in symbols:
+					   flagA=True
+					   #if x not in newSym:
+					   cN=0
+					   cC=0
+					   ArgCx=0
+					   for z in x:
+						  if z.isalpha():
+							   	cN+=1
+						  else:
+								if z=="{" or z=="[":
+									   cC+=1
+								if z=="}" or z=="]":
+									   cC-=1
+									   if cC==0:
+											 ArgCx+=1
+					   noA=x[:cN] 
+					   for y in newSym:
+						  cN=0
+						  cC=0
+						  ArgC=0
+						  for z in y:
+							if z.isalpha():
+								cN+=1
+							else:
+								if z=="{" or z=="[":
+									   cC+=1
+								if z=="}" or z=="]":
+									   cC-=1
+									   if cC==0:
+											 ArgC+=1
+									   
+					   
+						  if y[:cN]==noA and ArgC==ArgCx:
+								flagA=False
+								#print(x,y)
+								break
+					   if flagA:
+						  newSym.append(x)
+				newSym.reverse()
+				#if "9.12:20" in label:
+				    #print newSym
+				symF=False
+				finSym=[]
+				for s in range(len(newSym)-1,-1,-1):
+				           #print(newSym[s])
+					   symbolPar="\\"+newSym[s]
+					   ArgCx=0
+					   parCx=0
+					   parFlag=False
+					   cC=0
+					   for z in symbolPar:
+						  if z=="@":
+								parFlag=True
+						  elif z.isalpha():
+							   	cN+=1
+						  else:
+								if z=="{" or z=="[":
+									   cC+=1
+								if z=="}" or z=="]":
+									   cC-=1
+									   if cC==0:
+											 if parFlag:
+												    parCx+=1
+											 else:
+												    ArgCx+=1
+
+					   if symbolPar.find("{")!=-1 or symbolPar.find("[")!=-1:
+						  if symbolPar.find("[")==-1:
+								symbol=symbolPar[0:symbolPar.find("{")]
+						  elif symbolPar.find("{")==-1 or symbolPar.find("[")<symbolPar.find("{"):
+								symbol=symbolPar[0:symbolPar.find("[")]
+						  else:
+								symbol=symbolPar[0:symbolPar.find("{")]
+					   else:
+						  symbol=symbolPar
+					   #if "9.12:21" in label:print symbolPar,symbol
+					   numArg=parCx
+					   numPar=ArgCx
+					   gFlag=False
+					   gCSV=csv.reader(open('new.Glossary.csv','rb'),delimiter=',', quotechar='\"')
+					   for G in gCSV:
+							 ArgCx=0
+							 parCx=0
+							 parFlag=False
+					   		 cC=0
+						         ind=G[0].find("@")
+							 if ind==-1:
+								ind=len(G[0])-1
+							 for z in G[0]:
+								 if z=="@":
+									   parFlag=True
+						 		 elif z.isalpha():
+							 	  	cN+=1
+						 		 else:
+									if z=="{" or z=="[":
+									   cC+=1
+									if z=="}" or z=="]":
+									   cC-=1
+									   if cC==0:
+										if parFlag:
+											 parCx+=1
+									   	else:ArgCx+=1
+							 checkFlag=False
+							 if G[0].find(symbol)==0 and (len(G[0])==len(symbol) or not G[0][len(symbol)].isalpha()) and (numPar!=0 or numArg!=0):
+								checkFlag=True
+								#if "9.12:21" in label:print symbol,numPar,numArg,parCx,ArgCx
+							 if G[0].find(symbol)==0 and (len(G[0])==len(symbol) or not G[0][len(symbol)].isalpha()) and ArgCx==numPar and parCx==numArg:
+								#if "9.12:21" in label:print symbol
+								listArgs=[]
+								if len(G[0])>len(symbol) and (G[0][len(symbol)]=="{" or G[0][len(symbol)]=="["):
+									  ap=""
+									  for o in range(len(symbol),len(G[0])):
+											if G[0][o]=="{" or z=="[":
+												   argFlag=True
+											elif G[0][o]=="}" or z=="]":
+												   argFlag=False
+												   listArgs.append(ap)
+												   ap=""
+											else:
+												   ap+=G[0][o]
+								'''websiteU=g[g.find("http://"):].strip("\n")
+								k=0
+								websites=[]
+								for r in range(0,len(websiteU)):
+									if websiteU[r]==",":
+									     if websiteU[k:r].find("http://")!=-1:
+											 websites.append(websiteU[k:r+1].strip(" "))
+								             k=r
+								
+								
+								if websiteU[k:r].find("http://")!=-1:
+									   websites.append(websiteU[k:r+1].strip(" "))
+								websiteF=""
+								for d in websites:
+									   websiteF=websiteF+" ["+d+" "+d+"]"'''
+								#websiteF=G[4].strip("\n")
+								websiteF=""
+								web1=G[5]
+								for t in range(5,len(G)):
+									   if G[t]!="":
+											 websiteF=websiteF+" ["+G[t]+" "+G[t]+"]"
+								p1="<math>{\\displaystyle "+G[0]+"}</math>"
+								if p1.find("@")!=-1:
+									   p1=p1[:p1.find("@")]
+								#if checkFlag:
+									   #print(p1)
+								new1=""
+								new2=""
+								pause=False
+								mathF=True
+								'''for k in range(0,len(p1)):
+									   if p1[k]=="$":
+											 if mathF:
+												    new1+="<math>{\\displaystyle "
+											 else:
+												    new1+="}</math>"
+											 mathF=not mathF
+
+									   elif p1[k]=="#" and p1[k+1].isdigit():
+											 pause=True
+									   elif pause:
+											 num=int(p1[k])
+											 #letter=chr(num+96)
+											 letter=listArgs[num-1]
+											 new1+=letter
+											 pause=False
+											 
+									   else:
+											 new1+=p1[k]'''
+								p2=G[1]
+								for k in range(0,len(p2)):
+									   if p2[k]=="$":
+											 if mathF:
+												    new2+="<math>{\\displaystyle "
+											 else:
+												    new2+="}</math>"
+											 mathF=not mathF
+									   else:
+											 new2+=p2[k]
+								#p1=new1								
+								p2=new2
+								finSym.append(web1+" "+p1+"]</span> : "+p2+" :"+websiteF)
+								break
+								#gFlag=True
+								#if not symF:
+								#	symF=True
+								#	wiki.write("<span class=\"plainlinks\">[")
+								#else:
+								#	wiki.write("<br />\n")
+								#	wiki.write("<span class=\"plainlinks\">[")
+								#wiki.write(g[g.find("http://"):].strip("\n"))
+								#wiki.write(" ")
+								#wiki.write(getEq(g[g.find("{$"):]).strip("\n").replace("\\\\","\\"))
+								#wiki.write("]</span> : ")
+								#wiki.write(g[g.find(" {")+2:g.find("} ",g.find(" {")+1)])
+								#wiki.write(" : [")
+								#wiki.write(g[g.find("http://"):].strip("\n"))
+								#wiki.write(" ")
+								#wiki.write(g[g.find("http://"):].strip("\n"))
+								#wiki.write("] ")'''
+								
+								
+
+					   if not gFlag:
+							 del newSym[s]
+					   
+				gFlag=True
+				#finSym.reverse()
+				for y in finSym:
+				        #print(finSym)
+					if gFlag:
+						  gFlag=False
+						  wiki.write("<span class=\"plainlinks\">["+y)
+					else:
+						  wiki.write("<br />\n<span class=\"plainlinks\">["+y)
+
+
