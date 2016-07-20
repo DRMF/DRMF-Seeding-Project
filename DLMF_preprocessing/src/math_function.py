@@ -2,14 +2,16 @@ import math_mode
 import string
 import re
 
+
 def math_string(in_file):
     # Takes input file or string and returns list of strings when in math mode
-    try:  #test if file or string
+    try:  # test if file or string
         string = open(in_file).read()
     except:
         string = in_file
     output = []
-    ranges = math_mode.find_math_ranges(string, drmf=True)
+    ranges = math_mode.find_math_ranges(string)
+    print ranges
     for i in ranges:
         new = string[i[0]:i[1]]
         output.append(new)
@@ -18,8 +20,11 @@ def math_string(in_file):
 
 def change_original(o_file, changed_math_string):
     # Places changed string from math mode back into place in the original function
-    o_string = open(o_file).read()
-    ranges = math_mode.find_math_ranges(o_string, drmf=True)
+    try:
+        o_string = open(o_file).read()
+    except:
+        o_string = o_file
+    ranges = math_mode.find_math_ranges(o_string)
     num = 0
     edited = o_string
     for i in ranges:
@@ -39,7 +44,7 @@ def formatting(file_str):
     in_ind = False
     previous = ""
 
-    ranges = math_mode.find_math_ranges(file_str, drmf=True)
+    ranges = math_mode.find_math_ranges(file_str)
 
     lines = file_str.split('\n')
     in_eq = False
@@ -68,10 +73,10 @@ def formatting(file_str):
 
         else:
             # not in eq
-            print line
             if not been_in_eq:
                 # if text line != command
                 if re.match(commands, line) or line == '':
+                    if '\\paragraph' not in line and '\\acknowledgements' not in line:
                         updated.append(line)
             else:
                 # not in eq but already been in eq
@@ -81,7 +86,8 @@ def formatting(file_str):
                 if past_last > ranges[-1][1]:
                     # In section after last eq
                     if re.match(commands,line) or line == '':
-                        updated.append(line)
+                        if '\\paragraph' not in line:
+                            updated.append(line)
 
         # if this line is an index start storing it,or write it if we're done with the indexes
         if IND_START in line:
@@ -96,7 +102,6 @@ def formatting(file_str):
             if previous.strip() != "":
                 ind_str = "\n" + ind_str
 
-            fullsplit = ind_str.split("\n")
             ind_str = ""
 
         previous = line
