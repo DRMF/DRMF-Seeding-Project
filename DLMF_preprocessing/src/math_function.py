@@ -11,7 +11,10 @@ def math_string(in_file):
         string = in_file
     output = []
     ranges = math_mode.find_math_ranges(string)
+<<<<<<< HEAD:DLMF_preprocessing/src/math_function.py
     print ranges
+=======
+>>>>>>> 148bdbf8d7532f66e0bcb24ed0be3d01ee09fa71:AlexDanoff/src/math_function.py
     for i in ranges:
         new = string[i[0]:i[1]]
         output.append(new)
