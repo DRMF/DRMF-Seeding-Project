@@ -1,3 +1,6 @@
+__author__ = "Jagan Prem"
+__status__ = "Production"
+
 # Dictionary containing math mode delimiters and their respective endpoints.
 MATH_START = {"\\[": "\\]",
               "\\(": "\\)",

@@ -45,14 +45,14 @@ MATH_TESTS = [
 
 NON_MATH_TESTS = [
     {
-        "string": "\\mbox{Test\\(test\\)} ",
+        "string": "\\mbox{\\$Test\\(test\\)} ",
         "start": 14,
-        "output": 19
+        "output": 21
     },
     {
-        "string": "test \\\\(\\begin{align*}\\end{align*}\\\\[",
+        "string": "test{} \\\\(\\begin{align*}\\end{align*}\\\\[",
         "start": 56,
-        "output": 37
+        "output": 39
     },
     {
         "string": "\\begin{multline}\n\\left(2\\right)\n\\end{multline}",
@@ -60,7 +60,7 @@ NON_MATH_TESTS = [
         "output": 46
     },
     [
-        (26, 30),
+        (28, 32),
         (19, 35)
     ]
 ]
