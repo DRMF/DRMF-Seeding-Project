@@ -16,10 +16,10 @@ def getSym(line):  # Gets all symbols on a line for symbols list
     for i in range(0, len(line)):
         c = line[i]
         if symFlag:
-            if c == "{" or c == "[":
+            if c in ["{", "["]:
                 cC += 1
                 argFlag = True
-            if c != "}" and c != "]":
+            if c not in ["}", "]"]:
                 if argFlag or c.isalpha():
                     symbol += c
                 else:
@@ -57,7 +57,7 @@ main = open("main_page.mmd", "w")
 mainPages = mainLines.split("drmf_eof")
 
 if mainPages[-1].strip() == "":
-    mainPages = mainPages[0:len(mainPages) - 1]
+    mainPages = mainPages[0:-1]
 
 print len(mainPages)
 
@@ -118,9 +118,9 @@ for g in mainPages:
                         cN += 1
                     else:
                         flag = False
-                        if z == "{" or z == "[":
+                        if z in ["{", "["]:
                             cC += 1
-                        if z == "}" or z == "]":
+                        if z in ["}", "]"]:
                             cC -= 1
                             if cC == 0:
                                 ArgCx += 1
@@ -135,9 +135,9 @@ for g in mainPages:
                             cN += 1
                         else:
                             flag = False
-                            if z == "{" or z == "[":
+                            if z in ["{", "["]:
                                 cC += 1
-                            if z == "}" or z == "]":
+                            if z in ["}", "]"]:
                                 cC -= 1
                                 if cC == 0:
                                     ArgC += 1
@@ -162,9 +162,9 @@ for g in mainPages:
                     elif z.isalpha():
                         cN += 1
                     else:
-                        if z == "{" or z == "[":
+                        if z in ["{", "["]:
                             cC += 1
-                        if z == "}" or z == "]":
+                        if z in ["}", "]"]:
                             cC -= 1
                             if cC == 0:
                                 if parFlag:
@@ -204,9 +204,9 @@ for g in mainPages:
                         elif z.isalpha():
                             cN += 1
                         else:
-                            if z == "{" or z == "[":
+                            if z in ["{", "["]:
                                 cC += 1
-                            if z == "}" or z == "]":
+                            if z in ["}", "]"]:
                                 cC -= 1
                                 if cC == 0:
                                     if parFlag:
