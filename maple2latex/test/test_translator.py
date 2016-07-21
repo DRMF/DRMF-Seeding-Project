@@ -50,4 +50,4 @@ class TestTranslate(TestCase):
 class TestFromMaple(TestCase):
     def test_from_maple(self):
         for case in from_maple_test_cases:
-            self.assertEqual(t.LatexEquation.from_maple(t.MapleEquation(case["eq"])), case["res"])
+            self.assertEqual(str(t.LatexEquation.from_maple(t.MapleEquation(case["eq"]))), case["res"])

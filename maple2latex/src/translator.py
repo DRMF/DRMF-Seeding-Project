@@ -157,9 +157,11 @@ class LatexEquation(object):
 
     def __str__(self):
         metadata = ""
-        for k, v in self.metadata.iteritems():
-            metadata += "  % \\" + k + "{" + v + "}\n"
-
+        for data_type, data in self.metadata.iteritems():
+            if data_type in ["constraint"]:  # mathmode
+                metadata += "  %  \\" + data_type + "{$" + data + "$}\n"
+            else:
+                metadata += "  %  \\" + data_type + "{" + data + "}\n"
         return "\\begin{equation*}\\tag{" + self.label + "}\n  " + self.equation + "\n" + \
                metadata + "\\end{equation*}\n"
 
