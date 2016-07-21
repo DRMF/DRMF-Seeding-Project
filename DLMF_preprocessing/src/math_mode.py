@@ -16,7 +16,8 @@ MATH_START = {"\\[": "\\]",
 # List of delimiters that exit math mode.
 MATH_END = ["\\hbox{",
             "\\mbox{",
-            "\\text{"]
+            "\\text{",
+            "\\label{"]
 
 
 def find_first(string, delim, start=0):

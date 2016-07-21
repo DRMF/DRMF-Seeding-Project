@@ -2,12 +2,15 @@ import math_mode
 import string
 import re
 
-def math_string(file):
-    # Takes input file and returns list of strings when in math mode
-    string = open(file).read()
+
+def math_string(in_file):
+    # Takes input file or string and returns list of strings when in math mode
+    try:  # test if file or string
+        string = open(in_file).read()
+    except:
+        string = in_file
     output = []
     ranges = math_mode.find_math_ranges(string)
-    #print ranges
     for i in ranges:
         new = string[i[0]:i[1]]
         output.append(new)
@@ -16,7 +19,10 @@ def math_string(file):
 
 def change_original(o_file, changed_math_string):
     # Places changed string from math mode back into place in the original function
-    o_string = open(o_file).read()
+    try:
+        o_string = open(o_file).read()
+    except:
+        o_string = o_file
     ranges = math_mode.find_math_ranges(o_string)
     num = 0
     edited = o_string
@@ -32,7 +38,6 @@ def formatting(file_str):
     commands = r'\\[a-zA-Z]+'
 
     updated = []
-    IND_START = r'\index\{'
     ind_str = ""
     in_ind = False
     previous = ""
@@ -55,7 +60,7 @@ def formatting(file_str):
 
         if '\\begin{equation}' in line:
             in_eq = True
-            been_in_eq = False
+            been_in_eq = True
         if '\\end{equation}' in line:
             updated.append(line)
             in_eq = False
@@ -65,29 +70,30 @@ def formatting(file_str):
             updated.append(line)
 
         else:
-            # not in eq
-            print line
+            # not been in eq
             if not been_in_eq:
                 # if text line != command
-                if re.match(commands, line) or line == '':
+                if re.match(commands, line):
+                    if '\\paragraph' not in line and '\\index' not in line:
                         updated.append(line)
             else:
                 # not in eq but already been in eq
-                if '\\index' in line or re.match(section,line) or line == '':
+                if re.match(section,line) or line == '':
                     updated.append(line)
 
                 if past_last > ranges[-1][1]:
                     # In section after last eq
                     if re.match(commands,line) or line == '':
-                        updated.append(line)
+                        if '\\paragraph' not in line:
+                            updated.append(line)
 
         # if this line is an index start storing it,or write it if we're done with the indexes
-        if IND_START in line:
+        if '\\index{' in line:
             in_ind = True
             ind_str += line + "\n"
+            continue
 
-
-        if in_ind:
+        elif in_ind:
             in_ind = False
 
             # add a preceding newline if one is not already present
@@ -95,12 +101,12 @@ def formatting(file_str):
                 ind_str = "\n" + ind_str
 
             fullsplit = ind_str.split("\n")
+            updated.extend(fullsplit)
             ind_str = ""
 
-        previous = line
 
+        previous = line
     wrote = "\n".join(updated)
-    wrote = wrote
 
     # remove consecutive blank lines and blank lines between \index groups
     spaces_pat = re.compile(r'\n{2,}[ ]?\n+')
@@ -109,4 +115,3 @@ def formatting(file_str):
 
     return wrote
 
-#formatting(open('/home/ont1/DLMF/25.ZE/newMoritz').read())

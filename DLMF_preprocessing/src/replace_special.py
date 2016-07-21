@@ -47,7 +47,6 @@ def main():
 
     # Below: index_str writes to output file, math_string takes output file as input, and change_original
     # writes to the output based on the previous output file
-    # print math_mode.find_math_ranges(open(fname).read())
 
     unchanged_math = math_function.math_string(fname)
     math_string = remove_special(unchanged_math)
@@ -97,20 +96,6 @@ def remove_special(content):
         for lnum, line in enumerate(lines):
 
             lnum += 1
-            # if this line marks the start of an equation, set the flag
-            if EQ_START in line:
-                in_eq = True
-
-                # if this line marks the end of an equation, set the flag
-            if EQ_END in line:
-
-                # remove other flags too
-                for flag in inside:
-                    inside[flag][SEEN] = False
-
-                comment_str = ""
-
-                in_eq = True
 
             # we need to make the replacements in equations
             if in_eq:
@@ -139,7 +124,6 @@ def remove_special(content):
 
                     line = _replace_i(line)
 
-                    # print 'line2', line
                 elif any(info[SEEN] for info in inside.values()):
                     # ^we're in a special block, look for dollar signs to replace "i"s
 
@@ -153,8 +137,6 @@ def remove_special(content):
                         # reset special block flags
                         for flag in inside:
                             inside[flag][SEEN] = False
-
-                        # print(comment_str + "\n")
 
                         dollar_locs = [match.start() for match in dollar_pat.finditer(comment_str)]
                         locs_iter = iter(dollar_locs)
@@ -192,7 +174,6 @@ def remove_special(content):
         function = re.sub(r'\\index{(.*?)}\n\n\\index{(.*?)}', r'\\index{\1}\n\\index{\2}', function)
 
         content[counter] = function
-        # print 'content[counter]', content[counter]
         counter += 1
 
     return "\n".join(content)
@@ -239,11 +220,6 @@ def _replace_i(words):
             # one (but not both) of the surrounding characters IS alphabetic, may need to replace
             if any(s.isalpha() for s in surrounding):
 
-                """"# character before is alphabetic
-                if surrounding[0].isalpha():
-                    print('caught')  # below was replacing i in ch 16 commands, shraeya wrote unnecessary if char before is vowel
-                    # if surrounding[0] in "aeiou":
-                        # replacement = r'\iunit'"""
 
                 if surrounding[1].isalpha():  # character after is alphabetic
 
