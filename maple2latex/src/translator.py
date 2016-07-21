@@ -5,6 +5,7 @@ __status__ = "Development"
 
 import copy
 import json
+from string import ascii_lowercase
 from maple_tokenize import tokenize
 
 INFO = json.loads(open("maple2latex/data/keys.json").read())
@@ -13,7 +14,8 @@ FUNCTIONS = INFO["functions"]
 SYMBOLS = INFO["symbols"]
 CONSTRAINTS = INFO["constraints"]
 
-SPECIAL = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin"}
+SPECIAL = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin",
+           "\\imaginarynumber": "i"}
 
 
 class MapleEquation(object):
@@ -39,7 +41,7 @@ class MapleEquation(object):
                     line[1] = str(temp)[1:-1]
 
                 elif line[0] == "booklabelv1" and line[1] == '"",':
-                    line[1] = "No label"
+                    line[1] = "x.x.x"
 
                 elif line[0] in ["booklabelv1", "booklabelv2", "general", "constraints", "begin", "parameters"]:
                     line[1] = line[1].strip()[1:-2].strip()
@@ -68,6 +70,100 @@ class MapleEquation(object):
             self.general = [self.fields["even"], self.fields["odd"]]
 
 
+class LatexEquation(object):
+    def __init__(self, label, equation, metadata):
+        self.label = label
+        self.equation = equation
+        self.metadata = {"constraint": metadata[0], "category": metadata[1]}
+
+    @classmethod
+    def from_maple(cls, eq):
+        # modify fields
+        eq.lhs = translate(eq.lhs)
+        eq.factor = translate(eq.fields["factor"])
+        eq.front = translate(eq.fields["front"])
+
+        equation = eq.lhs + "\n  = "
+
+        if eq.factor == "1":
+            eq.factor = ""
+
+        # translates the Maple information (with spacing)
+        if eq.eq_type == "series":
+            eq.general = translate(eq.general[0])
+
+            if eq.factor != "":
+                equation += eq.factor + " "
+
+            elif eq.front != "":
+                equation += eq.front + "+"
+
+            equation += "\\sum_{k=0}^\\infty "
+
+            if eq.category == "power series":
+                equation += eq.general
+            elif eq.category == "asymptotic series":  # make sure to fix asymptotic series
+                equation += "(" + eq.general + ")"
+
+        elif eq.eq_type == "contfrac":
+            pieces = parse_brackets(eq.general[0])[0]
+
+            if eq.begin != "":
+                eq.begin = parse_brackets(eq.begin)
+
+            start = 1  # in case the value of start isn't assigned
+
+            # add terms before general
+            if eq.front != "":
+                equation += eq.front + "+"
+                start = 1
+
+            if eq.begin != "":
+                for piece in eq.begin:
+                    equation += make_frac(piece) + " \\subplus "
+                    start += 1
+
+            if eq.factor != "":
+                if eq.factor == "-1":
+                    equation += "-"
+                else:
+                    equation += eq.factor + " "
+
+            # trim unnecessary parentheses
+            for i, element in enumerate(pieces):
+                pieces[i] = trim_parens(translate(element))
+
+            if pieces != ["0", "1"]:
+                equation += "\\CFK{m}{" + str(start) + "}{\\infty}@@{" + pieces[0] + "}{" + pieces[1] + "}"
+            else:
+                equation += "\\dots"
+
+        return cls(eq.label, replace_strings(equation, SPECIAL), [translate(eq.constraints), eq.category])
+
+    @classmethod
+    def get_sortable_label(cls, equation):
+        if equation.label == "x.x.x":
+            return [100, 100, 100]  # should be three very large numbers
+
+        label = copy.copy(equation.label)
+        for i, ch in enumerate(ascii_lowercase):
+            if label[-1] == ch:
+                label = label[:-1] + "." + str(i + 1)
+
+        if label[-1] == ".":
+            label = label[:-1]
+
+        return map(int, label.split("."))
+
+    def __str__(self):
+        metadata = ""
+        for k, v in self.metadata.iteritems():
+            metadata += "  % \\" + k + "{" + v + "}\n"
+
+        return "\\begin{equation*}\\tag{" + self.label + "}\n  " + self.equation + "\n" + \
+               metadata + "\\end{equation*}\n"
+
+
 def replace_strings(string, keys):
     # type: (str, dict) -> str
     """Replaces key strings with their mapped value."""
@@ -77,11 +173,11 @@ def replace_strings(string, keys):
     return string
 
 
-def parse_brackets(exp):
+def parse_brackets(string):
     # type: ((str, list)) -> list
     """Obtains the contents from data encapsulated in square brackets."""
 
-    exp = exp[1:-1].split(",")
+    exp = string[1:-1].split(",")
     for i, e in enumerate(exp):
         exp[i] = replace_strings(e, {"[": "", "]": ""}).strip()
 
@@ -135,14 +231,14 @@ def basic_translate(exp):
     """Translates basic mathematical operations."""
 
     # translates operations in place
-    for order in range(3): # order of operations
+    for order in range(3):  # order of operations
         i = 0
         while i < len(exp):
             modified = False
 
             # the imaginary number
             if exp[i] == "I":
-                exp[i] = "i"
+                exp[i] = "\\imaginarynumber"
 
             # factorial
             elif exp[i] == "!" and order == 0:
@@ -166,7 +262,8 @@ def basic_translate(exp):
 
             # division
             elif exp[i] == "/" and order == 1:
-                for index in [i - 1, i + 1]: # removes extra parentheses
+                # remove extra parentheses
+                for index in [i - 1, i + 1]:
                     exp[index] = trim_parens(exp[index])
                 exp[i - 1] = "\\frac{" + exp[i - 1] + "}{" + exp.pop(i + 1) + "}"
                 modified = True
@@ -279,85 +376,3 @@ def translate(exp):
         i -= 1
 
     return basic_translate(exp)
-
-
-def make_equation(eq, view_metadata=False):
-    # type: (MapleEquation{, bool}) -> str
-    """Make a LaTeX equation based on a MapleEquation object."""
-
-    # modify fields
-    eq.lhs = translate(eq.lhs)
-    eq.factor = translate(eq.fields["factor"])
-    eq.front = translate(eq.fields["front"])
-
-    if eq.eq_type == "series":
-        eq.general = translate(eq.general[0])
-
-    elif eq.eq_type == "contfrac":
-        eq.general = parse_brackets(eq.general[0])[0]
-
-        if eq.begin != "":
-            eq.begin = parse_brackets(eq.begin)
-
-    equation = "\\begin{equation*}\\tag{" + eq.label + "}\n  " + eq.lhs + "\n  = "
-
-    if eq.factor == "1":
-        eq.factor = ""
-
-    # translates the Maple information (with spacing)
-    if eq.eq_type == "series":
-        if eq.factor != "":
-            equation += eq.factor + " "
-
-        elif eq.front != "":
-            equation += eq.front + "+"
-
-        equation += "\\sum_{k=0}^\\infty "
-
-        if eq.category == "power series":
-            equation += eq.general
-        elif eq.category == "asymptotic series":  # make sure to fix asymptotic series
-            equation += "(" + eq.general + ")"
-
-    elif eq.eq_type == "contfrac":
-        start = 1  # in case the value of start isn't assigned
-
-        # add terms before general
-        if eq.front != "":
-            equation += eq.front + "+"
-            start = 1
-
-        if eq.begin != "":
-            for piece in eq.begin:
-                equation += make_frac(piece) + " \\subplus "
-                start += 1
-
-        if eq.factor != "":
-            if eq.factor == "-1":
-                equation += "-"
-            else:
-                equation += eq.factor + " "
-
-        # trim unnecessary parentheses
-        for i, element in enumerate(eq.general):
-            eq.general[i] = trim_parens(translate(element))
-
-        if eq.general != ["0", "1"]:
-            equation += "\\CFK{m}{" + str(start) + "}{\\infty}@@{" + eq.general[0] + "}{" + eq.general[1] + "}"
-        else:
-            equation += "\\dots"
-
-    # adds metadata
-    if view_metadata:
-        equation += "\n\\end{equation*}"
-        equation += "\n\\begin{center}"
-        equation += "\nParameters: $$" + eq.parameters + "$$"
-        equation += "\n$$" + translate(eq.constraints) + "$$"
-        equation += "\n" + eq.category
-        equation += "\n\\end{center}"
-    else:
-        equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"
-        equation += "\n  %  \\category{" + eq.category + "}"
-        equation += "\n\\end{equation*}"
-
-    return replace_strings(equation, SPECIAL)

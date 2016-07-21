@@ -4,8 +4,7 @@ __author__ = "Joon Bang"
 __status__ = "Development"
 
 import os
-import copy
-from translator import MapleEquation, make_equation
+from translator import MapleEquation, LatexEquation
 
 TABLE = dict()  # stores meaning of folder names
 with open("maple2latex/data/section_names") as name_info:
@@ -14,7 +13,7 @@ with open("maple2latex/data/section_names") as name_info:
             key, value = line.split(" : ")
             TABLE[key] = value
 
-FILES = [  # files to be translated
+FILES = [
     "bessel", "modbessel",
     "confluent", "confluentlimit", "kummer", "parabolic", "whittaker",
     "apery", "archimedes", "catalan", "delian", "eulersconstant", "eulersnumber", "goldenratio", "gompertz",
@@ -26,9 +25,7 @@ FILES = [  # files to be translated
     "binet", "incompletegamma", "polygamma", "tetragamma", "trigamma",
     "hypergeometric",
     "qhyper"
-]
-
-ROOT = "maple2latex/functions"  # root directory
+]  # files to be translated
 
 
 class MapleFile(object):
@@ -42,43 +39,56 @@ class MapleFile(object):
         return [MapleEquation(piece.split("\n")) for piece in contents.split("create(")
                 if "):" in piece or ");" in piece]
 
-    def convert_formulae(self):
-        return '\n\n'.join([make_equation(copy.copy(formula)) for formula in self.formulae])
-
     def __str__(self):
         return "MapleFile of " + self.filename
 
 
-def translate_file(filename):
-    # type: (str)
-    """Translates all the formulae in a file."""
-
-    with open("maple2latex/out/test.tex", "w") as test:
-        with open("maple2latex/out/primer") as primer:
-            test.write(primer.read() + MapleFile(filename).convert_formulae() + "\n\\end{document}")
-
-
-def translate_directories():
+def translate_files(root_directory):
     # type: ()
-    """Generates and writes the results of traversing the root directory and translating all Maple files."""
+    """Generates and writes the results of traversing the root directory, and translating all files in FILES."""
 
-    root_depth = len(ROOT.split("/"))
+    root_depth = len(root_directory.split("/"))
 
-    dirs = [d for d in os.walk(ROOT) if d[0].count("/") == root_depth]
+    dirs = [d for d in os.walk(root_directory) if d[0].count("/") == root_depth]
 
-    result = ""
+    sections = dict()
 
     for info in dirs:  # search through directories
-        depth = len(["" for ch in info[0] if ch == "/"])
+        depth = info[0].count("/")
 
         if depth == root_depth:  # section
-            result += "\n\\section{" + TABLE[info[0].split("/")[-1]] + "}\n"
+            section = TABLE[info[0].split("/")[-1]]
+            sections[section] = dict()
 
             for file_name in info[2]:
                 folder = ''.join(file_name.split(".")[:-1])
-                if folder in FILES:  # subsection
-                    result += "\\subsection{" + TABLE[folder] + "}\n" + \
-                              MapleFile(info[0] + "/" + file_name).convert_formulae() + "\n\n"
+                if folder in FILES:
+                    # generate equation code, sorted by equation number
+                    subsection = TABLE[file_name[:-4]]
+                    formulae = map(LatexEquation.from_maple, MapleFile(info[0] + "/" + file_name).formulae)
+                    formulae = sorted(formulae, key=LatexEquation.get_sortable_label)
+
+                    repr_label = formulae[len(formulae) / 2].label
+                    sections[section][subsection] = [repr_label, "\n".join(map(str, formulae))]
+
+    # generate subsection headers
+    for section, subsections in sections.iteritems():
+        print section
+
+        keys = sorted(subsections.keys(), key=lambda x: subsections[x][0])
+
+        text = ""
+        for subsection in keys:
+            print "    " + subsection
+            text += "\n\\subsection{" + subsection + "}\n"
+            text += subsections[subsection][1]
+
+        sections[section] = text
+
+    # generate section headers
+    result = ""
+    for section, section_data in sections.iteritems():
+        result += "\\section{" + section + "}\n" + section_data + "\n\n\n"
 
     # write output to file
     with open("maple2latex/out/test.tex", "w") as test:
@@ -86,4 +96,4 @@ def translate_directories():
             test.write(primer.read() + result + "\n\\end{document}")
 
 if __name__ == '__main__':
-    translate_directories()
+    translate_files("maple2latex/functions")
