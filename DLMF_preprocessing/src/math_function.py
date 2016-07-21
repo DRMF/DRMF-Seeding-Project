@@ -38,7 +38,6 @@ def formatting(file_str):
     commands = r'\\[a-zA-Z]+'
 
     updated = []
-    IND_START = r'\index\{'
     ind_str = ""
     in_ind = False
     previous = ""
@@ -61,7 +60,7 @@ def formatting(file_str):
 
         if '\\begin{equation}' in line:
             in_eq = True
-            been_in_eq = False
+            been_in_eq = True
         if '\\end{equation}' in line:
             updated.append(line)
             in_eq = False
@@ -71,15 +70,15 @@ def formatting(file_str):
             updated.append(line)
 
         else:
-            # not in eq
+            # not been in eq
             if not been_in_eq:
                 # if text line != command
-                if re.match(commands, line) or line == '':
-                    if '\\paragraph' not in line and '\\acknowledgements' not in line:
+                if re.match(commands, line):
+                    if '\\paragraph' not in line and '\\index' not in line:
                         updated.append(line)
             else:
                 # not in eq but already been in eq
-                if '\\index' in line or re.match(section,line) or line == '':
+                if re.match(section,line) or line == '':
                     updated.append(line)
 
                 if past_last > ranges[-1][1]:
@@ -89,22 +88,24 @@ def formatting(file_str):
                             updated.append(line)
 
         # if this line is an index start storing it,or write it if we're done with the indexes
-        if IND_START in line:
+        if '\\index{' in line:
             in_ind = True
             ind_str += line + "\n"
+            continue
 
-
-        if in_ind:
+        elif in_ind:
             in_ind = False
 
             # add a preceding newline if one is not already present
             if previous.strip() != "":
                 ind_str = "\n" + ind_str
 
+            fullsplit = ind_str.split("\n")
+            updated.extend(fullsplit)
             ind_str = ""
 
-        previous = line
 
+        previous = line
     wrote = "\n".join(updated)
 
     # remove consecutive blank lines and blank lines between \index groups

@@ -96,20 +96,6 @@ def remove_special(content):
         for lnum, line in enumerate(lines):
 
             lnum += 1
-            # if this line marks the start of an equation, set the flag
-            if EQ_START in line:
-                in_eq = True
-
-                # if this line marks the end of an equation, set the flag
-            if EQ_END in line:
-
-                # remove other flags too
-                for flag in inside:
-                    inside[flag][SEEN] = False
-
-                comment_str = ""
-
-                in_eq = True
 
             # we need to make the replacements in equations
             if in_eq:
@@ -138,7 +124,6 @@ def remove_special(content):
 
                     line = _replace_i(line)
 
-                    # print 'line2', line
                 elif any(info[SEEN] for info in inside.values()):
                     # ^we're in a special block, look for dollar signs to replace "i"s
 
@@ -152,8 +137,6 @@ def remove_special(content):
                         # reset special block flags
                         for flag in inside:
                             inside[flag][SEEN] = False
-
-                        # print(comment_str + "\n")
 
                         dollar_locs = [match.start() for match in dollar_pat.finditer(comment_str)]
                         locs_iter = iter(dollar_locs)
