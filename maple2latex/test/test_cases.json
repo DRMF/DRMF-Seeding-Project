@@ -37,7 +37,7 @@
 
             {
                 "exp": ["\\pi", "*", "I"],
-                "res": "\\pi\\imaginarynumber"
+                "res": "\\pi\\ImaginaryNumber"
             }
         ],
 

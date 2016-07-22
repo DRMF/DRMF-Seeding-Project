@@ -24,7 +24,8 @@ FILES = [
     "expintegrals", "related",
     "binet", "incompletegamma", "polygamma", "tetragamma", "trigamma",
     "hypergeometric",
-    "qhyper"
+    "qhyper",
+    "beta_f_t", "gamma_chisquare", "normal", "repeated"
 ]  # files to be translated
 
 
@@ -64,12 +65,16 @@ def translate_files(root_directory):
                 folder = ''.join(file_name.split(".")[:-1])
                 if folder in FILES:
                     # generate equation code, sorted by equation number
-                    subsection = TABLE[file_name[:-4]]
+                    subsection = TABLE[folder]
                     formulae = map(LatexEquation.from_maple, MapleFile(info[0] + "/" + file_name).formulae)
                     formulae = sorted(formulae, key=LatexEquation.get_sortable_label)
 
                     repr_label = formulae[len(formulae) / 2].label
-                    sections[section][subsection] = [repr_label, "\n".join(map(str, formulae))]
+
+                    if subsection in sections[section]:
+                        sections[section][subsection][1] += "\n".join(map(str, formulae))
+                    else:
+                        sections[section][subsection] = [repr_label, "\n".join(map(str, formulae))]
 
     # generate subsection headers
     for section, subsections in sections.iteritems():

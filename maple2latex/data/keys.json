@@ -38,7 +38,7 @@
         "exp": [
             {
                 "args": 1,
-                "repr": ["e^{", "}"]
+                "repr": ["\\expe^{", "}"]
             }
         ],
 
@@ -433,6 +433,48 @@
                 "args": 1,
                 "repr": ["(", ")"]
             }
+        ],
+
+        "regincBeta": [
+            {
+                "args": 3,
+                "repr": ["\\IncI{", "}@{", "}{", "}"]
+            }
+        ],
+
+        "Beta": [
+            {
+                "args": 2,
+                "repr": ["\\EulerBeta@{", "}{", "}"]
+            }
+        ],
+
+        "gammacdf": [
+            {
+                "args": 3,
+                "repr": ["\\GammaP@{", "}{", "}{", "}"]
+            }
+        ],
+
+        "cgammacdf": [
+            {
+                "args": 3,
+                "repr": ["\\GammaQ@{", "}{", "}{", "}"]
+            }
+        ],
+
+        "cnormalI": [
+            {
+                "args": 2,
+                "repr": ["\\RepInterfc{", "}@{", "}"]
+            }
+        ],
+
+        "Mills": [
+            {
+                "args": 1,
+                "repr": ["\\Mills@{", "}"]
+            }
         ]
     },
 
@@ -461,7 +503,7 @@
         "psi": "\\psi",
         "omega": "\\omega",
         "Pi": "\\pi",
-        "I": "i",
+        "I": "\\ImaginaryNumber",
         "Catalan": "\\CatalansConstant",
         "infinity": "\\infty",
         "Delian": "\\sqrt[\\leftroot{-2}\\uproot{2} 3]{2}",

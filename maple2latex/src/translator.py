@@ -15,7 +15,10 @@ SYMBOLS = INFO["symbols"]
 CONSTRAINTS = INFO["constraints"]
 
 SPECIAL = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin",
-           "\\imaginarynumber": "i"}
+           "\\ImaginaryNumber": "i"}
+
+# TODO: gamma_chisquare.mpl (no macro.)
+# TODO: normal.mpl (no macro.)
 
 
 class MapleEquation(object):
@@ -74,7 +77,7 @@ class LatexEquation(object):
     def __init__(self, label, equation, metadata):
         self.label = label
         self.equation = equation
-        self.metadata = {"constraint": metadata[0], "category": metadata[1]}
+        self.metadata = metadata
 
     @classmethod
     def from_maple(cls, eq):
@@ -87,6 +90,8 @@ class LatexEquation(object):
 
         if eq.factor == "1":
             eq.factor = ""
+
+        metadata = dict()
 
         # translates the Maple information (with spacing)
         if eq.eq_type == "series":
@@ -106,7 +111,44 @@ class LatexEquation(object):
                 equation += "(" + eq.general + ")"
 
         elif eq.eq_type == "contfrac":
-            pieces = parse_brackets(eq.general[0])[0]
+            forms = list()
+
+            if len(parse_brackets(eq.general[0])) > 1:
+                # print eq.label
+                forms = parse_brackets(eq.general[0])
+
+            if len(eq.general) == 2 or forms:
+                if not forms:  # forms is empty
+                    for form in eq.general:
+                        forms += parse_brackets(form)
+
+                replacements = list()
+                if len(eq.general) == 2:
+                    replacements = ["2j", "2j+1"]
+                elif forms:
+                    for i in range(len(forms)):
+                        replacement = str(len(forms)) + "j"
+                        if i < len(forms) - 1:
+                            replacement += "-" + str(len(forms) - i - 1)
+
+                        replacements.append(replacement)
+
+                for i, form in enumerate(forms):
+                    for j, half in enumerate(form):
+                        half = tokenize(half)
+                        for k, ch in enumerate(half):
+                            if ch == "m":
+                                half[k] = "(" + replacements[i] + ")"
+
+                        form[j] = ' '.join(half)
+
+                    forms[i] = "s_{" + replacements[i] + "} = " + make_frac(form)
+
+                metadata["substitution"] = ','.join(forms)
+                pieces = ["s_m", "1"]
+
+            else:
+                pieces = parse_brackets(eq.general[0])[0]
 
             if eq.begin != "":
                 eq.begin = parse_brackets(eq.begin)
@@ -138,7 +180,10 @@ class LatexEquation(object):
             else:
                 equation += "\\dots"
 
-        return cls(eq.label, replace_strings(equation, SPECIAL), [translate(eq.constraints), eq.category])
+        metadata["constraint"] = translate(eq.constraints)
+        metadata["category"] = eq.category
+
+        return cls(eq.label, replace_strings(equation, SPECIAL), metadata)
 
     @classmethod
     def get_sortable_label(cls, equation):
@@ -158,10 +203,14 @@ class LatexEquation(object):
     def __str__(self):
         metadata = ""
         for data_type, data in self.metadata.iteritems():
-            if data_type in ["constraint"]:  # mathmode
-                metadata += "  %  \\" + data_type + "{$" + data + "$}\n"
+            if data_type in ["constraint", "substitution"]:  # mathmode
+                metadata += "  %  \\" + data_type + "{" + replace_strings(data, SPECIAL) + "}\n"
             else:
                 metadata += "  %  \\" + data_type + "{" + data + "}\n"
+
+            # if data_type in ["substitution"]:
+            #     metadata += "  " + replace_strings(data, SPECIAL) + "\n"
+
         return "\\begin{equation*}\\tag{" + self.label + "}\n  " + self.equation + "\n" + \
                metadata + "\\end{equation*}\n"
 
@@ -240,7 +289,7 @@ def basic_translate(exp):
 
             # the imaginary number
             if exp[i] == "I":
-                exp[i] = "\\imaginarynumber"
+                exp[i] = "\\ImaginaryNumber"
 
             # factorial
             elif exp[i] == "!" and order == 0:
