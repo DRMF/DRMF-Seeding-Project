@@ -449,20 +449,6 @@
             }
         ],
 
-        "gammacdf": [
-            {
-                "args": 3,
-                "repr": ["\\GammaP@{", "}{", "}{", "}"]
-            }
-        ],
-
-        "cgammacdf": [
-            {
-                "args": 3,
-                "repr": ["\\GammaQ@{", "}{", "}{", "}"]
-            }
-        ],
-
         "cnormalI": [
             {
                 "args": 2,
@@ -474,6 +460,34 @@
             {
                 "args": 1,
                 "repr": ["\\Mills@{", "}"]
+            }
+        ],
+
+        "gammacdf": [
+            {
+                "args": 3,
+                "repr": ["\\RegGammaP@{", "}{", "}{", "}"]
+            }
+        ],
+
+        "cgammacdf": [
+            {
+                "args": 3,
+                "repr": ["\\RegGammaQ@{", "}{", "}{", "}"]
+            }
+        ],
+
+        "normaldcdf": [
+            {
+                "args": 1,
+                "repr": ["\\GaussDistF@{", "}"]
+            }
+        ],
+
+        "cnormaldcdf": [
+            {
+                "args": 1,
+                "repr": ["\\GaussDistQ@{", "}"]
             }
         ]
     },
