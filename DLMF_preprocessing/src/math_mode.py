@@ -98,19 +98,11 @@ def parse_math(string, start, ranges):
     while i < len(string):
         if not commented:
             i += skip_escaped(string[i:])
-            if i >= len(string):
-                break
             sub = string[i:]
             if sub.startswith("\\%"):
                 i += 1
             elif sub[0] == "%":
                 commented = True
-            elif sub.startswith("\\$"):
-                i += 1
-            elif sub.startswith("\\\\]"):
-                i += 2
-            elif sub.startswith("\\\\)"):
-                i += 2
             else:
                 if does_exit(sub):
                     if begin != start + i:
