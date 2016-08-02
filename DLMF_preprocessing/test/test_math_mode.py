@@ -32,15 +32,15 @@ MATH_TESTS = [
         "output": 18
     },
     {
-        "string": "$%\n\\$$",
+        "string": "$%\n\\$\\%$",
         "start": 12,
-        "output": 5
+        "output": 7
     },
     [
         (1, 10),
         (24, 25),
         (36, 39),
-        (13, 17)
+        (13, 19)
     ]
 ]
 
@@ -68,9 +68,9 @@ NON_MATH_TESTS = [
 
 RANGE_TESTS = [
     {
-        "string": "test \\begin{multline*}\ntest \\hbox{Test}\\end{multline*}",
+        "string": "test\\% \\begin{multline*}\ntest \\hbox{Test}\\end{multline*}",
         "output": [
-            (22, 28)
+            (24, 30)
         ]
     },
     {
