@@ -56,9 +56,9 @@ NON_MATH_TESTS = [
         "output": 39
     },
     {
-        "string": "\\begin{multline}\n\\left(2\\right)\n\\end{multline}\n%begin{equation}",
+        "string": "\\begin{multline}\n\\left(2\\right)\n\\end{multline}\n%begin{equation}\n",
         "start": 3,
-        "output": 63
+        "output": 64
     },
     [
         (28, 35),
