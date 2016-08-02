@@ -32,15 +32,15 @@ MATH_TESTS = [
         "output": 18
     },
     {
-        "string": "$\\$$",
+        "string": "$%\n\\$$",
         "start": 12,
-        "output": 3
+        "output": 5
     },
     [
         (1, 10),
         (24, 25),
         (36, 39),
-        (13, 15)
+        (13, 17)
     ]
 ]
 
@@ -56,9 +56,9 @@ NON_MATH_TESTS = [
         "output": 39
     },
     {
-        "string": "\\begin{multline}\n\\left(2\\right)\n\\end{multline}",
+        "string": "\\begin{multline}\n\\left(2\\right)\n\\end{multline}\n%begin{equation}",
         "start": 3,
-        "output": 46
+        "output": 63
     },
     [
         (28, 35),
