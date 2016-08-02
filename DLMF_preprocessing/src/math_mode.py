@@ -76,6 +76,12 @@ def does_enter(string):
 
 
 def skip_escaped(string):
+    # type: (str) -> int
+    """
+    Returns the distance to skip from escaped delimiters in the string.
+    :param string: The string to check.
+    :return: The distance to skip.
+    """
     for escape in ["\\$", "\\\\]", "\\\\)", "\\\\(", "\\\\["]:
         if string.startswith(escape):
             return len(escape)
