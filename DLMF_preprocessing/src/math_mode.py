@@ -75,17 +75,27 @@ def does_enter(string):
     return any(string.startswith(delim) for delim in MATH_START)
 
 
-def skip_escaped(string):
+def skip_escaped(string, loop=True):
     # type: (str) -> int
     """
     Returns the distance to skip from escaped delimiters in the string.
     :param string: The string to check.
+    :param loop: Whether to skip repeatedly or not.
     :return: The distance to skip.
     """
-    for escape in ["\\$", "\\\\]", "\\\\)", "\\\\(", "\\\\["]:
-        if string.startswith(escape):
-            return len(escape)
-    return 0
+    if loop:
+        s = skip_escaped(string, False)
+        index = 0
+        while s != 0:
+            string = string[s:]
+            index += s
+            s = skip_escaped(string, False)
+        return index
+    else:
+        for escape in ["\\$", "\\\\]", "\\\\)", "\\\\(", "\\\\[", "\\%"]:
+            if string.startswith(escape):
+                return len(escape)
+        return 0
 
 
 def parse_math(string, start, ranges):
@@ -105,9 +115,7 @@ def parse_math(string, start, ranges):
         if not commented:
             i += skip_escaped(string[i:])
             sub = string[i:]
-            if sub.startswith("\\%"):
-                i += 1
-            elif sub[0] == "%":
+            if sub[0] == "%":
                 commented = True
             else:
                 if does_exit(sub):
@@ -120,7 +128,7 @@ def parse_math(string, start, ranges):
                     if begin != start + i:
                         ranges.append((begin, start + i))
                     return i + len(MATH_START[delim]) - 1
-        elif commented and string[i] == "\n":
+        elif string[i] == "\n":
             commented = False
         i += 1
     raise SyntaxError("missing " + MATH_START[delim])
@@ -147,9 +155,7 @@ def parse_non_math(string, start, ranges):
             if i >= len(string):
                 break
             sub = string[i:]
-            if sub.startswith("\\%"):
-                i += 1
-            elif sub[0] == "%":
+            if sub[0] == "%":
                 commented = True
             elif does_enter(sub):
                 i += parse_math(sub, start + i, ranges)
@@ -161,7 +167,7 @@ def parse_non_math(string, start, ranges):
                     return i
                 else:
                     level -= 1
-        elif commented and string[i] == "\n":
+        elif string[i] == "\n":
             commented = False
         i += 1
     if delim == "" and level == 0:
