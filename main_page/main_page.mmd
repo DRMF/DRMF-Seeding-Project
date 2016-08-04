@@ -221,6 +221,10 @@ For more information see [http://link.springer.com/chapter/10.1007%2F978-3-319-0
 * [[Definition:rabbitConstant|rabbitConstant]]
 * [[Definition:FibonacciNumber|FibonacciNumber]]
 * [[Definition:Fibonacci|Fibonacci]]
+* [[Definition:RegGammaP|RegGammaP]]
+* [[Definition:RegGammaQ|RegGammaQ]]
+* [[Definition:GaussDistF|GaussDistF]]
+* [[Definition:GaussDistQ|GaussDistQ]]
 </div>
 
 = Copyright =
@@ -278,7 +282,7 @@ drmf_eof
 drmf_bof
 '''Definition:AffqKrawtchouk'''
 <div id="drmf_head">
-<div id="alignleft"> << [[Definition:Fibonacci|Definition:Fibonacci]] </div>
+<div id="alignleft"> << [[Definition:GaussDistQ|Definition:GaussDistQ]] </div>
 <div id="aligncenter"> [[Main_Page|Main Page]] </div>
 <div id="alignright"> [[Definition:AlSalamCarlitzI|Definition:AlSalamCarlitzI]] >> </div>
 </div>
@@ -305,7 +309,7 @@ These are defined by
 <span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:AffqKrawtchouk <math>{\displaystyle K^{\mathrm{Aff}}_{n}}</math>]</span> : affine <math>{\displaystyle q}</math>-Krawtchouk polynomial : [http://drmf.wmflabs.org/wiki/Definition:AffqKrawtchouk http://drmf.wmflabs.org/wiki/Definition:AffqKrawtchouk]<br />
 <span class="plainlinks">[http://dlmf.nist.gov/17.4#E1 <math>{\displaystyle {{}_{r}\phi_{s}}}</math>]</span> : basic hypergeometric (or <math>{\displaystyle q}</math>-hypergeometric) function : [http://dlmf.nist.gov/17.4#E1 http://dlmf.nist.gov/17.4#E1]
 <br /><div id="drmf_foot">
-<div id="alignleft"> << [[Definition:Fibonacci|Definition:Fibonacci]] </div>
+<div id="alignleft"> << [[Definition:GaussDistQ|Definition:GaussDistQ]] </div>
 <div id="aligncenter"> [[Main_Page|Main Page]] </div>
 <div id="alignright"> [[Definition:AlSalamCarlitzI|Definition:AlSalamCarlitzI]] >> </div>
 </div>
@@ -328,7 +332,7 @@ In math mode, this macro can be called in the following ways:
 :'''\AlSalamCarlitzI{a}{n}@{x}{q}''' produces <math>{\displaystyle \AlSalamCarlitzI{a}{n}@{x}{q}}</math><br />
 
 These are defined by
-<math>{\displaystyle 
+<math>{\displaystyle
 \AlSalamCarlitzI{a}{n}@{x}{q}:=(-a)^nq^{\binom{n}{2}}\,\qHyperrphis{2}{1}@@{q^{-n},x^{-1}}{0}{q}{\frac{qx}{a}}.
 }</math>
 <br />
@@ -432,7 +436,7 @@ drmf_bof
 <div id="alignright"> [[Definition:BesselPolyIIparam|Definition:BesselPolyIIparam]] >> </div>
 </div>
 
-In the DRMF, the LaTeX semantic macro '''\AntiDer''' represents the anti-derivative notation, 
+In the DRMF, the LaTeX semantic macro '''\AntiDer''' represents the anti-derivative notation,
 which is defined as follows.
 
 This macro is in the category of polynomials.
@@ -574,7 +578,7 @@ In math mode, this macro can be called in the following ways:
 :'''\bigqLaguerre{n}@{x}{a}{b}{q}''' produces <math>{\displaystyle \bigqLaguerre{n}@{x}{a}{b}{q}}</math><br />
 
 These are defined by
-<math>{\displaystyle 
+<math>{\displaystyle
 \bigqLaguerre{n}@{x}{a}{b}{q}:=\qHyperrphis{3}{2}@@{q^{-n},0,x}{aq,bq}{q}{q}.
 }</math>
 <br />
@@ -1024,7 +1028,7 @@ In math mode, this macro can be called in the following ways:
 :'''\GottliebLaguerre{n}''' produces <math>{\displaystyle \GottliebLaguerre{n}}</math><br />
 :'''\GottliebLaguerre{n}@{x}''' produces <math>{\displaystyle \GottliebLaguerre{n}@{x}}</math><br />
 
-These are defined by 
+These are defined by
 <math>
 {\displaystyle
 \GottliebLaguerre{n}@{x}:=e^{-n\la} \Meixner{n}@{x}{1}{e^{-\la}}.
@@ -1050,7 +1054,7 @@ drmf_bof
 <div id="alignright"> [[Definition:JacksonqBesselII|Definition:JacksonqBesselII]] >> </div>
 </div>
 
-In the DRMF, the LaTeX semantic macro '''\Int''' represents the definite integral notation, 
+In the DRMF, the LaTeX semantic macro '''\Int''' represents the definite integral notation,
 which is defined as follows.
 
 This macro is in the category of polynomials.
@@ -3376,7 +3380,7 @@ drmf_bof
 <div id="alignright"> [[Definition:qexpKLS|Definition:qexpKLS]] >> </div>
 </div>
 
-The LaTeX DLMF and DRMF macro '''\qExpKLS''' represents a <math>q</math>-analogue of the 
+The LaTeX DLMF and DRMF macro '''\qExpKLS''' represents a <math>q</math>-analogue of the
 <math>\exp</math> function: <math>\qExpKLS{q}</math>.
 
 This macro is in the category of real or complex valued functions.
@@ -3415,7 +3419,7 @@ drmf_bof
 <div id="alignright"> [[Definition:qcosKLS|Definition:qcosKLS]] >> </div>
 </div>
 
-The LaTeX DLMF and DRMF macro '''\qexpKLS''' represents a <math>q</math>-analogue of the 
+The LaTeX DLMF and DRMF macro '''\qexpKLS''' represents a <math>q</math>-analogue of the
 <math>\exp</math> function: <math>\qexpKLS{q}</math>.
 
 This macro is in the category of real or complex valued functions.
@@ -3452,7 +3456,7 @@ drmf_bof
 <div id="aligncenter"> [[Main_Page|Main Page]] </div>
 <div id="alignright"> [[Definition:qMeixner|Definition:qMeixner]] >> </div>
 </div>
-The LaTeX DLMF and DRMF macro '''\qcosKLS''' represents a <math>q</math>-analogue of the 
+The LaTeX DLMF and DRMF macro '''\qcosKLS''' represents a <math>q</math>-analogue of the
 <math>\cos</math> function:~<math>\qcosKLS{q}</math>.
 
 This macro is in the category of polynomials.
@@ -3692,7 +3696,7 @@ drmf_bof
 <div id="alignright"> [[Definition:qSinKLS|Definition:qSinKLS]] >> </div>
 </div>
 
-The LaTeX DLMF and DRMF macro '''\qsinKLS''' represents a <math>q</math>-analogue of the <math>\sin</math> 
+The LaTeX DLMF and DRMF macro '''\qsinKLS''' represents a <math>q</math>-analogue of the <math>\sin</math>
 function: <math>\qsinKLS{q}</math>.
 
 This macro is in the category of real or complex valued functions.
@@ -3731,7 +3735,7 @@ drmf_bof
 <div id="alignright"> [[Definition:qCosKLS|Definition:qCosKLS]] >> </div>
 </div>
 
-The LaTeX DLMF and DRMF macro '''\qSinKLS''' represents a <math>q</math>-analogue of the 
+The LaTeX DLMF and DRMF macro '''\qSinKLS''' represents a <math>q</math>-analogue of the
 <math>\sin</math> function: <math>\qSinKLS{q}</math>.
 
 This macro is in the category of real or complex valued functions.
@@ -3771,7 +3775,7 @@ drmf_bof
 <div id="alignright"> [[Definition:Wilson|Definition:Wilson]] >> </div>
 </div>
 
-The LaTeX DLMF and DRMF macro '''\qCosKLS''' represents a <math>q</math>-analogue of the 
+The LaTeX DLMF and DRMF macro '''\qCosKLS''' represents a <math>q</math>-analogue of the
 <math>\cos</math> function: <math>\qCosKLS{q}</math>.
 
 This macro is in the category of polynomials.
@@ -3860,7 +3864,7 @@ These are defined by
 {}:=\HyperpFq{4}{3}@@{-n,n+\alpha+\beta+1,-x,x+\gamma+\delta+1}{\alpha+1,\beta+\delta+1,\gamma+1}{1},
 }</math>
 
-where <math>{\displaystyle \lambda(x)=x(x+\gamma+\delta+1), }</math> 
+where <math>{\displaystyle \lambda(x)=x(x+\gamma+\delta+1), }</math>
 and <math>\alpha+1=-N</math> or <math>\beta+\delta+1=-N</math> or <math>\gamma+1=-N</math>
 with <math>N</math> a nonnegative integer.
 
@@ -4531,7 +4535,7 @@ drmf_bof
 <div id="alignright"> [[Definition:PolylogarithmS|Definition:PolylogarithmS]] >> </div>
 </div>
 
-The LaTeX DLMF and DRMF macro '''\StieltjesConstants''' represents the Stiltjes constants 
+The LaTeX DLMF and DRMF macro '''\StieltjesConstants''' represents the Stiltjes constants
 <math>\StieltjesConstants{n}</math>.
 
 This macro is in the category of constants.
@@ -4585,18 +4589,16 @@ In math mode, this macro can be called in the following ways:
 These are defined by
 
 <math>
-
 {\displaystyle
-
-\PolylogarithmS{n}{p}@{z}
-
+\PolylogarithmS{n}{p}@{z}:=\frac{(-1)^{n+p-1}}{(n-1)!p!}\int_0^1 \frac{(\ln{t})^{n-1}[\ln(1-zt)]^p}{t}\,dt
 }</math>
-
 <br />
 
 == Symbols List ==
 
-<span class="plainlinks">[p}$ <math>{\displaystyle S_{n}</math>]</span> : Nielsen generalized polylogarithm function : [p}$ p}$] [http://drmf.wmflabs.org/wiki/Definition:PolylogarithmS http://drmf.wmflabs.org/wiki/Definition:PolylogarithmS]
+<span class="plainlinks">[p}$ <math>{\displaystyle S_{n}</math>]</span> : Nielsen generalized polylogarithm function : [p}$ p}$] [http://drmf.wmflabs.org/wiki/Definition:PolylogarithmS http://drmf.wmflabs.org/wiki/Definition:PolylogarithmS]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/1.4#iv <math>{\displaystyle \int}</math>]</span> : integral : [http://dlmf.nist.gov/1.4#iv http://dlmf.nist.gov/1.4#iv]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/4.2#E2 <math>{\displaystyle \mathrm{ln}}</math>]</span> : principal branch of logarithm function : [http://dlmf.nist.gov/4.2#E2 http://dlmf.nist.gov/4.2#E2]
 <br /><div id="drmf_foot">
 <div id="alignleft"> << [[Definition:StieltjesConstants|Definition:StieltjesConstants]] </div>
 <div id="aligncenter"> [[Main_Page|Main Page]] </div>
@@ -4624,18 +4626,15 @@ In math mode, this macro can be called in the following ways:
 These are defined by
 
 <math>
-
 {\displaystyle
-
-\HarmonicNumber[r]{n}
-
+\HarmonicNumber[r]{n}:=\sum_{k=1}^n \frac{1}{k^r}
 }</math>
-
 <br />
 
 == Symbols List ==
 
-<span class="plainlinks">[http://dlmf.nist.gov/25.11#E33 <math>{\displaystyle H_{n}}</math>]</span> : Harmonic number : [http://dlmf.nist.gov/25.11#E33 http://dlmf.nist.gov/25.11#E33]
+<span class="plainlinks">[http://dlmf.nist.gov/25.11#E33 <math>{\displaystyle H_{n}}</math>]</span> : Harmonic number : [http://dlmf.nist.gov/25.11#E33 http://dlmf.nist.gov/25.11#E33]<br />
+<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:sum <math>{\displaystyle \Sigma}</math>]</span> : sum : [http://drmf.wmflabs.org/wiki/Definition:sum http://drmf.wmflabs.org/wiki/Definition:sum]
 <br /><div id="drmf_foot">
 <div id="alignleft"> << [[Definition:PolylogarithmS|Definition:PolylogarithmS]] </div>
 <div id="aligncenter"> [[Main_Page|Main Page]] </div>
@@ -4662,13 +4661,9 @@ In math mode, this macro can be called in the following ways:
 These are defined by
 
 <math>
-
 {\displaystyle
-
-\LucasL{n}@{x}
-
+\LucasL{n}@{x}:=2^{-n}\left[\left(x-\sqrt{x^2+4}\right)^n+\left(x+\sqrt{x^2+4}\right)^n\right]
 }</math>
-
 <br />
 
 == Symbols List ==
@@ -4700,18 +4695,15 @@ In math mode, this macro can be called in the following ways:
 These are defined by
 
 <math>
-
 {\displaystyle
-
-\HurwitzLerchPhi@{z}{s}{a}
-
+\HurwitzLerchPhi@{z}{s}{a}:=\sum_{k=0}^\infty \frac{z^k}{(a+k)^{s}}
 }</math>
-
 <br />
 
 == Symbols List ==
 
-<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:HurwitzLerchPhi <math>{\displaystyle \Phi}</math>]</span> : Hurwitz-Lerch's transcendent : [http://drmf.wmflabs.org/wiki/Definition:HurwitzLerchPhi http://drmf.wmflabs.org/wiki/Definition:HurwitzLerchPhi]
+<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:HurwitzLerchPhi <math>{\displaystyle \Phi}</math>]</span> : Hurwitz-Lerch's transcendent : [http://drmf.wmflabs.org/wiki/Definition:HurwitzLerchPhi http://drmf.wmflabs.org/wiki/Definition:HurwitzLerchPhi]<br />
+<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:sum <math>{\displaystyle \Sigma}</math>]</span> : sum : [http://drmf.wmflabs.org/wiki/Definition:sum http://drmf.wmflabs.org/wiki/Definition:sum]
 <br /><div id="drmf_foot">
 <div id="alignleft"> << [[Definition:LucasL|Definition:LucasL]] </div>
 <div id="aligncenter"> [[Main_Page|Main Page]] </div>
@@ -4737,13 +4729,9 @@ In math mode, this macro can be called in the following way:
 These are defined by
 
 <math>
-
 {\displaystyle
-
-\GoldenRatio
-
+\GoldenRatio:=\frac{1}{2}\left(1+\sqrt{5}\right)
 }</math>
-
 <br />
 
 == Symbols List ==
@@ -4775,18 +4763,15 @@ In math mode, this macro can be called in the following ways:
 These are defined by
 
 <math>
-
 {\displaystyle
-
-\WhitPsi{\alpha}{\beta}@{z}
-
+\WhitPsi{\alpha}{\beta}@{z}:=z^{\frac{\alpha+\beta}{2}-1}e^\frac{z}{2}\WhitW{-\frac{\alpha+\beta}{2}}{\frac{\beta-\alpha}{2}}@{z}
 }</math>
-
 <br />
 
 == Symbols List ==
 
-<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:WhitPsi <math>{\displaystyle \Psi_{\alpha,\beta}}</math>]</span> : Whittaker function <math>{\displaystyle \Psi_{\alpha;\beta}}</math> : [http://drmf.wmflabs.org/wiki/Definition:WhitPsi http://drmf.wmflabs.org/wiki/Definition:WhitPsi]
+<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:WhitPsi <math>{\displaystyle \Psi_{\alpha,\beta}}</math>]</span> : Whittaker function <math>{\displaystyle \Psi_{\alpha;\beta}}</math> : [http://drmf.wmflabs.org/wiki/Definition:WhitPsi http://drmf.wmflabs.org/wiki/Definition:WhitPsi]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/13.14#E3 <math>{\displaystyle W_{\kappa,\mu}}</math>]</span> : Whittaker function <math>{\displaystyle W_{\kappa;\mu}}</math> : [http://dlmf.nist.gov/13.14#E3 http://dlmf.nist.gov/13.14#E3]
 <br /><div id="drmf_foot">
 <div id="alignleft"> << [[Definition:GoldenRatio|Definition:GoldenRatio]] </div>
 <div id="aligncenter"> [[Main_Page|Main Page]] </div>
@@ -4812,18 +4797,15 @@ In math mode, this macro can be called in the following way:
 These are defined by
 
 <math>
-
 {\displaystyle
-
-\GompertzConstant
-
+\GompertzConstant:=\int_0^\infty \frac{e^{-u}}{1+u}\,du
 }</math>
-
 <br />
 
 == Symbols List ==
 
-<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:GompertzConstant <math>{\displaystyle G}</math>]</span> : Gompertz's constant : [http://drmf.wmflabs.org/wiki/Definition:GompertzConstant http://drmf.wmflabs.org/wiki/Definition:GompertzConstant]
+<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:GompertzConstant <math>{\displaystyle G}</math>]</span> : Gompertz's constant : [http://drmf.wmflabs.org/wiki/Definition:GompertzConstant http://drmf.wmflabs.org/wiki/Definition:GompertzConstant]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/1.4#iv <math>{\displaystyle \int}</math>]</span> : integral : [http://dlmf.nist.gov/1.4#iv http://dlmf.nist.gov/1.4#iv]
 <br /><div id="drmf_foot">
 <div id="alignleft"> << [[Definition:WhitPsi|Definition:WhitPsi]] </div>
 <div id="aligncenter"> [[Main_Page|Main Page]] </div>
@@ -4849,18 +4831,17 @@ In math mode, this macro can be called in the following way:
 These are defined by
 
 <math>
-
 {\displaystyle
-
-\rabbitConstant
-
+\rabbitConstant:=\sum_{i=1}^\infty 2^{-\floor{i\GoldenRatio}}
 }</math>
-
 <br />
 
 == Symbols List ==
 
-<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:RabbitConstant <math>{\displaystyle \rho}</math>]</span> : rabbit constant : [http://drmf.wmflabs.org/wiki/Definition:RabbitConstant http://drmf.wmflabs.org/wiki/Definition:RabbitConstant]
+<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:RabbitConstant <math>{\displaystyle \rho}</math>]</span> : rabbit constant : [http://drmf.wmflabs.org/wiki/Definition:RabbitConstant http://drmf.wmflabs.org/wiki/Definition:RabbitConstant]<br />
+<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:sum <math>{\displaystyle \Sigma}</math>]</span> : sum : [http://drmf.wmflabs.org/wiki/Definition:sum http://drmf.wmflabs.org/wiki/Definition:sum]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/front/introduction#Sx4.p1.t1.r16 <math>{\displaystyle \left\lfloor a\right\rfloor}</math>]</span> : floor : [http://dlmf.nist.gov/front/introduction#Sx4.p1.t1.r16 http://dlmf.nist.gov/front/introduction#Sx4.p1.t1.r16]<br />
+<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:GoldenRatio <math>{\displaystyle \phi}</math>]</span> : The golden ratio : [http://drmf.wmflabs.org/wiki/Definition:GoldenRatio http://drmf.wmflabs.org/wiki/Definition:GoldenRatio]
 <br /><div id="drmf_foot">
 <div id="alignleft"> << [[Definition:GompertzConstant|Definition:GompertzConstant]] </div>
 <div id="aligncenter"> [[Main_Page|Main Page]] </div>
@@ -4886,13 +4867,9 @@ In math mode, this macro can be called in the following way:
 These are defined by
 
 <math>
-
 {\displaystyle
-
-\FibonacciNumber{n}
-
+\FibonacciNumber{n}:=\frac{\left(1+\sqrt{5}\right)^n-\left(1-\sqrt{5}\right)^n}{2^n\sqrt{5}}
 }</math>
-
 <br />
 
 == Symbols List ==
@@ -4909,7 +4886,7 @@ drmf_bof
 <div id="drmf_head">
 <div id="alignleft"> << [[Definition:FibonacciNumber|Definition:FibonacciNumber]] </div>
 <div id="aligncenter"> [[Main_Page|Main Page]] </div>
-<div id="alignright"> [[Definition:AffqKrawtchouk|Definition:AffqKrawtchouk]] >> </div>
+<div id="alignright"> [[Definition:RegGammaP|Definition:RegGammaP]] >> </div>
 </div>
 
 The LaTeX DLMF and DRMF macro '''\Fibonacci''' represents the Fibonacci.
@@ -4923,13 +4900,9 @@ In math mode, this macro can be called in the following way:
 These are defined by
 
 <math>
-
 {\displaystyle
-
-\Fibonacci{n}@{x}
-
+\Fibonacci{n}@{x}:=\frac{\left(x+\sqrt{x^2+4}\right)^n-\left(x-\sqrt{x^2+4}\right)^n}{2^n\sqrt{x^2+4}}
 }</math>
-
 <br />
 
 == Symbols List ==
@@ -4937,6 +4910,160 @@ These are defined by
 <span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:Fibonacci <math>{\displaystyle F_{n}{(x)}}</math>]</span> : Fibonacci polynomial : [http://drmf.wmflabs.org/wiki/Definition:Fibonacci http://drmf.wmflabs.org/wiki/Definition:Fibonacci]
 <br /><div id="drmf_foot">
 <div id="alignleft"> << [[Definition:FibonacciNumber|Definition:FibonacciNumber]] </div>
+<div id="aligncenter"> [[Main_Page|Main Page]] </div>
+<div id="alignright"> [[Definition:RegGammaP|Definition:RegGammaP]] >> </div>
+</div>
+drmf_eof
+drmf_bof
+'''Definition:RegGammaP'''
+<div id="drmf_head">
+<div id="alignleft"> << [[Definition:Fibonacci|Definition:Fibonacci]] </div>
+<div id="aligncenter"> [[Main_Page|Main Page]] </div>
+<div id="alignright"> [[Definition:RegGammaQ|Definition:RegGammaQ]] >> </div>
+</div>
+The LaTeX DLMF and DRMF macro '''\RegGammaP''' represents the RegGammaP.
+
+This macro is in the category of integer valued functions.
+
+In math mode, this macro can be called in the following ways:
+
+:'''\RegGammaP''' produces <math>{\displaystyle \RegGammaP}</math><br />
+:'''\RegGammaP@{x}{\alpha}{\theta}''' produces <math>{\displaystyle \RegGammaP@{x}{\alpha}{\theta}}</math><br />
+
+These are defined by
+
+<math>
+
+{\displaystyle
+
+\RegGammaP@{x}{\alpha}{\theta}:=\frac{\incgamma@{\alpha}{\frac{x}{\theta}}}{\EulerGamma@{\alpha}}
+
+}</math>
+
+<br />
+
+== Symbols List ==
+
+<span class="plainlinks">[\theta\right)$ <math>{\displaystyle P\left(x;\alpha}</math>]</span> : Regularized gamma function of incomplete gamma function : [\theta\right)$ \theta\right)$] [http://drmf.wmflabs.org/wiki/Definition:RegGamma http://drmf.wmflabs.org/wiki/Definition:RegGamma]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/8.2#E1 <math>{\displaystyle \gamma}</math>]</span> : incomplete gamma function <math>{\displaystyle \gamma}</math> : [http://dlmf.nist.gov/8.2#E1 http://dlmf.nist.gov/8.2#E1]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/5.2#E1 <math>{\displaystyle \Gamma}</math>]</span> : Euler's gamma function : [http://dlmf.nist.gov/5.2#E1 http://dlmf.nist.gov/5.2#E1]
+<br /><div id="drmf_foot">
+<div id="alignleft"> << [[Definition:Fibonacci|Definition:Fibonacci]] </div>
+<div id="aligncenter"> [[Main_Page|Main Page]] </div>
+<div id="alignright"> [[Definition:RegGammaQ|Definition:RegGammaQ]] >> </div>
+</div>
+drmf_eof
+drmf_bof
+'''Definition:RegGammaQ'''
+<div id="drmf_head">
+<div id="alignleft"> << [[Definition:RegGammaP|Definition:RegGammaP]] </div>
+<div id="aligncenter"> [[Main_Page|Main Page]] </div>
+<div id="alignright"> [[Definition:GaussDistF|Definition:GaussDistF]] >> </div>
+</div>
+The LaTeX DLMF and DRMF macro '''\RegGammaQ''' represents the RegGammaQ.
+
+This macro is in the category of integer valued functions.
+
+In math mode, this macro can be called in the following ways:
+
+:'''\RegGammaQ''' produces <math>{\displaystyle \RegGammaQ}</math><br />
+:'''\RegGammaQ@{x}{\alpha}{\theta}''' produces <math>{\displaystyle \RegGammaQ@{x}{\alpha}{\theta}}</math><br />
+
+These are defined by
+
+<math>
+
+{\displaystyle
+
+\RegGammaQ@{x}{\alpha}{\theta}:=\frac{\IncGamma@{\alpha}{\frac{x}{\theta}}}{\EulerGamma@{\alpha}}
+
+}</math>
+
+<br />
+
+== Symbols List ==
+
+<span class="plainlinks">[\theta\right)$ <math>{\displaystyle Q\left(x;\alpha}</math>]</span> : Regularized gamma function of complementary incomplete gamma function : [\theta\right)$ \theta\right)$] [http://drmf.wmflabs.org/wiki/Definition:RegGamma http://drmf.wmflabs.org/wiki/Definition:RegGamma]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/8.2#E2 <math>{\displaystyle \Gamma}</math>]</span> : incomplete gamma function <math>{\displaystyle \Gamma}</math> : [http://dlmf.nist.gov/8.2#E2 http://dlmf.nist.gov/8.2#E2]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/5.2#E1 <math>{\displaystyle \Gamma}</math>]</span> : Euler's gamma function : [http://dlmf.nist.gov/5.2#E1 http://dlmf.nist.gov/5.2#E1]
+<br /><div id="drmf_foot">
+<div id="alignleft"> << [[Definition:RegGammaP|Definition:RegGammaP]] </div>
+<div id="aligncenter"> [[Main_Page|Main Page]] </div>
+<div id="alignright"> [[Definition:GaussDistF|Definition:GaussDistF]] >> </div>
+</div>
+drmf_eof
+drmf_bof
+'''Definition:GaussDistF'''
+<div id="drmf_head">
+<div id="alignleft"> << [[Definition:RegGammaQ|Definition:RegGammaQ]] </div>
+<div id="aligncenter"> [[Main_Page|Main Page]] </div>
+<div id="alignright"> [[Definition:GaussDistQ|Definition:GaussDistQ]] >> </div>
+</div>
+The LaTeX DLMF and DRMF macro '''\GaussDistF''' represents the GaussDistF.
+
+This macro is in the category of integer valued functions.
+
+In math mode, this macro can be called in the following ways:
+
+:'''\GaussDistF''' produces <math>{\displaystyle \GaussDistF}</math><br />
+:'''\GaussDistF@{x}''' produces <math>{\displaystyle \GaussDistF@{x}}</math><br />
+
+These are defined by
+
+<math>
+
+{\displaystyle
+
+\GaussDistF@{x}:=\frac{1}{2}\left(1+\erf@{\frac{x}{\sqrt{2}}}\right)
+
+}</math>
+
+<br />
+
+== Symbols List ==
+
+<span class="plainlinks">[0 <math>{\displaystyle F\left(x}</math>]</span> : Gaussian distribution : [0 0] [1\right)$ 1\right)$] [http://drmf.wmflabs.org/wiki/Definition:GaussDist http://drmf.wmflabs.org/wiki/Definition:GaussDist]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/7.2#E1 <math>{\displaystyle \mathrm{erf}}</math>]</span> : error function : [http://dlmf.nist.gov/7.2#E1 http://dlmf.nist.gov/7.2#E1]
+<br /><div id="drmf_foot">
+<div id="alignleft"> << [[Definition:RegGammaQ|Definition:RegGammaQ]] </div>
+<div id="aligncenter"> [[Main_Page|Main Page]] </div>
+<div id="alignright"> [[Definition:GaussDistQ|Definition:GaussDistQ]] >> </div>
+</div>
+drmf_eof
+drmf_bof
+'''Definition:GaussDistQ'''
+<div id="drmf_head">
+<div id="alignleft"> << [[Definition:GaussDistF|Definition:GaussDistF]] </div>
+<div id="aligncenter"> [[Main_Page|Main Page]] </div>
+<div id="alignright"> [[Definition:AffqKrawtchouk|Definition:AffqKrawtchouk]] >> </div>
+</div>
+The LaTeX DLMF and DRMF macro '''\GaussDistQ''' represents the GaussDistQ.
+
+This macro is in the category of integer valued functions.
+
+In math mode, this macro can be called in the following ways:
+
+:'''\GaussDistQ''' produces <math>{\displaystyle \GaussDistQ}</math><br />
+:'''\GaussDistQ@{x}''' produces <math>{\displaystyle \GaussDistQ@{x}}</math><br />
+
+These are defined by
+
+<math>
+
+{\displaystyle
+
+\GaussDistQ@{x}:=\frac{1}{2}\erfc@{\frac{x}{\sqrt{2}}}
+
+}</math>
+
+<br />
+
+== Symbols List ==
+
+<span class="plainlinks">[0 <math>{\displaystyle Q\left(x}</math>]</span> : Related to Gaussian distribution : [0 0] [1\right)$ 1\right)$] [http://drmf.wmflabs.org/wiki/Definition:GaussDist http://drmf.wmflabs.org/wiki/Definition:GaussDist]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/7.2#E2 <math>{\displaystyle \mathrm{erfc}}</math>]</span> : complementary error function : [http://dlmf.nist.gov/7.2#E2 http://dlmf.nist.gov/7.2#E2]
+<br /><div id="drmf_foot">
+<div id="alignleft"> << [[Definition:GaussDistF|Definition:GaussDistF]] </div>
 <div id="aligncenter"> [[Main_Page|Main Page]] </div>
 <div id="alignright"> [[Definition:AffqKrawtchouk|Definition:AffqKrawtchouk]] >> </div>
 </div>
