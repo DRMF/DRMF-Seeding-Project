@@ -20,22 +20,20 @@ def get_symbols(line):
     arg_flag = False
     count = 0
 
-    for i in range(len(line)):
-        ch = line[i]
+    for i, ch in enumerate(line):
         if sym_flag:
-            if ch == "{" or ch == "[":
+            if ch == ["{", "["]:
                 count += 1
                 arg_flag = True
 
-            if ch != "}" and ch != "]":
-                if arg_flag or ch.isalpha():
-                    symbol += ch
-                else:
-                    sym_flag = False
-                    arg_flag = False
-                    sym_list.append(symbol)
-                    sym_list += (get_symbols(symbol))
-                    symbol = ""
+            if ch not in ["}", "]"] and arg_flag or ch.isalpha():
+                symbol += ch
+            elif ch not in ["}", "]"]:
+                sym_flag = False
+                arg_flag = False
+                sym_list.append(symbol)
+                sym_list += (get_symbols(symbol))
+                symbol = ""
             else:
                 count -= 1
                 symbol += ch
@@ -109,9 +107,9 @@ def main(data):
                     c_n += 1
                 else:
                     flag_a = False
-                    if ch == "{" or ch == "[":
+                    if ch in ["{", "["]:
                         c_c += 1
-                    if ch == "}" or ch == "]":
+                    if ch in ["}", "]"]:
                         c_c -= 1
                         if c_c == 0:
                             arg_count += 1
@@ -127,9 +125,9 @@ def main(data):
                         c_n += 1
                     else:
                         flag_a = False
-                        if ch == "{" or ch == "[":
+                        if ch in ["{", "["]:
                             c_c += 1
-                        if ch == "}" or ch == "]":
+                        if ch in ["}", "]"]:
                             c_c -= 1
                             if c_c == 0:
                                 arg_count += 1
@@ -155,9 +153,9 @@ def main(data):
                     parFlag = True
                 elif ch.isalpha():
                     c_n += 1
-                elif ch == "{" or ch == "[":
+                elif ch in ["{", "["]:
                     c_c += 1
-                elif ch == "}" or ch == "]":
+                elif ch in ["}", "]"]:
                     c_c -= 1
                     if c_c == 0:
                         if parFlag:
@@ -197,9 +195,9 @@ def main(data):
                     elif ch.isalpha():
                         c_n += 1
                     else:
-                        if ch == "{" or ch == "[":
+                        if ch in ["{", "["]:
                             c_c += 1
-                        if ch == "}" or ch == "]":
+                        if ch in ["}", "]"]:
                             c_c -= 1
                             if c_c == 0:
                                 if parFlag:
