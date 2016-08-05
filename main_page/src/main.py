@@ -3,16 +3,8 @@ __status__ = "Development"
 __credits__ = ["Joon Bang", "Azeem Mohammed"]
 
 import time
-import symbols_list
 import mod_main
-
-"""
-Order:
-- List
-- Symbols List
-- Headers
-- List Ways
-"""
+import symbols_list
 
 
 def generate_html(tag_name, options, text, spacing=True):
@@ -87,6 +79,14 @@ def update_headers(text, definitions):
     return output
 
 
+def create_backup():
+    with open("main_page.mmd") as current:
+        local_time = time.asctime(time.localtime(time.time())).split()
+        local_time = "_" + '_'.join(local_time[1:3] + local_time[3:][::-1])
+        with open("backups/main_page" + local_time + ".mmd.bak", "w") as backup:
+            backup.write(current.read())
+
+
 def main():
     if raw_input("Update main page? (y/n): ") == "n":
         return
@@ -95,16 +95,13 @@ def main():
     with open("main_page.mmd") as main_page:
         text = main_page.read()
 
-        # create backup
-        local_time = time.asctime(time.localtime(time.time())).split()
-        local_time = "_" + '_'.join(local_time[1:3] + local_time[3:][::-1])
-        with open("backups/main_page" + local_time + ".mmd.bak", "w") as backup:
-            backup.write(text)
-
     text, definitions = update_macro_list(text)
     text = symbols_list.main(text)
     text = update_headers(text, definitions)
     text = mod_main.main(text)
+
+    # only create backup if program did not crash
+    create_backup()
 
     with open("main_page.mmd", "w") as main_page:
         main_page.write(text)

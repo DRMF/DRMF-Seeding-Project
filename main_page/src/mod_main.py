@@ -4,112 +4,112 @@ __credits__ = ["Joon Bang", "Azeem Mohammed"]
 
 import csv
 
-
-def atSort(l):
-    return (sorted(l, key=lambda x: x.count("@")))
+GLOSSARY_LOCATION = "new.Glossary.csv"
 
 
-def remOpt(p):
+def remove_optional_params(string):
     parse = True
-    ret = ""
-    for x in p:
-        if parse:
-            if x == "[":
-                parse = False
-            else:
-                ret += x
+    text = ""
+    for ch in string:
+        if parse and ch == "[":
+            parse = False
+        elif parse:
+            text += ch
         else:
-            if x == "]":
+            if ch == "]":
                 parse = True
-    return ret
+
+    return text
 
 
-def findAllPos(g):
-    key = g[3]
-    orig = g[0]
-    r = key[:key.find("|")]
-    key = key[key.find("|") + 1:]
-    keys = key.split(":")
-    ret = []
-    for x in keys:
-        if x == "F" or x == "FO" or x == "O" or x == "O1":
-            if orig.find("@") != -1:
-                ret.append(orig[0:orig.find("@")])
-                if x == "O":
-                    ret.append(orig)
-            else:
-                ret.append(orig)
-        if x == "FnO":  # remove optional parameters
-            if orig.find("@") != -1:
-                ret.append(remOpt(orig[0:orig.find("@")]))
-            else:
-                ret.append(remOpt(orig))
-        if x == "P" or x == "PO":
-            ret.append(orig.replace("@@", "@"))
-        if x == "PnO":  # remove optional parameters
-            ret.append(remOpt(orig.replace("@@", "@")))
-        if x == "nP" or x == "nPO" or x == "PS" or x == "O2":
-            ret.append(orig)
-        if x == "nPnO":  # remove optional paramters
-            ret.append(remOpt(orig))
-        if "fo" in x:
-            ret.append(orig.replace("@@@", "@" * int(x[2])))
-    return atSort(ret), r
+def find_all_positions(entry):
+    macro = entry[0]
+    category = entry[3].split("|", 1)[0]
+    keys = entry[3].split("|", 1)[1].split(":")
+    result = []
+
+    for key in keys:
+        if key in ["F", "FO", "O", "O1"]:
+            result.append(macro.split("@", 1)[0])
+            if macro.count("@") > 0 and key == "O":
+                result.append(macro)
+
+        if key == "FnO":  # remove optional parameters
+            string = macro
+            if macro.count("@") > 0:
+                string = string[:string.find("@")]
+            result.append(remove_optional_params(string))
+
+        if key in ["P", "PO", "PnO"]:
+            result.append(macro.replace("@@", "@"))
+
+        if key == "PnO":  # remove optional parameters
+            result[-1] = remove_optional_params(result[-1])
+
+        if key in ["nP", "nPO", "PS", "O2"]:
+            result.append(macro)
+
+        if key == "nPnO":  # remove optional paramters
+            result.append(remove_optional_params(macro))
+
+        if "fo" in key:
+            result.append(macro.replace("@@@", "@" * int(key[2])))
+
+    return sorted(result, key=lambda x: x.count("@")), category
+
+
+def macro_match(macro, entry):
+    """Determines whether the entry refers to the macro."""
+    return macro in entry and (len(macro) == len(entry) or not entry[len(macro)].isalpha())
 
 
 def main(lines):
-    lines = lines.replace("The LaTeX DLMF macro \'\'\'\\", "The LaTeX DLMF and DRMF macro \'\'\'\\")
-    flag = True
-    gCSV = csv.reader(open('new.Glossary.csv', 'rb'), delimiter=',', quotechar='\"')
-    toWrite = ""
+    lines = lines.replace("The LaTeX DLMF macro '''\\", "The LaTeX DLMF and DRMF macro '''\\")
+    to_write = ""
     i = 0
 
-    categories = open("Categories.txt", "r")
-    cats = categories.readlines()
-    categories.close()
-    for x in range(0, len(cats)):
-        cats[x] = cats[x].strip()
-    while flag:
-        n = lines.find("\'\'\'Definition:", i)
+    with open("categories.txt") as cats:
+        categories = cats.readlines()
+
+    while True:
+        n = lines.find("'''Definition:", i)
         if n == -1:
-            flag = False
+            break
+
+        macro_name = lines[n + len("'''Definition:"):lines.find("'''", n + len("'''Definition:"))]
+        r = lines.find("'''\\", n)
+        q = lines.find("'''", r + len("'''\\"))
+        if lines[r:q].find("{") != -1:
+            lines = lines[0:r] + "'''\\" + macro_name + lines[q:]
+
+        if lines.find("\nThis macro is in the category of", n) < lines.find("'''Definition:", n + len(
+                "'''Definition:") + 1) and lines.find("\nThis macro is in the category of", n) != -1:
+            p = lines.find("\nThis macro is in the category of", n)
         else:
-            macroN = lines[n + len("\'\'\'Definition:"):lines.find("\'\'\'", n + len("\'\'\'Definition:"))]
-            r = lines.find("\'\'\'\\", n)
-            q = lines.find("\'\'\'", r + len("\'\'\'\\"))
-            if lines[r:q].find("{") != -1:
-                lines = lines[0:r] + "\'\'\'\\" + macroN + lines[q:]
+            p = lines.find(".\n", n) + 1
+        to_write += lines[i:p].rstrip() + "\n\n"
 
-            if lines.find("\nThis macro is in the category of", n) < lines.find("\'\'\'Definition:", n + len(
-                    "\'\'\'Definition:") + 1) and lines.find("\nThis macro is in the category of", n) != -1:
-                # print n
-                p = lines.find("\nThis macro is in the category of", n)
-            else:
-                p = lines.find("\n", lines.find(".", n))
-            toWrite += lines[i:p]
-            toWrite = toWrite.rstrip()
-            toWrite += "\n\n"
-            count = 0
-            listCalls = []
-            gCSV = csv.reader(open('new.Glossary.csv', 'rb'), delimiter=',', quotechar='\"')
-            for g in gCSV:
-                if g[0].find("\\" + macroN) == 0 and (len(g[0]) == len(macroN) + 1
-                                                      or not g[0][len(macroN) + 1].isalpha()):
-                    q, s = findAllPos(g)
-                    listCalls += q
-                    count += len(q)
-            plural = 1  # if count>1: plural =1; if count=1: plural=0
-            if count == 1: plural = 0
-            for t in cats:
-                if s + "    -" in t:
-                    category = "This macro is in the category of" + t[t.find("-") + 2:]
-                    break
-            new = category + "\n\nIn math mode, this macro can be called in the following way" + "s" * plural + ":\n\n"
-            for q in range(0, len(listCalls)):
-                c = listCalls[q]
-                new += ":\'\'\'" + c + "\'\'\'" + " produces <math>{\\displaystyle " + c + "}</math><br />\n"
-            # Now add the multiple ways \macroname{n}@... produces <math>\macroname{n}@...</math>
-            toWrite += new + "\n"
-            i = lines.find("These are defined by", p)
+        calls = []
+        glossary = csv.reader(open(GLOSSARY_LOCATION, 'rb'), delimiter=',', quotechar='\"')
+        for entry in glossary:
+            if macro_match("\\" + macro_name, entry[0]):
+                macro_calls, category = find_all_positions(entry)
+                calls += macro_calls
 
-    return toWrite + lines[i:]
+        for line in categories:
+            key, meaning = line.split(" - ")
+            if key == category:
+                category_text = "This macro is in the category of " + meaning
+                break
+
+        text = category_text + "\nIn math mode, this macro can be called in the following way" + "s" * (
+            len(calls) > 1) + ":\n\n"
+
+        for call in calls:
+            text += ":'''" + call + "'''" + " produces <math>{\\displaystyle " + call + "}</math><br />\n"
+
+        # Now add the multiple ways \macroname{n}@... produces <math>\macroname{n}@...</math>
+        to_write += text + "\n"
+        i = lines.find("These are defined by", p)
+
+    return to_write + lines[i:]

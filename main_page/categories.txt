@@ -1,0 +1,10 @@
+F - real or complex valued functions.
+P - polynomials.
+I - integer valued functions.
+O - operators.
+SM - semantic macros.
+Q - quantifiers, set operators, and symbols.
+SN - sets of numbers.
+C - constants.
+L - linear algebra.
+D - distributions.
