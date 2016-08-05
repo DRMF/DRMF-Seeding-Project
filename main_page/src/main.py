@@ -63,6 +63,9 @@ def update_headers(text, definitions):
             output += page + "drmf_eof\n"
             continue
 
+        # remove drmf_bof and definition header to prevent redundancy
+        page = page[page.find(macros[i]) + len(macros[i]) + 3:]
+
         if "<div id=\"drmf_head\">" in page:
             page = page[page.find(">> </div>\n</div>") + len(">> </div>\n</div>"):]
 
