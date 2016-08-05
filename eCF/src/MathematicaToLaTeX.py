@@ -9,7 +9,9 @@
 
 __author__ = 'Kevin Chen'
 __status__ = 'Development'
+__credits__ = ["Divya Gandla", "Kevin Chen"]
 
+import os
 
 symbols = {
     'Alpha': 'alpha', 'Beta': 'beta', 'Gamma': 'gamma', 'Delta': 'delta',
@@ -49,9 +51,9 @@ def find_surrounding(line, function, ex=(), start=0):
     if ex != '' and len(ex) >= 1:
         for e in ex:
             if (line.find(e) != -1 and
-                line.find(e) <= positions[0] and
-                    line.find(e) + len(e) >= positions[0] + len(function)):
-
+                        line.find(e) <= positions[0] and
+                            line.find(e) + len(e) >= positions[0] + len(
+                        function)):
                 return [line.find(e) + len(e) + start,
                         line.find(e) + len(e) + start]
 
@@ -213,7 +215,8 @@ def beta(line):
 
 
 def carat(line):
-    """Converts carats ('^') to ones with braces instead of parentheses. e.g:
+    """
+    Converts carats ('^') to ones with braces instead of parentheses. e.g:
     'a ^ (b + c)' would only show the first character 'b' as superscript in
                   LaTeX, but converting it to
     'a ^ {b + c}' would make it look correct in LaTeX, with 'b + c' as the
@@ -252,7 +255,8 @@ def carat(line):
 
 
 def cfk(line):
-    """Converts Mathematica's 'ContinuedFractionK' to the equivalent LaTeX
+    """
+    Converts Mathematica's 'ContinuedFractionK' to the equivalent LaTeX
     macro.
     """
     for _ in range(0, line.count('ContinuedFractionK')):
@@ -281,7 +285,8 @@ def cfk(line):
 
 
 def gamma(line):
-    """Converts Mathematica's 'Gamma' function to the equivalent LaTeX macro,
+    """
+    Converts Mathematica's 'Gamma' function to the equivalent LaTeX macro,
     taking into account the variations for the different number of arguments.
     """
     for _ in range(0, line.count('Gamma')):
@@ -320,7 +325,8 @@ def gamma(line):
 
 
 def integrate(line):
-    """Converts Mathematica's 'Integrate' function to
+    """
+    Converts Mathematica's 'Integrate' function to
     the equivalent LaTeX macro.
     """
     for _ in range(0, line.count('Integrate')):
@@ -549,9 +555,9 @@ def constraint(line):
         try:
             pos1
         except NameError:
-            pos1 = find_surrounding(line, 'Element', ex=('NotElement', ))
+            pos1 = find_surrounding(line, 'Element', ex=('NotElement',))
         else:
-            pos1 = find_surrounding(line, 'Element', ex=('NotElement', ),
+            pos1 = find_surrounding(line, 'Element', ex=('NotElement',),
                                     start=pos1[0] + (0, 8)
                                     [(1, 0).index(pos1[1] == pos1[0])])
 
@@ -635,7 +641,7 @@ def convert_fraction(line):
             # incorrectly change it to " )( / )( ", but there are no cases of
             # this happening yet, so I have not gone to fixing this yet.
             if (line[j + 1] == '(' and line[i - 1] == ')' and
-                    line[i + 1] == '(' and line[k] == ')'):
+                        line[i + 1] == '(' and line[k] == ')'):
                 # ()/()
                 line = (line[:j + 1] + '\\frac{' + line[j + 2:i - 1] + '}{' +
                         line[i + 2:k] + '}' + line[k + 1:])
@@ -743,9 +749,14 @@ def main():
     """
     test = True
 
-    with open('data/newIdentities.tex', 'w') as latex:
-        with open('data/Identities' + ['', 'Test'][test] + '.m', 'r') \
-                as mathematica:
+    with open(os.path.dirname(os.path.realpath(__file__)) +
+                      '/../data/newIdentities.tex', 'w') as latex:
+        if test:
+            to_open = 'IdentitiesTest.m'
+        else:
+            to_open = 'Identities.m'
+        with open(os.path.dirname(os.path.realpath(__file__)) + '/../data/' +
+                          to_open, 'r') as mathematica:
 
             latex.write('\n\\documentclass{article}\n\n'
                         '\\usepackage{amsmath}\n'
@@ -822,7 +833,8 @@ def main():
             latex.write('\n\n\\end{document}\n')
 
 
-with open('data/functions') as functions:
+with open(os.path.dirname(os.path.realpath(__file__)) + \
+        '/../data/functions') as functions:
     FUNCTION_CONVERSIONS = list(arg_split(line.replace(' ', ''), ',') for line
                                 in functions.read().split('\n')
                                 if (line != '' and '#' not in line))

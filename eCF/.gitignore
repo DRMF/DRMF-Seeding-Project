@@ -1,8 +1,8 @@
 Divya/
 other/
-test
-Identities.*
-newIdentities.*
+src/test.txt
+data/Identities.*
+data/newIdentities.*
 IdentitiesTest.txt
 README_Glossary
 x.log
