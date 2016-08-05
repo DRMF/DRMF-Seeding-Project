@@ -1,0 +1,12 @@
+Divya/
+other/
+test
+Identities.*
+newIdentities.*
+IdentitiesTest.txt
+README_Glossary
+x.log
+tasks.txt
+*.sty
+*.aux
+*.csv
