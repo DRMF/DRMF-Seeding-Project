@@ -10,10 +10,11 @@ GLOSSARY_LOCATION = "new.Glossary.csv"
 def get_symbols(line):
     # (str) -> list
     """Gets all symbols on a line."""
+    if line == "":
+        return []
+
     line = line.replace("\n", " ")
     sym_list = []
-    if line == "":
-        return sym_list
 
     symbol = ""
     sym_flag = False
@@ -26,14 +27,16 @@ def get_symbols(line):
                 count += 1
                 arg_flag = True
 
-            if ch not in ["}", "]"] and arg_flag or ch.isalpha():
+            if ch not in ["}", "]"] and (arg_flag or ch.isalpha()):
                 symbol += ch
+
             elif ch not in ["}", "]"]:
                 sym_flag = False
                 arg_flag = False
                 sym_list.append(symbol)
                 sym_list += (get_symbols(symbol))
                 symbol = ""
+
             else:
                 count -= 1
                 symbol += ch
@@ -41,7 +44,7 @@ def get_symbols(line):
                     p = ""
                 else:
                     p = line[i + 1]
-                if count == 0 and p != "{" and p != "[" and p != "@":
+                if count == 0 and p not in ["{", "[", "@"]:
                     sym_flag = False
                     sym_list.append(symbol)
                     sym_list += (get_symbols(symbol))
@@ -92,6 +95,7 @@ def main(data):
         to_write += "== Symbols List ==\n\n"
 
         symbols = get_symbols((' '.join(page.split("\n")) + " ").replace("\n", " "))
+        print symbols
 
         new_symbols = []
 
