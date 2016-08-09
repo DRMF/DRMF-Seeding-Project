@@ -41,8 +41,9 @@ symbols = {
 
 
 def find_surrounding(line, function, ex=(), start=0):
-    """finds the indices of the beginning and end of a function; this is the
-    main function that powers the converter.
+    """
+    Finds the indices of the beginning and end of a function; this is the main
+    function that powers the converter.
     """
     positions = [0, 0]
     line = line[start:]
@@ -51,14 +52,13 @@ def find_surrounding(line, function, ex=(), start=0):
     if ex != '' and len(ex) >= 1:
         for e in ex:
             if (line.find(e) != -1 and
-                        line.find(e) <= positions[0] and
-                            line.find(e) + len(e) >= positions[0] + len(
+                line.find(e) <= positions[0] and
+                line.find(e) + len(e) >= positions[0] + len(
                         function)):
                 return [line.find(e) + len(e) + start,
                         line.find(e) + len(e) + start]
 
     count = 0
-
     for j in range(positions[0] + len(function), len(line) + 1):
         if j == len(line) and count == 0:
             positions[1] = positions[0]
@@ -79,8 +79,9 @@ def find_surrounding(line, function, ex=(), start=0):
 
 
 def arg_split(line, sep):
-    """Does the same thing as 'split', but does not split when the separator
-    is inside parentheses, brackets, or braces. Useful for nested statements.
+    """
+    Does the same thing as 'split', but does not split when the separator is
+    inside parentheses, brackets, or braces. Useful for nested statements.
     """
     l = list('([{')
     r = list(')]}')
@@ -110,13 +111,14 @@ def arg_split(line, sep):
 
 
 def master_function(line, params):
-    """A master function, reads in the conversion templates from the
-    'functions' file and performs the conversion.
+    """
+    A master function, reads in the conversion templates from the 'functions'
+    file and performs the conversion.
     """
     m, l, sep, ex = params[:5]
     sep = [i.split('-') for i in sep]
 
-    for _ in range(0, line.count(m)):
+    for _ in range(line.count(m)):
         try:
             pos
         except NameError:
@@ -155,10 +157,8 @@ def master_function(line, params):
 
 
 def remove_inactive(line):
-    """Removes the 'Inactive' statement and its surrounding brakets, like in
-    the beginning of 'ConditionalExpression.'
-    """
-    for _ in range(0, line.count('Inactive')):
+    """Removes 'Inactive' and its surrounding brackets."""
+    for _ in range(line.count('Inactive')):
         pos = find_surrounding(line, 'Inactive')
         if pos[0] != pos[1]:
             line = line[:pos[0]] + line[pos[0] + 9:pos[1] - 1] + line[pos[1]:]
@@ -167,8 +167,8 @@ def remove_inactive(line):
 
 
 def remove_conditionalexpression(line):
-    """Removes 'ConditionalExpression' and its surrounding brakets."""
-    for _ in range(0, line.count('ConditionalExpression')):
+    """Removes 'ConditionalExpression' and its surrounding brackets."""
+    for _ in range(line.count('ConditionalExpression')):
         pos = find_surrounding(line, 'ConditionalExpression')
         if pos[0] != pos[1]:
             line = line[:pos[0]] + line[pos[0] + 22:pos[1] - 1] + line[pos[1]:]
@@ -177,8 +177,8 @@ def remove_conditionalexpression(line):
 
 
 def remove_symbol(line):
-    """Removes 'Symbol' and its surrounding brakets."""
-    for _ in range(0, line.count('Symbol')):
+    """Removes 'Symbol' and its surrounding brackets."""
+    for _ in range(line.count('Symbol')):
         pos = find_surrounding(line, 'Symbol')
         if pos[0] != pos[1]:
             line = line[:pos[0]] + line[pos[0] + 7:pos[1] - 1] + line[pos[1]:]
@@ -187,10 +187,11 @@ def remove_symbol(line):
 
 
 def beta(line):
-    """Converts Mathematica's 'Beta' function to the equivalent LaTeX macro,
+    """
+    Converts Mathematica's 'Beta' function to the equivalent LaTeX macro,
     taking into account the variations for the different number of arguments.
     """
-    for _ in range(0, line.count('Beta')):
+    for _ in range(line.count('Beta')):
         try:
             pos
         except NameError:
@@ -256,10 +257,9 @@ def carat(line):
 
 def cfk(line):
     """
-    Converts Mathematica's 'ContinuedFractionK' to the equivalent LaTeX
-    macro.
+    Converts Mathematica's 'ContinuedFractionK' to the equivalent LaTeX macro.
     """
-    for _ in range(0, line.count('ContinuedFractionK')):
+    for _ in range(line.count('ContinuedFractionK')):
         try:
             pos
         except NameError:
@@ -289,7 +289,7 @@ def gamma(line):
     Converts Mathematica's 'Gamma' function to the equivalent LaTeX macro,
     taking into account the variations for the different number of arguments.
     """
-    for _ in range(0, line.count('Gamma')):
+    for _ in range(line.count('Gamma')):
         try:
             pos
         except NameError:
@@ -326,10 +326,9 @@ def gamma(line):
 
 def integrate(line):
     """
-    Converts Mathematica's 'Integrate' function to
-    the equivalent LaTeX macro.
+    Converts Mathematica's 'Integrate' function to the equivalent LaTeX macro.
     """
-    for _ in range(0, line.count('Integrate')):
+    for _ in range(line.count('Integrate')):
         try:
             pos
         except NameError:
@@ -350,11 +349,11 @@ def integrate(line):
 
 
 def legendrep(line):
-    """Converts Mathematica's 'LegendreP' function to the equivalent LaTeX
-    macro, taking into account the variations for the different number of
-    arguments.
     """
-    for _ in range(0, line.count('LegendreP')):
+    Converts Mathematica's 'LegendreP' function to the equivalent LaTeX macro,
+    taking into account the variations for the different number of arguments.
+    """
+    for _ in range(line.count('LegendreP')):
         try:
             pos
         except NameError:
@@ -383,11 +382,11 @@ def legendrep(line):
 
 
 def legendreq(line):
-    """Converts Mathematica's 'LegendreQ' function to the equivalent LaTeX
-    macro, taking into account the variations for the different number of
-    arguments.
     """
-    for _ in range(0, line.count('LegendreQ')):
+    Converts Mathematica's 'LegendreQ' function to the equivalent LaTeX macro,
+    taking into account the variations for the different number of arguments.
+    """
+    for _ in range(line.count('LegendreQ')):
         try:
             pos
         except NameError:
@@ -416,11 +415,11 @@ def legendreq(line):
 
 
 def polyeulergamma(line):
-    """Converts Mathematica's 'Polygamma' function to the equivalent LaTeX
-    macro, taking into account the variations for the different number of
-    arguments.
     """
-    for _ in range(0, line.count('PolyGamma')):
+    Converts Mathematica's 'Polygamma' function to the equivalent LaTeX macro,
+    taking into account the variations for the different number of arguments.
+    """
+    for _ in range(line.count('PolyGamma')):
         try:
             pos
         except NameError:
@@ -443,10 +442,10 @@ def polyeulergamma(line):
 
 
 def product(line):
-    """Converts Mathematica's product sum function to the equivalent LaTeX
-    macro.
     """
-    for _ in range(0, line.count('Product')):
+    Converts Mathematica's product sum function to the equivalent LaTeX macro.
+    """
+    for _ in range(line.count('Product')):
         try:
             pos
         except NameError:
@@ -467,10 +466,11 @@ def product(line):
 
 
 def qpochhammer(line):
-    """Converts Mathematica's 'QPochhammer' function to the equivalent LaTeX
+    """
+    Converts Mathematica's 'QPochhammer' function to the equivalent LaTeX
     macro.
     """
-    for _ in range(0, line.count('QPochhammer')):
+    for _ in range(line.count('QPochhammer')):
         try:
             pos
         except NameError:
@@ -497,10 +497,10 @@ def qpochhammer(line):
 
 
 def summation(line):
-    """Converts Mathematica's summation function to the equivalent LaTeX
-    macro.
     """
-    for _ in range(0, line.count('Sum')):
+    Converts Mathematica's summation function to the equivalent LaTeX macro.
+    """
+    for _ in range(line.count('Sum')):
         try:
             pos
         except NameError:
@@ -521,8 +521,9 @@ def summation(line):
 
 
 def constraint(line):
-    """Converts Mathematica's 'Element', 'NotElement', and 'Inequality'
-    functions to LaTeX formatting using \constraint{}.
+    """
+    Converts Mathematica's 'Element', 'NotElement', and 'Inequality' functions
+    to LaTeX formatting using \constraint{}.
     """
     sections = arg_split(line, ',')
 
@@ -550,7 +551,7 @@ def constraint(line):
     latex_elements = ('Complex', 'Whole', 'NatNumber', 'Integer',
                       'Irrational', 'Real', 'Rational', 'Prime')
 
-    for _ in range(0, line.count('Element')):
+    for _ in range(line.count('Element')):
 
         try:
             pos1
@@ -567,7 +568,7 @@ def constraint(line):
             line = (line[:pos1[0]] + sep[0].replace('|', ',') + ' \\in \\' +
                     sep[1] + line[pos1[1]:])
 
-    for _ in range(0, line.count('NotElement')):
+    for _ in range(line.count('NotElement')):
 
         try:
             pos2
@@ -584,7 +585,7 @@ def constraint(line):
             line = (line[:pos2[0]] + sep[0].replace('|', ',') +
                     ' \\notin \\' + sep[1] + line[pos2[1]:])
 
-    for _ in range(0, line.count('Inequality')):
+    for _ in range(line.count('Inequality')):
         pos3 = find_surrounding(line, 'Inequality')
         line = (line[:pos3[0]] +
                 ''.join(line[pos3[0] + 11:pos3[1] - 1].split(',')) +
@@ -594,7 +595,8 @@ def constraint(line):
 
 
 def convert_fraction(line):
-    """Converts Mathematica fractions, which are only '/', to LaTeX
+    """
+    Converts Mathematica fractions, which are only '/', to LaTeX
     \frac{}{}-ions.
     """
     l = list('([{')
@@ -641,7 +643,7 @@ def convert_fraction(line):
             # incorrectly change it to " )( / )( ", but there are no cases of
             # this happening yet, so I have not gone to fixing this yet.
             if (line[j + 1] == '(' and line[i - 1] == ')' and
-                        line[i + 1] == '(' and line[k] == ')'):
+                    line[i + 1] == '(' and line[k] == ')'):
                 # ()/()
                 line = (line[:j + 1] + '\\frac{' + line[j + 2:i - 1] + '}{' +
                         line[i + 2:k] + '}' + line[k + 1:])
@@ -665,7 +667,7 @@ def convert_fraction(line):
 
 def piecewise(line):
     """Converts Mathematica's piecewise function to LaTeX, using 'cases'."""
-    for _ in range(0, line.count('Piecewise')):
+    for _ in range(line.count('Piecewise')):
         try:
             pos
         except NameError:
@@ -729,8 +731,9 @@ def replace_operators(line):
 
 
 def replace_vars(line):
-    """Replaces the easy to convert variables in Mathematica to
-    its equivalent LaTeX code in the dictionary 'symbols'.
+    """
+    Replaces the easy to convert variables in Mathematica to its equivalent
+    LaTeX code in the dictionary 'symbols'.
     """
     for word in symbols:
         if symbols[word][0] == ' ':
@@ -744,19 +747,20 @@ def replace_vars(line):
 
 
 def main():
-    """Opens Mathematica file with identities and puts converted lines into
+    """
+    Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
     """
     test = True
 
     with open(os.path.dirname(os.path.realpath(__file__)) +
-                      '/../data/newIdentities.tex', 'w') as latex:
+              '/../data/newIdentities.tex', 'w') as latex:
         if test:
             to_open = 'IdentitiesTest.m'
         else:
             to_open = 'Identities.m'
         with open(os.path.dirname(os.path.realpath(__file__)) + '/../data/' +
-                          to_open, 'r') as mathematica:
+                  to_open, 'r') as mathematica:
 
             latex.write('\n\\documentclass{article}\n\n'
                         '\\usepackage{amsmath}\n'
@@ -833,8 +837,8 @@ def main():
             latex.write('\n\n\\end{document}\n')
 
 
-with open(os.path.dirname(os.path.realpath(__file__)) + \
-        '/../data/functions') as functions:
+with open(os.path.dirname(os.path.realpath(__file__)) +
+          '/../data/functions') as functions:
     FUNCTION_CONVERSIONS = list(arg_split(line.replace(' ', ''), ',') for line
                                 in functions.read().split('\n')
                                 if (line != '' and '#' not in line))
