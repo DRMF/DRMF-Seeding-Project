@@ -202,11 +202,11 @@ def beta(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 5:pos[1] - 1], ',')
             if len(args) == 2:
-                line = (line[:pos[0]] + '\\EulerBeta@{%s}{%s}'
-                        % (args[0], args[1]) + line[pos[1]:])
+                line = (line[:pos[0]] + '\\EulerBeta@{{0}}{{1}}'
+                        .format(args[0], args[1]) + line[pos[1]:])
             else:
-                line = (line[:pos[0]] + '\\IncBeta{%s}@{%s}{%s}'
-                        % (args[0], args[1], args[2]) + line[pos[1]:])
+                line = (line[:pos[0]] + '\\IncBeta{{0}}@{{1}}{{2}}'
+                        .format(args[0], args[1], args[2]) + line[pos[1]:])
 
     return line
 
@@ -269,13 +269,13 @@ def cfk(line):
             args = arg_split(line[pos[0] + 19:pos[1] - 1], ',')
             moreargs = arg_split(args[-1][1:-1], ',')
             if len(args) == 3:
-                line = (line[:pos[0]] + '\\CFK{%s}{%s}{\\infty}@{%s}{%s}'
-                        % (moreargs[0], moreargs[1], args[0], args[1]) +
-                        line[pos[1]:])
+                line = (line[:pos[0]] + '\\CFK{{0}}{{1}}{2}@{{3}}{{4}}'
+                        .format(moreargs[0], moreargs[1],'{\\infty}',
+                                args[0], args[1]) + line[pos[1]:])
             else:
-                line = (line[:pos[0]] + '\\CFK{%s}{%s}{\\infty}@{1}{%s}'
-                        % (moreargs[0], moreargs[1], args[0]) +
-                        line[pos[1]:])
+                line = (line[:pos[0]] + '\\CFK{{0}}{{1}}{2}@{3}{{4}}'
+                        .format(moreargs[0], moreargs[1], '{\\infty}', '{1}',
+                                args[0]) + line[pos[1]:])
 
     return line
 
@@ -306,15 +306,15 @@ def gamma(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 6:pos[1] - 1], ',')
             if len(args) == 1:
-                line = (line[:pos[0]] + '\\EulerGamma@{%s}'
-                        % args[0] + line[pos[1]:])
+                line = (line[:pos[0]] + '\\EulerGamma@{{0}}'
+                        .format(args[0]) + line[pos[1]:])
             elif len(args) == 2:
-                line = (line[:pos[0]] + '\\IncGamma@{%s}{%s}'
-                        % (args[0], args[1]) + line[pos[1]:])
+                line = (line[:pos[0]] + '\\IncGamma@{{0}}{{1}}'
+                        .format(args[0], args[1]) + line[pos[1]:])
             else:
-                line = (line[:pos[0]] + '\\Incgamma@{%s}{%s} - '
-                        % (args[0], args[1]) + '\\Incgamma@{%s}{%s}'
-                        % (args[0], args[2]) + line[pos[1]:])
+                line = (line[:pos[0]] + '\\Incgamma@{{0}}{{1}} - '
+                        .format(args[0], args[1]) + '\\Incgamma@{{0}}{{1}}'
+                        .format(args[0], args[2]) + line[pos[1]:])
 
     return line.replace('Incgamma', 'IncGamma')
     # needed or the addition of an 'IncGamma' would screw up the rest
@@ -337,8 +337,8 @@ def integrate(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 10:pos[1] - 1], ',')
             moreargs = arg_split(args[1][1:-1], ',')
-            line = (line[:pos[0]] + '\\int_{%s}^{%s}{%s}d{%s}'
-                    % (moreargs[1], moreargs[2], args[0], moreargs[0]) +
+            line = (line[:pos[0]] + '\\int_{{1}}^{{2}}{{3}}d{{0}}'
+                    .format(moreargs[0], moreargs[1], moreargs[2], args[0]) +
                     line[pos[1]:])
 
     return line
@@ -362,17 +362,17 @@ def legendrep(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 10:pos[1] - 1], ',')
             if len(args) == 2:
-                line = (line[:pos[0]] + '\\LegendreP{%s}@{%s}'
-                        % (args[0], args[1]) + line[pos[1]:])
+                line = (line[:pos[0]] + '\\LegendreP{{0}}@{{1}}'
+                        .format(args[0], args[1]) + line[pos[1]:])
             else:
                 # len(args) == 4
                 if args[2] in ('1', '2'):
-                    line = (line[:pos[0]] + '\\FerrersP[%s]{%s}@{%s}'
-                            % (args[1], args[0], args[3]) + line[pos[1]:])
+                    line = (line[:pos[0]] + '\\FerrersP[{1}]{{0}}@{{2}}'
+                            .format(args[0], args[1], args[3]) + line[pos[1]:])
                 else:
                     # args[2] == 3
-                    line = (line[:pos[0]] + '\\LegendreP[%s]{%s}@{%s}'
-                            % (args[1], args[0], args[3]) + line[pos[1]:])
+                    line = (line[:pos[0]] + '\\LegendreP[{1}]{{0}}@{{2}}'
+                            .format(args[0], args[1], args[3]) + line[pos[1]:])
 
     return line
 
@@ -395,17 +395,17 @@ def legendreq(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 10:pos[1] - 1], ',')
             if len(args) == 2:
-                line = (line[:pos[0]] + '\\LegendreQ{%s}@{%s}'
-                        % (args[0], args[1]) + line[pos[1]:])
+                line = (line[:pos[0]] + '\\LegendreQ{{0}}@{{1}}'
+                        .format(args[0], args[1]) + line[pos[1]:])
             else:
                 # len(args) == 4
                 if args[2] in ('1', '2'):
-                    line = (line[:pos[0]] + '\\FerrersQ[%s]{%s}@{%s}'
-                            % (args[1], args[0], args[3]) + line[pos[1]:])
+                    line = (line[:pos[0]] + '\\FerrersQ[{1}]{{0}}@{{2}}'
+                            .format(args[0], args[1], args[3]) + line[pos[1]:])
                 else:
                     # args[2] == 3
-                    line = (line[:pos[0]] + '\\LegendreQ[%s]{%s}@{%s}'
-                            % (args[1], args[0], args[3]) + line[pos[1]:])
+                    line = (line[:pos[0]] + '\\LegendreQ[{1}]{{0}}@{{2}}'
+                            .format(args[0], args[1], args[3]) + line[pos[1]:])
 
     return line
 
@@ -428,10 +428,10 @@ def polyeulergamma(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 10:pos[1] - 1], ',')
             if len(args) == 2:
-                line = (line[:pos[0]] + '\\polygamma{%s}@{%s}'
-                        % (args[0], args[1]) + line[pos[1]:])
+                line = (line[:pos[0]] + '\\polygamma{{0}}@{{1}}'
+                        .format(args[0], args[1]) + line[pos[1]:])
             else:
-                line = (line[:pos[0]] + '\\digamma@{%s}'
+                line = (line[:pos[0]] + '\\digamma@{{0}}'
                         % args[0] + '}' + line[pos[1]:])
 
     return line
@@ -454,8 +454,8 @@ def product(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 8:pos[1] - 1], ',')
             moreargs = arg_split(args[-1][1:-1], ',')
-            line = (line[:pos[0]] + '\\Prod{%s}{%s}{%s}@{%s}'
-                    % (moreargs[0], moreargs[1], moreargs[2], args[0]) +
+            line = (line[:pos[0]] + '\\Prod{{0}}{{1}}{{2}}@{{3}}'
+                    .format(moreargs[0], moreargs[1], moreargs[2], args[0]) +
                     line[pos[1]:])
 
     return line
@@ -480,14 +480,14 @@ def qpochhammer(line):
             args = arg_split(line[pos[0] + 12:pos[1] - 1], ',')
 
             if len(args) == 1:
-                line = (line[:pos[0]] + '\\qPochhammer{%s}{%s}{\infty}'
-                        % (args[0], args[0]) + line[pos[1]:])
+                line = (line[:pos[0]] + '\\qPochhammer{{0}}{{1}}{2}'
+                        .format(args[0], args[0], '{\\infty}') + line[pos[1]:])
             elif len(args) == 2:
-                line = (line[:pos[0]] + '\\qPochhammer{%s}{%s}{\infty}'
-                        % (args[0], args[1]) + line[pos[1]:])
+                line = (line[:pos[0]] + '\\qPochhammer{{0}}{{1}}{2}'
+                        .format(args[0], args[1], '{\\infty}') + line[pos[1]:])
             else:  # len(args) = 3
-                line = (line[:pos[0]] + '\\qPochhammer{%s}{%s}{%s}'
-                        % (args[0], args[1], args[2]) + line[pos[1]:])
+                line = (line[:pos[0]] + '\\qPochhammer{{0}}{{1}}{{2}}'
+                        .format(args[0], args[1], args[2]) + line[pos[1]:])
 
     return line
 
@@ -509,8 +509,8 @@ def summation(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 4:pos[1] - 1], ',')
             moreargs = arg_split(args[-1][1:-1], ',')
-            line = (line[:pos[0]] + '\\Sum{%s}{%s}{%s}@{%s}'
-                    % (moreargs[0], moreargs[1], moreargs[2], args[0]) +
+            line = (line[:pos[0]] + '\\Sum{{0}}{{1}}{{2}}@{{3}}'
+                    .format(moreargs[0], moreargs[1], moreargs[2], args[0]) +
                     line[pos[1]:])
 
     return line
@@ -528,7 +528,7 @@ def constraint(line):
 
     constraints = arg_split(sections[-1].replace('&&', '&'), '&')
 
-    for i in range(len(constraints)):
+    for i, item, in enumerate(constraints):
         if i == 0:
             constraints[i] = ('\n%  \\constraint{$' +
                               constraints[i].replace('&', ' \\land '))
@@ -839,7 +839,7 @@ with open(os.path.dirname(os.path.realpath(__file__)) +
                                 in functions.read().split('\n')
                                 if (line != '' and '#' not in line))
 
-for index in range(len(FUNCTION_CONVERSIONS)):
+for index, item in enumerate(FUNCTION_CONVERSIONS):
     FUNCTION_CONVERSIONS[index][2] = \
         tuple(arg_split(FUNCTION_CONVERSIONS[index][2][1:-1], ','))
 
