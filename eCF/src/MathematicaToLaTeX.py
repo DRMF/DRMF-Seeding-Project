@@ -134,7 +134,7 @@ def master_function(line, params):
                 args[0], args[1] = args[1], args[0]
             if m == 'LaguerreL' and len(args) == 3:
                 args[0], args[1] = args[1], args[0]
-            if m == 'HypergeometricPFQ' or m == 'QHypergeometricPFQ':
+            if m in ('HypergeometricPFQ', 'QHypergeometricPFQ'):
                 if args[1] == '{}':
                     args.insert(0, 0)
                 else:
