@@ -91,10 +91,6 @@ def arg_split(line, sep):
     line = line + sep
 
     while i != end:
-        if i == end:
-            args.append(line)
-            break
-
         if line[i] in l:
             count += 1
         if line[i] in r:
@@ -751,7 +747,7 @@ def main():
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
     """
-    test = True
+    test = False
 
     with open(os.path.dirname(os.path.realpath(__file__)) +
               '/../data/newIdentities.tex', 'w') as latex:
