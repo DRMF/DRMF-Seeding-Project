@@ -28,3 +28,6 @@ class TestArgumentSplit(TestCase):
         before = 'a,(b,c),,[d,e],,,{fg,hi}'
         after = ['a', '(b,c)', '', '[d,e]', '', '', '{fg,hi}']
         self.assertEqual(arg_split(before, ','), after)
+
+    def test_empty(self):
+        self.assertEqual(arg_split('noseperator', ','), ['noseperator'])
