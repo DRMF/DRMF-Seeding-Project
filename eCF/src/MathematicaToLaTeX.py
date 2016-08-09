@@ -432,7 +432,7 @@ def polyeulergamma(line):
                         .format(args[0], args[1]) + line[pos[1]:])
             else:
                 line = (line[:pos[0]] + '\\digamma@{{0}}'
-                        % args[0] + '}' + line[pos[1]:])
+                        .format(args[0]) + '}' + line[pos[1]:])
 
     return line
 
