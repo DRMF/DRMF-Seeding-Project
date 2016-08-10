@@ -293,16 +293,16 @@ def gamma(line):
             pos
         except NameError:
             pos = find_surrounding(line, 'Gamma',
-                                   ex=('PolyGamma', 'CapitalGamma',
-                                       'PolyGamma', 'LogGamma', 'EulerGamma',
-                                       'IncGamma', 'Gamma]', 'GammaQ',
-                                       'GammaRegularized', 'StieltjesGamma'))
+                                   ex=('PolyGamma', 'CapitalGamma', 'LogGamma',
+                                       'EulerGamma', 'IncGamma', 'Gamma]',
+                                       'GammaQ', 'GammaRegularized',
+                                       'StieltjesGamma'))
         else:
             pos = find_surrounding(line, 'Gamma',
-                                   ex=('PolyGamma', 'CapitalGamma',
-                                       'PolyGamma', 'LogGamma', 'EulerGamma',
-                                       'IncGamma', 'Gamma]', 'GammaQ',
-                                       'GammaRegularized', 'StieltjesGamma'),
+                                   ex=('PolyGamma', 'CapitalGamma', 'LogGamma',
+                                       'EulerGamma', 'IncGamma', 'Gamma]',
+                                       'GammaQ', 'GammaRegularized',
+                                       'StieltjesGamma'),
                                    start=pos[0] + (0, 11)
                                    [(1, 0).index(pos[1] == pos[0])])
 
@@ -435,7 +435,7 @@ def polyeulergamma(line):
                         .format(args[0], args[1]) + line[pos[1]:])
             else:
                 line = (line[:pos[0]] + '\\digamma@{{{0}}}'
-                        .format(args[0]) + '}' + line[pos[1]:])
+                        .format(args[0]) + line[pos[1]:])
 
     return line
 
@@ -526,7 +526,7 @@ def constraint(line):
     """
     sections = arg_split(line, ',')
 
-    if len(sections) == 1:
+    if len(sections) in (1, 0):
         return line
 
     constraints = arg_split(sections[-1].replace('&&', '&'), '&')
@@ -772,7 +772,7 @@ def main():
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
     """
-    test = False
+    test = True
 
     with open(os.path.dirname(os.path.realpath(__file__)) +
               '/../data/newIdentities.tex', 'w') as latex:

@@ -3,6 +3,7 @@ other/
 src/test.txt
 data/Identities.*
 data/newIdentities.*
+data/IdentitiesTest.m
 IdentitiesTest.txt
 README_Glossary
 x.log
