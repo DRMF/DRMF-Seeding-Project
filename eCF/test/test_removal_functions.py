@@ -7,6 +7,7 @@ from MathematicaToLaTeX import remove_inactive
 from MathematicaToLaTeX import remove_conditionalexpression
 from MathematicaToLaTeX import remove_symbol
 
+
 BEFORE1 = ('Inactive[test]',
            'testInactive[test]test',
            'Inactive[testInactive[test]test]',
@@ -23,6 +24,7 @@ AFTER = ('test',
          'testtesttest',
          'testtesttest',
          'testtesttesttesttest')
+
 
 class TestRemovalFunctions(TestCase):
 

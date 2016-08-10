@@ -144,9 +144,10 @@ def master_function(line, params):
                 else:
                     args.insert(0, len(arg_split(args[1][1:-1], ',')))
 
-            line = (line[:pos[0]] + l +
-                    '%s'.join(sep[[len(y) for y in sep].
-                              index(len(args) + 1)]) + line[pos[1]:])
+            line = (line[:pos[0]] + l + '%s'.join(sep[[len(y) for y in sep]
+                                                  .index(len(args) + 1)]) +
+                    line[pos[1]:])
+
             line %= tuple(args)
 
     return line
@@ -178,35 +179,6 @@ def remove_symbol(line):
         pos = find_surrounding(line, 'Symbol')
         if pos[0] != pos[1]:
             line = line[:pos[0]] + line[pos[0] + 7:pos[1] - 1] + line[pos[1]:]
-
-    return line
-
-
-def beta(line):
-    """
-    Converts Mathematica's 'Beta' function to the equivalent LaTeX macro,
-    taking into account the variations for the different number of arguments.
-    """
-    for _ in range(line.count('Beta')):
-        try:
-            pos
-        except NameError:
-            pos = find_surrounding(line, 'Beta',
-                                   ex=('BetaRegularized', '[Beta]'))
-        else:
-            pos = find_surrounding(line, 'Beta',
-                                   ex=('BetaRegularized', '[Beta]'),
-                                   start=pos[0] + (0, 9)
-                                   [(1, 0).index(pos[1] == pos[0])])
-
-        if pos[0] != pos[1]:
-            args = arg_split(line[pos[0] + 5:pos[1] - 1], ',')
-            if len(args) == 2:
-                line = (line[:pos[0]] + '\\EulerBeta@{{0}}{{1}}'
-                        .format(args[0], args[1]) + line[pos[1]:])
-            else:
-                line = (line[:pos[0]] + '\\IncBeta{{0}}@{{1}}{{2}}'
-                        .format(args[0], args[1], args[2]) + line[pos[1]:])
 
     return line
 
@@ -251,6 +223,35 @@ def carat(line):
     return line
 
 
+def beta(line):
+    """
+    Converts Mathematica's 'Beta' function to the equivalent LaTeX macro,
+    taking into account the variations for the different number of arguments.
+    """
+    for _ in range(line.count('Beta')):
+        try:
+            pos
+        except NameError:
+            pos = find_surrounding(line, 'Beta',
+                                   ex=('BetaRegularized', '[Beta]'))
+        else:
+            pos = find_surrounding(line, 'Beta',
+                                   ex=('BetaRegularized', '[Beta]'),
+                                   start=pos[0] + (0, 9)
+                                   [(1, 0).index(pos[1] == pos[0])])
+
+        if pos[0] != pos[1]:
+            args = arg_split(line[pos[0] + 5:pos[1] - 1], ',')
+            if len(args) == 2:
+                line = (line[:pos[0]] + '\\EulerBeta@{{{0}}}{{{1}}}'
+                        .format(args[0], args[1]) + line[pos[1]:])
+            else:
+                line = (line[:pos[0]] + '\\IncBeta{{{0}}}@{{{1}}}{{{2}}}'
+                        .format(args[0], args[1], args[2]) + line[pos[1]:])
+
+    return line
+
+
 def cfk(line):
     """
     Converts Mathematica's 'ContinuedFractionK' to the equivalent LaTeX macro.
@@ -269,11 +270,11 @@ def cfk(line):
             args = arg_split(line[pos[0] + 19:pos[1] - 1], ',')
             moreargs = arg_split(args[-1][1:-1], ',')
             if len(args) == 3:
-                line = (line[:pos[0]] + '\\CFK{{0}}{{1}}{2}@{{3}}{{4}}'
+                line = (line[:pos[0]] + '\\CFK{{{0}}}{{{1}}}{2}@{{{3}}}{{{4}}}'
                         .format(moreargs[0], moreargs[1],'{\\infty}',
                                 args[0], args[1]) + line[pos[1]:])
             else:
-                line = (line[:pos[0]] + '\\CFK{{0}}{{1}}{2}@{3}{{4}}'
+                line = (line[:pos[0]] + '\\CFK{{{0}}}{{{1}}}{2}@{3}{{{4}}}'
                         .format(moreargs[0], moreargs[1], '{\\infty}', '{1}',
                                 args[0]) + line[pos[1]:])
 
@@ -306,14 +307,14 @@ def gamma(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 6:pos[1] - 1], ',')
             if len(args) == 1:
-                line = (line[:pos[0]] + '\\EulerGamma@{{0}}'
+                line = (line[:pos[0]] + '\\EulerGamma@{{{0}}}'
                         .format(args[0]) + line[pos[1]:])
             elif len(args) == 2:
-                line = (line[:pos[0]] + '\\IncGamma@{{0}}{{1}}'
+                line = (line[:pos[0]] + '\\IncGamma@{{{0}}}{{{1}}}'
                         .format(args[0], args[1]) + line[pos[1]:])
             else:
-                line = (line[:pos[0]] + '\\Incgamma@{{0}}{{1}} - '
-                        .format(args[0], args[1]) + '\\Incgamma@{{0}}{{1}}'
+                line = (line[:pos[0]] + '\\Incgamma@{{{0}}}{{{1}}} - '
+                        .format(args[0], args[1]) + '\\Incgamma@{{{0}}}{{{1}}}'
                         .format(args[0], args[2]) + line[pos[1]:])
 
     return line.replace('Incgamma', 'IncGamma')
@@ -337,7 +338,7 @@ def integrate(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 10:pos[1] - 1], ',')
             moreargs = arg_split(args[1][1:-1], ',')
-            line = (line[:pos[0]] + '\\int_{{1}}^{{2}}{{3}}d{{0}}'
+            line = (line[:pos[0]] + '\\int_{{{1}}}^{{{2}}}{{{3}}}d{{{0}}}'
                     .format(moreargs[0], moreargs[1], moreargs[2], args[0]) +
                     line[pos[1]:])
 
@@ -362,16 +363,16 @@ def legendrep(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 10:pos[1] - 1], ',')
             if len(args) == 2:
-                line = (line[:pos[0]] + '\\LegendreP{{0}}@{{1}}'
+                line = (line[:pos[0]] + '\\LegendreP{{{0}}}@{{{1}}}'
                         .format(args[0], args[1]) + line[pos[1]:])
             else:
                 # len(args) == 4
                 if args[2] in ('1', '2'):
-                    line = (line[:pos[0]] + '\\FerrersP[{1}]{{0}}@{{2}}'
+                    line = (line[:pos[0]] + '\\FerrersP[{1}]{{{0}}}@{{{2}}}'
                             .format(args[0], args[1], args[3]) + line[pos[1]:])
                 else:
                     # args[2] == 3
-                    line = (line[:pos[0]] + '\\LegendreP[{1}]{{0}}@{{2}}'
+                    line = (line[:pos[0]] + '\\LegendreP[{1}]{{{0}}}@{{{2}}}'
                             .format(args[0], args[1], args[3]) + line[pos[1]:])
 
     return line
@@ -395,16 +396,16 @@ def legendreq(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 10:pos[1] - 1], ',')
             if len(args) == 2:
-                line = (line[:pos[0]] + '\\LegendreQ{{0}}@{{1}}'
+                line = (line[:pos[0]] + '\\LegendreQ{{{0}}}@{{{1}}}'
                         .format(args[0], args[1]) + line[pos[1]:])
             else:
                 # len(args) == 4
                 if args[2] in ('1', '2'):
-                    line = (line[:pos[0]] + '\\FerrersQ[{1}]{{0}}@{{2}}'
+                    line = (line[:pos[0]] + '\\FerrersQ[{1}]{{{0}}}@{{{2}}}'
                             .format(args[0], args[1], args[3]) + line[pos[1]:])
                 else:
                     # args[2] == 3
-                    line = (line[:pos[0]] + '\\LegendreQ[{1}]{{0}}@{{2}}'
+                    line = (line[:pos[0]] + '\\LegendreQ[{1}]{{{0}}}@{{{2}}}'
                             .format(args[0], args[1], args[3]) + line[pos[1]:])
 
     return line
@@ -428,10 +429,10 @@ def polyeulergamma(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 10:pos[1] - 1], ',')
             if len(args) == 2:
-                line = (line[:pos[0]] + '\\polygamma{{0}}@{{1}}'
+                line = (line[:pos[0]] + '\\polygamma{{{0}}}@{{{1}}}'
                         .format(args[0], args[1]) + line[pos[1]:])
             else:
-                line = (line[:pos[0]] + '\\digamma@{{0}}'
+                line = (line[:pos[0]] + '\\digamma@{{{0}}}'
                         .format(args[0]) + '}' + line[pos[1]:])
 
     return line
@@ -454,7 +455,7 @@ def product(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 8:pos[1] - 1], ',')
             moreargs = arg_split(args[-1][1:-1], ',')
-            line = (line[:pos[0]] + '\\Prod{{0}}{{1}}{{2}}@{{3}}'
+            line = (line[:pos[0]] + '\\Prod{{{0}}}{{{1}}}{{{2}}}@{{{3}}}'
                     .format(moreargs[0], moreargs[1], moreargs[2], args[0]) +
                     line[pos[1]:])
 
@@ -480,13 +481,13 @@ def qpochhammer(line):
             args = arg_split(line[pos[0] + 12:pos[1] - 1], ',')
 
             if len(args) == 1:
-                line = (line[:pos[0]] + '\\qPochhammer{{0}}{{1}}{2}'
+                line = (line[:pos[0]] + '\\qPochhammer{{{0}}}{{{1}}}{2}'
                         .format(args[0], args[0], '{\\infty}') + line[pos[1]:])
             elif len(args) == 2:
-                line = (line[:pos[0]] + '\\qPochhammer{{0}}{{1}}{2}'
+                line = (line[:pos[0]] + '\\qPochhammer{{{0}}}{{{1}}}{2}'
                         .format(args[0], args[1], '{\\infty}') + line[pos[1]:])
             else:  # len(args) = 3
-                line = (line[:pos[0]] + '\\qPochhammer{{0}}{{1}}{{2}}'
+                line = (line[:pos[0]] + '\\qPochhammer{{{0}}}{{{1}}}{{{2}}}'
                         .format(args[0], args[1], args[2]) + line[pos[1]:])
 
     return line
@@ -509,7 +510,7 @@ def summation(line):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + 4:pos[1] - 1], ',')
             moreargs = arg_split(args[-1][1:-1], ',')
-            line = (line[:pos[0]] + '\\Sum{{0}}{{1}}{{2}}@{{3}}'
+            line = (line[:pos[0]] + '\\Sum{{{0}}}{{{1}}}{{{2}}}@{{{3}}}'
                     .format(moreargs[0], moreargs[1], moreargs[2], args[0]) +
                     line[pos[1]:])
 
@@ -639,7 +640,7 @@ def convert_fraction(line):
             # incorrectly change it to " )( / )( ", but there are no cases of
             # this happening yet, so I have not gone to fixing this yet.
             if (line[j + 1] == '(' and line[i - 1] == ')' and
-                    line[i + 1] == '(' and line[k] == ')'):
+                        line[i + 1] == '(' and line[k] == ')'):
                 # ()/()
                 line = (line[:j + 1] + '\\frac{' + line[j + 2:i - 1] + '}{' +
                         line[i + 2:k] + '}' + line[k + 1:])
@@ -655,6 +656,28 @@ def convert_fraction(line):
                 # --/--
                 line = (line[:j + 1] + '\\frac{' + line[j + 1:i] + '}{' +
                         line[i + 1:k + 1] + '}' + line[k + 1:])
+
+            '''if (line[j + 1] == '(' and line[i - 1] == ')' and
+                        line[i + 1] == '(' and line[k] == ')'):
+                # ()/()
+                line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
+                    .format(line[:j + 1], line[j + 2:i - 1],
+                           line[i + 2:k], line[k + 1:])
+            elif line[j + 1] == '(' and line[i - 1] == ')':
+                # ()/--
+                line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
+                    .format(line[:j + 1], line[j + 2:i - 1],
+                           line[i + 1:k + 1], line[k + 1:])
+            elif line[i + 1] == '(' and line[k] == ')':
+                # --/()
+                line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
+                    .format(line[:j + 1], line[j + 1:i],
+                           line[i + 2:k], line[k + 1:])
+            else:
+                # --/--
+                line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
+                    .format(line[:j + 1], line[j + 1:i],
+                           line[i + 1:k + 1], line[k + 1:])'''
 
         i += 1
 
@@ -798,8 +821,9 @@ def main():
                     for i in FUNCTION_CONVERSIONS:
                         line = master_function(line, i)
 
-                    line = beta(line)
                     line = carat(line)
+
+                    line = beta(line)
                     line = cfk(line)
                     line = gamma(line)
                     line = integrate(line)
@@ -809,16 +833,12 @@ def main():
                     line = product(line)
                     line = qpochhammer(line)
                     line = summation(line)
+
                     line = convert_fraction(line)
                     line = constraint(line)
                     line = piecewise(line)
                     line = replace_operators(line)
                     line = replace_vars(line)
-
-                    # create macros for:
-                    # Sinc
-                    # RamanujanTauTheta
-                    # RiemannSiegelTheta
 
                     print(line)
 
