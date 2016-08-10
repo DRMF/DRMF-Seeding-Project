@@ -270,12 +270,14 @@ def cfk(line):
             args = arg_split(line[pos[0] + 19:pos[1] - 1], ',')
             moreargs = arg_split(args[-1][1:-1], ',')
             if len(args) == 3:
-                line = (line[:pos[0]] + '\\CFK{{{0}}}{{{1}}}{2}@{{{3}}}{{{4}}}'
-                        .format(moreargs[0], moreargs[1],'{\\infty}',
+                line = (line[:pos[0]] +
+                        '\\CFK{{{0}}}{{{1}}}{{{2}}}@{{{3}}}{{{4}}}'
+                        .format(moreargs[0], moreargs[1], moreargs[2],
                                 args[0], args[1]) + line[pos[1]:])
             else:
-                line = (line[:pos[0]] + '\\CFK{{{0}}}{{{1}}}{2}@{3}{{{4}}}'
-                        .format(moreargs[0], moreargs[1], '{\\infty}', '{1}',
+                line = (line[:pos[0]] +
+                        '\\CFK{{{0}}}{{{1}}}{{{2}}}@{{1}}{{{3}}}'
+                        .format(moreargs[0], moreargs[1], moreargs[2],
                                 args[0]) + line[pos[1]:])
 
     return line
