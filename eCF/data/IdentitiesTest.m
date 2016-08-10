@@ -1,1 +1,0 @@
-QPochhammer[QPochhammer[q]]
