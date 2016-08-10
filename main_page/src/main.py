@@ -84,7 +84,7 @@ def update_headers(text, definitions):
 def get_macro_name(macro):
     macro_name = ""
     for ch in macro:
-        if ch.isalpha():
+        if ch.isalpha() or ch == "\\":
             macro_name += ch
         elif ch in ["@", "{", "["]:
             break
@@ -92,34 +92,54 @@ def get_macro_name(macro):
     return macro_name
 
 
+def find_all(pattern, string):
+    """Yields all positions of where pattern is present in string."""
+
+    i = string.find(pattern)
+    while i != -1:
+        yield i
+        i = string.find(pattern, i + 1)
+
+
 def get_symbols(text, glossary):
-    symbols = list()
-    for keyword in list(glossary):
-        for space in ["{", "@", "[", "\\", " "]:
-            if "\\" + keyword + space in text:
-                symbols.append(keyword)
+    symbols = set()
+
+    for keyword in glossary:
+        for index in find_all(keyword, text):
+            # if the macro is present in the text
+            if index != -1:
+                index += len(keyword)  # now index of next character
+
+                if index >= len(text) or not text[index].isalpha():
+                    symbols.add(keyword)
 
     span_text = ""
-    for symbol in set(sorted(symbols)):
-        t = ""
-        link = glossary[symbol][-2]
+    for symbol in sorted(symbols, key=str.lower):
+        links = list()
+        for cell in glossary[symbol]:
+            if "http://" in cell or "https://" in cell:
+                links.append(cell)
+
+        id_link = links[0]
+        links = ["[" + link + " " + link + "]" for link in links]
+
         meaning = list(glossary[symbol][1])
 
         count = 0
         for i, ch in enumerate(meaning):
             if ch == "$" and count % 2 == 0:
-                meaning[i] = "<math{\\displaystyle "
+                meaning[i] = "<math>{\\displaystyle "
                 count += 1
             elif ch == "$":
-                meaning[i] = "</math>"
+                meaning[i] = "}</math>"
                 count += 1
 
         appearance = glossary[symbol][4].strip("$")
 
-        span_text += "<span class=\"plainlinks\">[" + link + " <math>{\\displaystyle " + appearance + \
-                     "}</math>]</span> : " + ''.join(meaning) + " : [" + link + " " + link + "]<br />\n"
+        span_text += "<span class=\"plainlinks\">[" + id_link + " <math>{\\displaystyle " + appearance + \
+                     "}</math>]</span> : " + ''.join(meaning) + " : " + " ".join(links) + "<br />\n"
 
-    return span_text[:-1]
+    return span_text[:-7]  # slice off the extra br and endline
 
 
 def add_symbols_data(data):
@@ -145,7 +165,7 @@ def add_symbols_data(data):
         add_spacing = False
         sflag2 = False
         # remove data (to be regenerated later)
-        if page.find("== Symbols List ==") != -1:
+        if "== Symbols List ==" in page:
             to_write = page.split("== Symbols List ==")[0]
             page = to_write
         else:
@@ -162,8 +182,7 @@ def add_symbols_data(data):
             to_write += "\n\n"
 
         to_write += "== Symbols List ==\n\n"
-        to_parse = page.split("defined by")[1].split("<br />")[0]
-        to_write += get_symbols(to_parse, glossary)
+        to_write += get_symbols(page, glossary)
         to_write += "\n<br />\ndrmf_eof\n\n"
         if sflag2:
             to_write += "\n"
@@ -194,7 +213,7 @@ def main():
     text = mod_main.main(text)
 
     # only create backup if program did not crash
-    # create_backup()
+    create_backup()
 
     with open("main_page.mmd", "w") as main_page:
         main_page.write(text)
