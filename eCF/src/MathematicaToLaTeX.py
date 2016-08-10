@@ -534,10 +534,10 @@ def constraint(line):
     for i, item, in enumerate(constraints):
         if i == 0:
             constraints[i] = ('\n%  \\constraint{$' +
-                              constraints[i].replace('&', ' \\land '))
+                              item.replace('&', ' \\land '))
         else:
             constraints[i] = ('\n%    & $' +
-                              constraints[i].replace('&', ' \\land '))
+                              item.replace('&', ' \\land '))
         if i == len(constraints) - 1:
             constraints[i] += '$}'
         else:
@@ -740,6 +740,11 @@ def replace_operators(line):
         line = line.replace('&', ' \\land ')
         line = line.replace('  ', ' ')
         line += parts[1]
+    else:
+        line = line.replace('(', '\\left( ')
+        line = line.replace(')', ' \\right)')
+        line = line.replace('&', ' \\land ')
+        line = line.replace('  ', ' ')
 
     line = line.replace('"a"', 'a')
     line = line.replace('Catalan', '\\CatalansConstant')
@@ -772,7 +777,7 @@ def main():
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
     """
-    test = True
+    test = False
 
     with open(os.path.dirname(os.path.realpath(__file__)) +
               '/../data/newIdentities.tex', 'w') as latex:
