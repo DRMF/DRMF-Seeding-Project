@@ -193,7 +193,7 @@ def carat(line):
     """
     l = list('([{')
     r = list(')]}')
-    sign = list('*/+-=,')
+    sign = list('*/+-=, ')
     i = 0
 
     while i != len(line):
