@@ -12,7 +12,7 @@ def main():
              "These are defined by \n" + \
              "<math>{\\displaystyle\n" + definition + "\n}</math>\n<br />\n\ndrmf_eof\n"
 
-    with open("main_page.mmd", "a") as main_page:
+    with open("main_page/main_page.mmd", "a") as main_page:
         main_page.write("\n" + result)
 
     print "\n" + result

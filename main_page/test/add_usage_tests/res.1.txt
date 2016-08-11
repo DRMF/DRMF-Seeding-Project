@@ -1,0 +1,38 @@
+drmf_bof
+'''Main Page'''
+drmf_eof
+drmf_bof
+'''Definition:normctsdualqHahnptilde'''
+The LaTeX DLMF and DRMF macro '''\normctsdualqHahnptilde''' represents the normctsdualqHahnptilde.
+
+This macro is in the category of polynomials.
+
+In math mode, this macro can be called in the following ways:
+
+:'''\normctsdualqHahnptilde{n}''' produces <math>{\displaystyle \normctsdualqHahnptilde{n}}</math><br />
+:'''\normctsdualqHahnptilde{n}@{x}{a}{b}{c}{q}''' produces <math>{\displaystyle \normctsdualqHahnptilde{n}@{x}{a}{b}{c}{q}}</math><br />
+:'''\normctsdualqHahnptilde{n}@@{x}{a}{b}{c}{q}''' produces <math>{\displaystyle \normctsdualqHahnptilde{n}@@{x}{a}{b}{c}{q}}</math><br />
+
+These are defined by
+<math>{\displaystyle
+{\tilde p}_n(x):=\normctsdualqHahnptilde{n}@{x}{a}{b}{c}{q}=\frac{a^n\ctsdualqHahn{n}@{x}{a}{b}{c}{q}}{\qPochhammer{ab,ac}{q}{n}}
+}</math>
+<br />
+drmf_eof
+drmf_bof
+'''Definition:GaussDistQ'''
+The LaTeX DLMF and DRMF macro '''\GaussDistQ''' represents the GaussDistQ.
+
+This macro is in the category of integer valued functions.
+
+In math mode, this macro can be called in the following ways:
+
+:'''\GaussDistQ''' produces <math>{\displaystyle \GaussDistQ}</math><br />
+:'''\GaussDistQ@{x}''' produces <math>{\displaystyle \GaussDistQ@{x}}</math><br />
+
+These are defined by
+<math>{\displaystyle
+\GaussDistQ@{x}:=\frac{1}{2}\erfc@{\frac{x}{\sqrt{2}}}
+}</math>
+<br />
+drmf_eof

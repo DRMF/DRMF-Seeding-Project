@@ -1,0 +1,26 @@
+drmf_bof
+'''Main Page'''
+drmf_eof
+drmf_bof
+'''Definition:Definition1'''
+
+\AlSalamCarlitzII{a}{n}@{x}{q}:=(-a)^nq^{-\binom{n}{2}}\,\qHyperrphis{2}{0}@@{q^{-n},x}{-}{q}{\frac{q^n}{a}}
+
+== Symbols List ==
+
+drmf_eof
+drmf_bof
+'''Definition:Definition2'''
+
+\RiemannSiegelTheta@{t}:=\arg\left[\EulerGamma@{\frac{1}{4}+\frac{1}{2}it}\right]-\frac{1}{2}t\ln\pi
+
+<div id="drmf_foot">
+</div>
+
+drmf_eof
+drmf_bof
+'''Definition:Definition3'''
+
+\RamanujanTauTheta@{z}:=-\log\left(2\pi\right)z-\frac{i}{2}\left(\log\EulerGamma@{6+iz}-\log{\EulerGamma@{6-iz}}\right)
+
+drmf_eof

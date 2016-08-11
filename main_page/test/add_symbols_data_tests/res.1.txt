@@ -1,0 +1,39 @@
+drmf_bof
+'''Main Page'''
+drmf_eof
+drmf_bof
+'''Definition:Definition1'''
+
+\AlSalamCarlitzII{a}{n}@{x}{q}:=(-a)^nq^{-\binom{n}{2}}\,\qHyperrphis{2}{0}@@{q^{-n},x}{-}{q}{\frac{q^n}{a}}
+
+== Symbols List ==
+
+<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:AlSalamCarlitzII <math>{\displaystyle V^{(n)}_{\alpha}}</math>]</span> : Al-Salam-Carlitz II polynomial : [http://drmf.wmflabs.org/wiki/Definition:AlSalamCarlitzII http://drmf.wmflabs.org/wiki/Definition:AlSalamCarlitzII]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/1.2#E1 <math>{\displaystyle \binom{n}{k}}</math>]</span> : binomial coefficient : [http://dlmf.nist.gov/1.2#E1 http://dlmf.nist.gov/1.2#E1] [http://dlmf.nist.gov/26.3#SS1.p1 http://dlmf.nist.gov/26.3#SS1.p1]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/17.4#E1 <math>{\displaystyle {{}_{r}\phi_{s}}}</math>]</span> : basic hypergeometric (or <math>{\displaystyle q}</math>-hypergeometric) function : [http://dlmf.nist.gov/17.4#E1 http://dlmf.nist.gov/17.4#E1]
+<br />
+drmf_eof
+drmf_bof
+'''Definition:Definition2'''
+
+\RiemannSiegelTheta@{t}:=\arg\left[\EulerGamma@{\frac{1}{4}+\frac{1}{2}it}\right]-\frac{1}{2}t\ln\pi
+
+== Symbols List ==
+
+<span class="plainlinks">[http://dlmf.nist.gov/5.2#E1 <math>{\displaystyle \Gamma}</math>]</span> : Euler's gamma function : [http://dlmf.nist.gov/5.2#E1 http://dlmf.nist.gov/5.2#E1]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/4.2#E2 <math>{\displaystyle \mathrm{ln}}</math>]</span> : principal branch of logarithm function : [http://dlmf.nist.gov/4.2#E2 http://dlmf.nist.gov/4.2#E2]<br />
+<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:RiemannSiegelTheta <math>{\displaystyle \vartheta{t}}</math>]</span> : Riemann-Siegel theta function : [http://drmf.wmflabs.org/wiki/Definition:RiemannSiegelTheta http://drmf.wmflabs.org/wiki/Definition:RiemannSiegelTheta]
+<br />
+drmf_eof
+drmf_bof
+'''Definition:Definition3'''
+
+\RamanujanTauTheta@{z}:=-\log\left(2\pi\right)z-\frac{i}{2}\left(\log\EulerGamma@{6+iz}-\log{\EulerGamma@{6-iz}}\right)
+
+== Symbols List ==
+
+<span class="plainlinks">[http://dlmf.nist.gov/5.2#E1 <math>{\displaystyle \Gamma}</math>]</span> : Euler's gamma function : [http://dlmf.nist.gov/5.2#E1 http://dlmf.nist.gov/5.2#E1]<br />
+<span class="plainlinks">[http://dlmf.nist.gov/4.2#E2 <math>{\displaystyle \mathrm{log}}</math>]</span> : principle branch of natural logarithm : [http://dlmf.nist.gov/4.2#E2 http://dlmf.nist.gov/4.2#E2]<br />
+<span class="plainlinks">[http://drmf.wmflabs.org/wiki/Definition:RamanujanTauTheta <math>{\displaystyle \tau\theta{z}}</math>]</span> : Ramanujan tau theta function : [http://drmf.wmflabs.org/wiki/Definition:RamanujanTauTheta http://drmf.wmflabs.org/wiki/Definition:RamanujanTauTheta]
+<br />
+drmf_eof
