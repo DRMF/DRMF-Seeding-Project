@@ -489,6 +489,13 @@
                 "args": 1,
                 "repr": ["\\GaussDistQ@{", "}"]
             }
+        ],
+
+        "not": [
+            {
+                "args": 1,
+                "repr": ["", ""]
+            }
         ]
     },
 
@@ -522,7 +529,10 @@
         "infinity": "\\infty",
         "Delian": "\\sqrt[\\leftroot{-2}\\uproot{2} 3]{2}",
         "Theodorus": "\\sqrt{3}",
-        "integer": "\\mathbb{Z}"
+        "integer": "\\mathbb{Z}",
+        "or": "\\lor ",
+        "and": "\\wedge ",
+        "realcons": "\\RR"
     },
 
     "constraints": {
@@ -536,6 +546,7 @@
         "::positive": "> 0",
         "::nonnegative": "\\geq 0",
         "::nonneg": "\\geq 0",
-        "::": "\\in "
+        "::": "\\in ",
+        "<>": "\\neq "
     }
 }

@@ -17,9 +17,6 @@ CONSTRAINTS = INFO["constraints"]
 SPECIAL = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin",
            "\\ImaginaryNumber": "i"}
 
-# TODO: gamma_chisquare.mpl (no macro.)
-# TODO: normal.mpl (no macro.)
-
 
 class MapleEquation(object):
     def __init__(self, inp):
@@ -114,7 +111,6 @@ class LatexEquation(object):
             forms = list()
 
             if len(parse_brackets(eq.general[0])) > 1:
-                # print eq.label
                 forms = parse_brackets(eq.general[0])
 
             if len(eq.general) == 2 or forms:
@@ -204,6 +200,8 @@ class LatexEquation(object):
         metadata = ""
         for data_type, data in self.metadata.iteritems():
             if data_type in ["constraint", "substitution"]:  # mathmode
+                if data == "":
+                    data = "Empty"
                 metadata += "  %  \\" + data_type + "{$" + replace_strings(data, SPECIAL) + "$}\n"
             else:
                 metadata += "  %  \\" + data_type + "{" + data + "}\n"
@@ -333,6 +331,22 @@ def get_arguments(function, arg_string):
     # no arguments
     if arg_string == ["(", ")"]:
         return []
+
+    elif function == "not":
+        inversion = {"<": "\\geq ", ">": "\\leq ", "\\in": "\\notin "}
+
+        for i, ch in enumerate(arg_string):
+            if ch in inversion:
+                arg_string[i] = inversion[ch]
+
+        args = [basic_translate(arg_string[1:-1])]
+
+    elif function == "RealRange":
+        for i, piece in enumerate(arg_string):
+            if trim_parens(piece) != piece:
+                arg_string[i] = trim_parens(piece)
+
+        args = basic_translate(arg_string[1:-1]).split(",")
 
     # handling for hypergeometric, q-hypergeometric functions
     elif function in ["hypergeom", "qhyper"]:
