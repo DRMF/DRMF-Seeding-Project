@@ -4,7 +4,6 @@ __credits__ = ["Joon Bang", "Azeem Mohammed"]
 
 import csv
 import time
-import mod_main
 
 GLOSSARY_LOCATION = "new.Glossary.csv"
 
@@ -19,6 +18,82 @@ def generate_html(tag_name, options, text, spacing=True):
         return result.replace("\n", " ")[:-1] + "\n"
 
     return result
+
+
+def get_macro_name(macro):
+    macro_name = ""
+    for ch in macro:
+        if ch.isalpha() or ch == "\\":
+            macro_name += ch
+        elif ch in ["@", "{", "["]:
+            break
+
+    return macro_name
+
+
+def find_all(pattern, string):
+    """Yields all positions of where pattern is present in string."""
+
+    i = string.find(pattern)
+    while i != -1:
+        yield i
+        i = string.find(pattern, i + 1)
+
+
+def remove_optional_params(string):
+    parse = True
+    text = ""
+    for ch in string:
+        if parse and ch == "[":
+            parse = False
+        elif parse:
+            text += ch
+        else:
+            if ch == "]":
+                parse = True
+
+    return text
+
+
+def find_all_positions(entry):
+    macro = entry[0]
+    category = entry[3].split("|", 1)[0]
+    keys = entry[3].split("|", 1)[1].split(":")
+    result = []
+
+    for key in keys:
+        if key in ["F", "FO", "O", "O1"]:
+            result.append(macro.split("@", 1)[0])
+            if macro.count("@") > 0 and key == "O":
+                result.append(macro)
+
+        if key == "FnO":  # remove optional parameters
+            string = macro
+            if macro.count("@") > 0:
+                string = string[:string.find("@")]
+            result.append(remove_optional_params(string))
+
+        if key in ["P", "PO", "PnO"]:
+            result.append(macro.replace("@@", "@"))
+
+        if key == "PnO":  # remove optional parameters
+            result[-1] = remove_optional_params(result[-1])
+
+        if key in ["nP", "nPO", "PS", "O2"]:
+            result.append(macro)
+
+        if key == "nPnO":  # remove optional paramters
+            result.append(remove_optional_params(macro))
+
+        if "fo" in key:
+            result.append(macro.replace("@@@", "@" * int(key[2])))
+
+    return sorted(result, key=lambda x: x.count("@")), category
+
+
+def macro_match(macro, entry):
+    """Determines whether the entry refers to the macro."""
+    return macro in entry and (len(macro) == len(entry) or not entry[len(macro)].isalpha())
 
 
 def update_macro_list(text):
@@ -79,26 +154,6 @@ def update_headers(text, definitions):
         i += 1
 
     return output
-
-
-def get_macro_name(macro):
-    macro_name = ""
-    for ch in macro:
-        if ch.isalpha() or ch == "\\":
-            macro_name += ch
-        elif ch in ["@", "{", "["]:
-            break
-
-    return macro_name
-
-
-def find_all(pattern, string):
-    """Yields all positions of where pattern is present in string."""
-
-    i = string.find(pattern)
-    while i != -1:
-        yield i
-        i = string.find(pattern, i + 1)
 
 
 def get_symbols(text, glossary):
@@ -191,6 +246,58 @@ def add_symbols_data(data):
     return result
 
 
+def add_usage(lines):
+    with open("categories.txt") as cats:
+        categories = cats.readlines()
+
+    to_write = ""
+    i = 0
+
+    while True:
+        n = lines.find("'''Definition:", i)
+        if n == -1:
+            break
+
+        macro_name = lines[n:].split("'''")[1][11:]
+        left = lines.find("'''\\", n)
+        right = lines.find("'''", left + len("'''\\"))
+
+        if lines[left:right].find("{") != -1:
+            lines = lines[:left] + "'''\\" + macro_name + lines[right:]
+
+        if lines.find("\nThis macro is in the category of", n) < lines.find("'''Definition:", n + len(
+                "'''Definition:") + 1) and lines.find("\nThis macro is in the category of", n) != -1:
+            p = lines.find("\nThis macro is in the category of", n)
+        else:
+            p = lines.find(".\n", n) + 1
+        to_write += lines[i:p].rstrip() + "\n\n"
+
+        calls = []
+        glossary = csv.reader(open(GLOSSARY_LOCATION, 'rb'), delimiter=',', quotechar='\"')
+        for entry in glossary:
+            if macro_match("\\" + macro_name, entry[0]):
+                macro_calls, category = find_all_positions(entry)
+                calls += macro_calls
+
+        for line in categories:
+            key, meaning = line.split(" - ")
+            if key == category:
+                category_text = "This macro is in the category of " + meaning
+                break
+
+        text = category_text + "\nIn math mode, this macro can be called in the following way" + "s" * (
+            len(calls) > 1) + ":\n\n"
+
+        for call in calls:
+            text += ":'''" + call + "'''" + " produces <math>{\\displaystyle " + call + "}</math><br />\n"
+
+        # Now add the multiple ways \macroname{n}@... produces <math>\macroname{n}@...</math>
+        to_write += text + "\n"
+        i = lines.find("These are defined by", p)
+
+    return to_write + lines[i:]
+
+
 def create_backup():
     with open("main_page.mmd") as current:
         local_time = time.asctime(time.localtime(time.time())).split()
@@ -210,7 +317,7 @@ def main():
     text, definitions = update_macro_list(text)
     text = add_symbols_data(text)
     text = update_headers(text, definitions)
-    text = mod_main.main(text)
+    text = add_usage(text)
 
     # only create backup if program did not crash
     create_backup()
