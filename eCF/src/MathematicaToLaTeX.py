@@ -642,25 +642,7 @@ def convert_fraction(line):
             # incorrectly change it to " )( / )( ", but there are no cases of
             # this happening yet, so I have not gone to fixing this yet.
             if (line[j + 1] == '(' and line[i - 1] == ')' and
-                        line[i + 1] == '(' and line[k] == ')'):
-                # ()/()
-                line = (line[:j + 1] + '\\frac{' + line[j + 2:i - 1] + '}{' +
-                        line[i + 2:k] + '}' + line[k + 1:])
-            elif line[j + 1] == '(' and line[i - 1] == ')':
-                # ()/--
-                line = (line[:j + 1] + '\\frac{' + line[j + 2:i - 1] + '}{' +
-                        line[i + 1:k + 1] + '}' + line[k + 1:])
-            elif line[i + 1] == '(' and line[k] == ')':
-                # --/()
-                line = (line[:j + 1] + '\\frac{' + line[j + 1:i] + '}{' +
-                        line[i + 2:k] + '}' + line[k + 1:])
-            else:
-                # --/--
-                line = (line[:j + 1] + '\\frac{' + line[j + 1:i] + '}{' +
-                        line[i + 1:k + 1] + '}' + line[k + 1:])
-
-            '''if (line[j + 1] == '(' and line[i - 1] == ')' and
-                        line[i + 1] == '(' and line[k] == ')'):
+                    line[i + 1] == '(' and line[k] == ')'):
                 # ()/()
                 line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
                     .format(line[:j + 1], line[j + 2:i - 1],
@@ -679,7 +661,7 @@ def convert_fraction(line):
                 # --/--
                 line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
                     .format(line[:j + 1], line[j + 1:i],
-                           line[i + 1:k + 1], line[k + 1:])'''
+                           line[i + 1:k + 1], line[k + 1:])
 
         i += 1
 
@@ -860,8 +842,8 @@ def main():
             latex.write('\n\n\\end{document}\n')
 
 
-with open(os.path.dirname(os.path.realpath(__file__)) +
-          '/../data/functions') as functions:
+with open(os.path.dirname(os.path.realpath(__file__)) + '/../data/functions') \
+        as functions:
     FUNCTION_CONVERSIONS = list(arg_split(line.replace(' ', ''), ',') for line
                                 in functions.read().split('\n')
                                 if (line != '' and '#' not in line))
