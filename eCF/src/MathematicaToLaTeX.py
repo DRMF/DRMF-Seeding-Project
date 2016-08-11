@@ -724,13 +724,11 @@ def replace_operators(line):
         line = parts[0]
         line = line.replace('(', '\\left( ')
         line = line.replace(')', ' \\right)')
-        #line = line.replace('&', ' \\land ')
         line = line.replace('  ', ' ')
         line += parts[1]
     else:
         line = line.replace('(', '\\left( ')
         line = line.replace(')', ' \\right)')
-        #line = line.replace('&', ' \\land ')
         line = line.replace('  ', ' ')
 
     line = line.replace('"a"', 'a')
