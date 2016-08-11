@@ -139,7 +139,7 @@
             {
                 "eq": [
                     "create( 'contfrac', ",
-                    "booklabelv1 = \"0.0.0\",",
+                    "booklabelv1 = \"\",",
                     "category = \"test_data\"",
                     "lhs = zeta,",
                     "begin = [[1,2]],",
@@ -148,7 +148,7 @@
                     "even = [[0, 1]],",
                     "odd = [[2, 3]],"
                 ],
-                "res": "\\begin{equation*}\\tag{0.0.0}\n  \\zeta\n  = 4+\\frac{1}{2} \\subplus 3 \\dots\n  %  \\category{test_data}\n  %  \\constraint{$$}\n\\end{equation*}\n"
+                "res": "\\begin{equation*}\\tag{x.x.x}\n  \\zeta\n  = 4+\\frac{1}{2} \\subplus 3 \\CFK{m}{2}{\\infty}@@{s_m}{1}\n  %  \\category{test_data}\n  %  \\constraint{$$}\n  %  \\substitution{$s_{2j} = \\frac{0}{1},s_{2j+1} = \\frac{2}{3}$}\n\\end{equation*}\n"
             }
         ]
     }

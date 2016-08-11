@@ -204,7 +204,7 @@ class LatexEquation(object):
         metadata = ""
         for data_type, data in self.metadata.iteritems():
             if data_type in ["constraint", "substitution"]:  # mathmode
-                metadata += "  %  \\" + data_type + "{" + replace_strings(data, SPECIAL) + "}\n"
+                metadata += "  %  \\" + data_type + "{$" + replace_strings(data, SPECIAL) + "$}\n"
             else:
                 metadata += "  %  \\" + data_type + "{" + data + "}\n"
 
@@ -261,9 +261,6 @@ def trim_parens(exp):
                     return exp
                 else:
                     s.pop()
-
-        if len(s) != 0:
-            return exp
 
         return test
 
