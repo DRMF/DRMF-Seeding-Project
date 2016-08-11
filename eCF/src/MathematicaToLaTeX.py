@@ -227,6 +227,11 @@ def beta(line):
     """
     Converts Mathematica's 'Beta' function to the equivalent LaTeX macro,
     taking into account the variations for the different number of arguments.
+
+    :type line: str
+    :param line: line to be converted
+    :rtype: str
+    :returns: converted line
     """
     for _ in range(line.count('Beta')):
         try:
@@ -271,12 +276,12 @@ def cfk(line):
             moreargs = arg_split(args[-1][1:-1], ',')
             if len(args) == 3:
                 line = (line[:pos[0]] +
-                        '\\CFK{{{0}}}{{{1}}}{{{2}}}@{{{3}}}{{{4}}}'
+                        '\\CFK{{{0}}}{{{1}}}{{{2}}}@@{{{3}}}{{{4}}}'
                         .format(moreargs[0], moreargs[1], moreargs[2],
                                 args[0], args[1]) + line[pos[1]:])
             else:
                 line = (line[:pos[0]] +
-                        '\\CFK{{{0}}}{{{1}}}{{{2}}}@{{1}}{{{3}}}'
+                        '\\CFK{{{0}}}{{{1}}}{{{2}}}@@{{1}}{{{3}}}'
                         .format(moreargs[0], moreargs[1], moreargs[2],
                                 args[0]) + line[pos[1]:])
 
@@ -719,13 +724,13 @@ def replace_operators(line):
         line = parts[0]
         line = line.replace('(', '\\left( ')
         line = line.replace(')', ' \\right)')
-        line = line.replace('&', ' \\land ')
+        #line = line.replace('&', ' \\land ')
         line = line.replace('  ', ' ')
         line += parts[1]
     else:
         line = line.replace('(', '\\left( ')
         line = line.replace(')', ' \\right)')
-        line = line.replace('&', ' \\land ')
+        #line = line.replace('&', ' \\land ')
         line = line.replace('  ', ' ')
 
     line = line.replace('"a"', 'a')
