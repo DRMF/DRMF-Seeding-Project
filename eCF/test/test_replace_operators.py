@@ -25,7 +25,6 @@ class TestReplaceOperators(TestCase):
         self.assertEqual(replace_operators(','), ', ')
         self.assertEqual(replace_operators('('), '\\left( ')
         self.assertEqual(replace_operators(')'), ' \\right)')
-        self.assertEqual(replace_operators('&'), ' \\land ')
         self.assertEqual(replace_operators('  '), ' ')
         self.assertEqual(replace_operators('"a"'), 'a')
 
@@ -38,7 +37,6 @@ class TestReplaceOperators(TestCase):
     def test_with_percent(self):
         self.assertEqual(replace_operators('(%('), '\\left( %(')
         self.assertEqual(replace_operators(')%)'), ' \\right)%)')
-        self.assertEqual(replace_operators('&%&'), ' \\land %&')
         self.assertEqual(replace_operators('  %  '), ' %  ')
 
     def test_none(self):

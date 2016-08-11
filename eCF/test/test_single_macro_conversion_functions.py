@@ -42,17 +42,17 @@ class TestBeta(TestCase):
 class TestCFK(TestCase):
 
     def test_single(self):
-        self.assertEqual(cfk('ContinuedFractionK[f,g,{i,imin,imax}]'), '\\CFK{i}{imin}{imax}@{f}{g}')
-        self.assertEqual(cfk('--ContinuedFractionK[f,g,{i,imin,imax}]--'), '--\\CFK{i}{imin}{imax}@{f}{g}--')
-        self.assertEqual(cfk('ContinuedFractionK[g,{i,imin,imax}]'), '\\CFK{i}{imin}{imax}@{1}{g}')
-        self.assertEqual(cfk('--ContinuedFractionK[g,{i,imin,imax}]--'), '--\\CFK{i}{imin}{imax}@{1}{g}--')
-        self.assertEqual(cfk('ContinuedFractionK[f,g,{i,imin,imax}]ContinuedFractionK[g,{i,imin,imax}]'), '\\CFK{i}{imin}{imax}@{f}{g}\\CFK{i}{imin}{imax}@{1}{g}')
-        self.assertEqual(cfk('--ContinuedFractionK[f,g,{i,imin,imax}]--ContinuedFractionK[g,{i,imin,imax}]--'), '--\\CFK{i}{imin}{imax}@{f}{g}--\\CFK{i}{imin}{imax}@{1}{g}--')
+        self.assertEqual(cfk('ContinuedFractionK[f,g,{i,imin,imax}]'), '\\CFK{i}{imin}{imax}@@{f}{g}')
+        self.assertEqual(cfk('--ContinuedFractionK[f,g,{i,imin,imax}]--'), '--\\CFK{i}{imin}{imax}@@{f}{g}--')
+        self.assertEqual(cfk('ContinuedFractionK[g,{i,imin,imax}]'), '\\CFK{i}{imin}{imax}@@{1}{g}')
+        self.assertEqual(cfk('--ContinuedFractionK[g,{i,imin,imax}]--'), '--\\CFK{i}{imin}{imax}@@{1}{g}--')
+        self.assertEqual(cfk('ContinuedFractionK[f,g,{i,imin,imax}]ContinuedFractionK[g,{i,imin,imax}]'), '\\CFK{i}{imin}{imax}@@{f}{g}\\CFK{i}{imin}{imax}@@{1}{g}')
+        self.assertEqual(cfk('--ContinuedFractionK[f,g,{i,imin,imax}]--ContinuedFractionK[g,{i,imin,imax}]--'), '--\\CFK{i}{imin}{imax}@@{f}{g}--\\CFK{i}{imin}{imax}@@{1}{g}--')
 
     def test_nested(self):
-        self.assertEqual(cfk('ContinuedFractionK[ContinuedFractionK[f,g,{i,imin,imax}],ContinuedFractionK[f,g,{i,imin,imax}],{i,imin,imax}]'), '\\CFK{i}{imin}{imax}@{\\CFK{i}{imin}{imax}@{f}{g}}{\\CFK{i}{imin}{imax}@{f}{g}}')
-        self.assertEqual(cfk('--ContinuedFractionK[ContinuedFractionK[f,g,{i,imin,imax}],ContinuedFractionK[f,g,{i,imin,imax}],{i,imin,imax}]--'), '--\\CFK{i}{imin}{imax}@{\\CFK{i}{imin}{imax}@{f}{g}}{\\CFK{i}{imin}{imax}@{f}{g}}--')
-        self.assertEqual(cfk('ContinuedFractionK[ContinuedFractionK[g,{i,imin,imax}],{i,imin,imax}]'), '\\CFK{i}{imin}{imax}@{1}{\\CFK{i}{imin}{imax}@{1}{g}}')
+        self.assertEqual(cfk('ContinuedFractionK[ContinuedFractionK[f,g,{i,imin,imax}],ContinuedFractionK[f,g,{i,imin,imax}],{i,imin,imax}]'), '\\CFK{i}{imin}{imax}@@{\\CFK{i}{imin}{imax}@@{f}{g}}{\\CFK{i}{imin}{imax}@@{f}{g}}')
+        self.assertEqual(cfk('--ContinuedFractionK[ContinuedFractionK[f,g,{i,imin,imax}],ContinuedFractionK[f,g,{i,imin,imax}],{i,imin,imax}]--'), '--\\CFK{i}{imin}{imax}@@{\\CFK{i}{imin}{imax}@@{f}{g}}{\\CFK{i}{imin}{imax}@@{f}{g}}--')
+        self.assertEqual(cfk('ContinuedFractionK[ContinuedFractionK[g,{i,imin,imax}],{i,imin,imax}]'), '\\CFK{i}{imin}{imax}@@{1}{\\CFK{i}{imin}{imax}@@{1}{g}}')
 
     def test_none(self):
         self.assertEqual(cfk('none'), 'none')
