@@ -55,10 +55,12 @@ class TestUpdateHeaders(TestCase):
 class TestAddSymbolsData(TestCase):
     def test_add_symbols_data(self):
         for case in add_symbols_data_test_cases:
-            self.assertEqual(m.add_symbols_data(case["exp"]), case["res"])
+            self.assertEqual(m.add_symbols_data(case["exp"], glossary_location="main_page/test/fake.Glossary.csv"),
+                             case["res"])
 
 
 class TestAddUsage(TestCase):
     def test_add_usage(self):
         for case in add_usage_test_cases:
-            self.assertEqual(m.add_usage(case["exp"]), case["res"])
+            self.assertEqual(m.add_usage(case["exp"], glossary_location="main_page/test/fake.Glossary.csv"),
+                             case["res"])

@@ -197,9 +197,9 @@ def get_symbols(text, glossary):
     return span_text[:-7]  # slice off the extra br and endline
 
 
-def add_symbols_data(data):
+def add_symbols_data(data,glossary_location=GLOSSARY_LOCATION):
     glossary = dict()
-    with open(GLOSSARY_LOCATION, "rb") as csv_file:
+    with open(glossary_location, "rb") as csv_file:
         glossary_file = csv.reader(csv_file, delimiter=',', quotechar='\"')
         for row in glossary_file:
             glossary[get_macro_name(row[0])] = row
@@ -239,7 +239,7 @@ def add_symbols_data(data):
     return result
 
 
-def add_usage(lines):
+def add_usage(lines,glossary_location=GLOSSARY_LOCATION):
     with open("main_page/categories.txt") as cats:
         categories = cats.readlines()
 
@@ -267,7 +267,7 @@ def add_usage(lines):
         to_write += lines[i:p].rstrip() + "\n\n"
 
         calls = []
-        glossary = csv.reader(open(GLOSSARY_LOCATION, 'rb'), delimiter=',', quotechar='\"')
+        glossary = csv.reader(open(glossary_location, 'rb'), delimiter=',', quotechar='\"')
         for entry in glossary:
             if macro_match("\\" + macro_name, entry[0]):
                 macro_calls, category = find_all_positions(entry)
