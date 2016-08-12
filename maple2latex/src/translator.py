@@ -202,8 +202,6 @@ class LatexEquation(object):
         metadata = ""
         for data_type, data in self.metadata.iteritems():
             if data_type in ["constraint", "substitution"]:  # mathmode
-                if data == "":
-                    data = "Empty"
                 metadata += "  %  \\" + data_type + "{$" + replace_strings(data, SPECIAL) + "$}\n"
             else:
                 metadata += "  %  \\" + data_type + "{" + data + "}\n"
@@ -326,8 +324,8 @@ def basic_translate(exp):
 
 
 def get_arguments(function, arg_string):
-    # type: (str, list) -> list
-    """Obtains the arguments of a function."""
+    # type: (str, list) -> (list, list)
+    """Generates the function pieces and the arguments."""
 
     parens_mod = False
 

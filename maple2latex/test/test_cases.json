@@ -36,52 +36,52 @@
             },
 
             {
-                "exp": ["\\pi", "*", "I"],
-                "res": "\\pi\\ImaginaryNumber"
+                "exp": ["\\cpi", "*", "3"],
+                "res": "\\cpi 3"
             }
         ],
 
         "get_arguments": [
             {
                 "function": "rabbit",
-                "arg_string": ["(", ")"],
-                "res": []
+                "arg_string": [],
+                "res": [["\\rabbitConstant"], []]
             },
 
             {
                 "function": "hypergeom",
-                "arg_string": ["(", "[1", ",", "2]", ",", "[]", ",", "4", ")"],
-                "res": ["2", "0", "1,2", "", "4"]
+                "arg_string": ["[1", ",", "2]", ",", "[]", ",", "4"],
+                "res": [["\\HyperpFq{", "}{", "}@@{", "}{", "}{", "}"], ["2", "0", "1,2", "", "4"]]
             },
 
             {
                 "function": "qhyper",
-                "arg_string": ["(", "[1", ",", "2", ",", "3]", ",", "[4", ",", "5]", ",", "6", ",", "7", ")"],
-                "res": ["3", "2", "1,2,3", "4,5", "6", "7"]
+                "arg_string": ["[1", ",", "2", ",", "3]", ",", "[4", ",", "5]", ",", "6", ",", "7"],
+                "res": [["\\qHyperrphis{", "}{", "}@@{", "}{", "}{", "}{", "}"], ["3", "2", "1,2,3", "4,5", "6", "7"]]
             },
 
             {
                 "function": "sum",
-                "arg_string": ["(", "m", ",", "1..infinity", ")"],
-                "res": ["1", "\\infty", "m"]
+                "arg_string": ["m", ",", "1..infinity"],
+                "res": [["\\sum_{", "}^{", "} (", ")"], ["1", "\\infty", "m"]]
             },
 
             {
                 "function": "BesselJ",
-                "arg_string": ["(", "\\nu", ",", "z", ")"],
-                "res": ["\\nu", "z"]
+                "arg_string": ["\\nu", ",", "z"],
+                "res": [["\\BesselJ{", "}@{", "}"], ["\\nu", "z"]]
             }
         ],
 
         "translate": [
             {
                 "exp": "sin(x)",
-                "res": "\\sin(x)"
+                "res": "\\sin@@{x}"
             },
 
             {
                 "exp": "log[beta](nu)",
-                "res": "\\log_{\\beta} {(\\nu)}"
+                "res": "\\log_{\\beta}@{\\nu}"
             }
         ],
 
