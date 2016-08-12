@@ -14,8 +14,10 @@ FUNCTIONS = INFO["functions"]
 SYMBOLS = INFO["symbols"]
 CONSTRAINTS = INFO["constraints"]
 
-SPECIAL = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin",
-           "\\ImaginaryNumber": "i"}
+SPECIAL = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin"}
+
+MULTI_ARGS = ["sin", "cos", "tan", "arccos", "arccosh", "arcsin", "arcsinh", "arctanh", "sinh", "cosh", "coth", "tanh",
+              "erfc", "erf", "log", "ln"]
 
 
 class MapleEquation(object):
@@ -239,11 +241,14 @@ def parse_brackets(string):
 
 
 def trim_parens(exp):
-    # type: (str) -> str
+    # type: (str/list) -> str
     """Removes unnecessary parentheses."""
 
-    if exp == "":
+    if type(exp) == str and exp == "":
         return ""
+
+    elif type(exp) == list and exp == []:
+        return []
 
     # checks whether the outer set of parentheses are necessary
     if exp[0] == "(" and exp[-1] == ")":
@@ -282,12 +287,8 @@ def basic_translate(exp):
         while i < len(exp):
             modified = False
 
-            # the imaginary number
-            if exp[i] == "I":
-                exp[i] = "\\ImaginaryNumber"
-
             # factorial
-            elif exp[i] == "!" and order == 0:
+            if exp[i] == "!" and order == 0:
                 exp[i - 1] += "!"
                 modified = True
 
@@ -328,9 +329,11 @@ def get_arguments(function, arg_string):
     # type: (str, list) -> list
     """Obtains the arguments of a function."""
 
+    parens_mod = False
+
     # no arguments
-    if arg_string == ["(", ")"]:
-        return []
+    if not arg_string:
+        args = []
 
     elif function == "not":
         inversion = {"<": "\\geq ", ">": "\\leq ", "\\in": "\\notin "}
@@ -339,19 +342,24 @@ def get_arguments(function, arg_string):
             if ch in inversion:
                 arg_string[i] = inversion[ch]
 
-        args = [basic_translate(arg_string[1:-1])]
+        args = [basic_translate(arg_string)]
 
     elif function == "RealRange":
         for i, piece in enumerate(arg_string):
             if trim_parens(piece) != piece:
                 arg_string[i] = trim_parens(piece)
 
-        args = basic_translate(arg_string[1:-1]).split(",")
+        args = basic_translate(arg_string).split(",")
+
+    # handling for trigamma
+    elif function == "Psi" and arg_string[0] == "1":
+        function = "special-trigamma"
+        args = basic_translate(arg_string[2])
 
     # handling for hypergeometric, q-hypergeometric functions
     elif function in ["hypergeom", "qhyper"]:
         args = list()
-        for s in ' '.join(arg_string[1:-1]).split("] , "):
+        for s in ' '.join(arg_string).split("] , "):
             args.append(basic_translate(replace_strings(s, {"[": "", "]": ""}).split()))
 
         if function == "qhyper":
@@ -366,26 +374,35 @@ def get_arguments(function, arg_string):
 
     # handling for sums
     elif function == "sum":
-        args = basic_translate(arg_string[1:-1]).split(",")
+        args = basic_translate(arg_string).split(",")
         args = args.pop(1).split("..") + [args[0]]
         if args[1] == "infinity":
             args[1] = "\\infty"
 
-    else:
-        args = basic_translate(arg_string[1:-1]).split(",")
+    elif function in MULTI_ARGS and len(arg_string) == 1:
+        parens_mod = True
+        args = basic_translate(arg_string).split(",")
 
-    return args
+    else:
+        args = basic_translate(arg_string).split(",")
+
+    result = list()
+    for n in FUNCTIONS:
+        for variant in FUNCTIONS[n]:
+            if function == n and len(args) == variant["args"]:
+                result = copy.copy(variant["repr"])
+
+    if parens_mod:
+        result[0] = result[0].replace("@", "@@")  # make the macro without parens
+
+    return [result, args]
 
 
 def generate_function(name, args):
     # type: (str, list) -> str
     """Generate a function with the provided function name and arguments."""
 
-    result = list()
-    for n in FUNCTIONS:
-        for variant in FUNCTIONS[n]:
-            if name == n and len(args) == variant["args"]:
-                result = copy.copy(variant["repr"])
+    result, args = get_arguments(name, args)
 
     # places arguments between shell of function
     for n in range(1, len(result)):
@@ -423,7 +440,7 @@ def translate(exp):
 
             if exp[i - 1] in FUNCTIONS:  # handling for functions
                 i -= 1
-                piece = generate_function(exp[i], get_arguments(exp[i], piece))
+                piece = generate_function(exp[i], trim_parens(piece))
 
             else:
                 piece = basic_translate(piece)
