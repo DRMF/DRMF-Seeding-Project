@@ -4,6 +4,7 @@ src/test.txt
 data/Identities.*
 data/newIdentities.*
 data/IdentitiesTest.m
+data/References.txt
 src/Glossary.csv
 src/new.Glossary.csv
 src/new.Glossary.updated.csv
