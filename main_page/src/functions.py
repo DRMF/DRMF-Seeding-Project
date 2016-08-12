@@ -26,6 +26,8 @@ def get_macro_name(macro):
         elif ch in ["@", "{", "["]:
             break
 
+    print macro_name
+
     return macro_name
 
 
@@ -204,8 +206,6 @@ def add_symbols_data(data):
 
     pages = data[data.find("drmf_bof"):].split("drmf_eof")[:-1]
 
-    print "Pages: " + str(len(pages))
-
     result = ""
     for page in pages:
         # skip over non-definition pages
@@ -288,6 +288,7 @@ def add_usage(lines):
             text += ":'''" + call + "'''" + " produces <math>{\\displaystyle " + call + "}</math><br />\n"
 
         # Now add the multiple ways \macroname{n}@... produces <math>\macroname{n}@...</math>
+        print text
         to_write += text + "\n"
         i = lines.find("These are defined by", p)
 

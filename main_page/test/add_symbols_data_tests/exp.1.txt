@@ -2,25 +2,25 @@ drmf_bof
 '''Main Page'''
 drmf_eof
 drmf_bof
-'''Definition:Definition1'''
+'''Definition:DefinitionOne'''
 
-\AlSalamCarlitzII{a}{n}@{x}{q}:=(-a)^nq^{-\binom{n}{2}}\,\qHyperrphis{2}{0}@@{q^{-n},x}{-}{q}{\frac{q^n}{a}}
+\DefinitionOne@{x}:=\DefinitionTwo@{x}+1
 
 == Symbols List ==
 
 drmf_eof
 drmf_bof
-'''Definition:Definition2'''
+'''Definition:DefinitionTwo'''
 
-\RiemannSiegelTheta@{t}:=\arg\left[\EulerGamma@{\frac{1}{4}+\frac{1}{2}it}\right]-\frac{1}{2}t\ln\pi
+\DefinitionTwo@{x}:=\frac{6}{127}
 
 <div id="drmf_foot">
 </div>
 
 drmf_eof
 drmf_bof
-'''Definition:Definition3'''
+'''Definition:DefinitionTwoTwo'''
 
-\RamanujanTauTheta@{z}:=-\log\left(2\pi\right)z-\frac{i}{2}\left(\log\EulerGamma@{6+iz}-\log{\EulerGamma@{6-iz}}\right)
+\DefinitionTwoTwo:=22
 
 drmf_eof
