@@ -7,6 +7,8 @@ GLOSSARY_LOCATION = "main_page/new.Glossary.csv"
 
 
 def generate_html(tag_name, options, text, spacing=True):
+    # (str, str, str(, bool)) -> str
+    """Generates an html tag, with optional html parameters."""
     result = "<" + tag_name
     if options != "":
         result += " " + options
@@ -19,6 +21,8 @@ def generate_html(tag_name, options, text, spacing=True):
 
 
 def get_macro_name(macro):
+    # (str) -> str
+    """Obtains the macro name."""
     macro_name = ""
     for ch in macro:
         if ch.isalpha() or ch == "\\":
@@ -26,13 +30,12 @@ def get_macro_name(macro):
         elif ch in ["@", "{", "["]:
             break
 
-    print macro_name
-
     return macro_name
 
 
 def find_all(pattern, string):
-    """Yields all positions of where pattern is present in string."""
+    # (str, str) -> generator
+    """Finds all instances of pattern in string."""
 
     i = string.find(pattern)
     while i != -1:
@@ -41,6 +44,8 @@ def find_all(pattern, string):
 
 
 def remove_optional_params(string):
+    # (str) -> str
+    """Removes optional parameters from a LaTeX semantic macro."""
     parse = True
     text = ""
     for ch in string:
@@ -55,7 +60,9 @@ def remove_optional_params(string):
     return text
 
 
-def find_all_positions(entry):
+def get_all_variants(entry):
+    # (str) -> str
+    """Returns string containing info on all variants of a macro."""
     macro = entry[0]
     category = entry[3].split("|", 1)[0]
     keys = entry[3].split("|", 1)[1].split(":")
@@ -92,11 +99,14 @@ def find_all_positions(entry):
 
 
 def macro_match(macro, entry):
+    # (str, str) -> bool
     """Determines whether the entry refers to the macro."""
     return macro in entry and (len(macro) == len(entry) or not entry[len(macro)].isalpha())
 
 
 def update_macro_list(text):
+    # (str) -> str
+    """Updates the list of macros found in the main page of main_page.mmd."""
     lines = text.split("\n")
     definitions = list()
 
@@ -116,6 +126,8 @@ def update_macro_list(text):
 
 
 def update_headers(text, definitions):
+    # (str, list) -> str
+    """Updates the headers used for navigation for every page."""
     pages = text.split("drmf_eof")[:-1]
 
     macros = list()
@@ -157,6 +169,8 @@ def update_headers(text, definitions):
 
 
 def get_symbols(text, glossary):
+    # (str, dict) -> str
+    """Generates span text based on symbols present in text."""
     symbols = set()
 
     for keyword in glossary:
@@ -197,7 +211,9 @@ def get_symbols(text, glossary):
     return span_text[:-7]  # slice off the extra br and endline
 
 
-def add_symbols_data(data,glossary_location=GLOSSARY_LOCATION):
+def add_symbols_data(data, glossary_location=GLOSSARY_LOCATION):
+    # (str(, str)) -> str
+    """Adds list of symbols present in page under symbols list section."""
     glossary = dict()
     with open(glossary_location, "rb") as csv_file:
         glossary_file = csv.reader(csv_file, delimiter=',', quotechar='\"')
@@ -239,7 +255,9 @@ def add_symbols_data(data,glossary_location=GLOSSARY_LOCATION):
     return result
 
 
-def add_usage(lines,glossary_location=GLOSSARY_LOCATION):
+def add_usage(lines, glossary_location=GLOSSARY_LOCATION):
+    # (str(, str)) -> str
+    """Adds the macro category information and calling sequences."""
     with open("main_page/categories.txt") as cats:
         categories = cats.readlines()
 
@@ -270,7 +288,7 @@ def add_usage(lines,glossary_location=GLOSSARY_LOCATION):
         glossary = csv.reader(open(glossary_location, 'rb'), delimiter=',', quotechar='\"')
         for entry in glossary:
             if macro_match("\\" + macro_name, entry[0]):
-                macro_calls, category = find_all_positions(entry)
+                macro_calls, category = get_all_variants(entry)
                 calls += macro_calls
 
         for line in categories:
