@@ -527,7 +527,7 @@ def summation(line):
 def constraint(line):
     """
     Converts Mathematica's 'Element', 'NotElement', and 'Inequality' functions
-    to LaTeX formatting using \constraint{}.
+    to LaTeX formatting using \\constraint{}.
     """
     sections = arg_split(line, ',')
 
@@ -601,7 +601,7 @@ def constraint(line):
 def convert_fraction(line):
     """
     Converts Mathematica fractions, which are only '/', to LaTeX
-    \frac{}{}-ions.
+    \\frac{}{}-ions.
     """
     l = list('([{')
     r = list(')]}')
