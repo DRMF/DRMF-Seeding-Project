@@ -28,7 +28,7 @@ To achieve the desired result, one should execute the progams in the following o
 
 ## BMP Seeding Project
 
-## CFSF Seeding Project
+## Maple CFSF Seeding Project
 
 This Python code (developed by Joon Bang) translates Maple files from Annie Cuyt's continued fractions package for special functions (CFSF) to LaTeX.
 
@@ -36,7 +36,7 @@ The project is located in the `maple2latex` folder.
 
 ## DLMF Seeding Project
 
-## eCF Seeding Project
+## Mathematica eCF Seeding Project
 
 This Python code (mostly developed by Kevin Chen) translates Mathematica files to LaTeX.
 
