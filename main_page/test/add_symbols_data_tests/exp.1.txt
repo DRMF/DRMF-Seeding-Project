@@ -1,0 +1,26 @@
+drmf_bof
+'''Main Page'''
+drmf_eof
+drmf_bof
+'''Definition:DefinitionOne'''
+
+\DefinitionOne@{x}:=\DefinitionTwo@{x}+1
+
+== Symbols List ==
+
+drmf_eof
+drmf_bof
+'''Definition:DefinitionTwo'''
+
+\DefinitionTwo@{x}:=\frac{6}{127}
+
+<div id="drmf_foot">
+</div>
+
+drmf_eof
+drmf_bof
+'''Definition:DefinitionTwoTwo'''
+
+\DefinitionTwoTwo:=22
+
+drmf_eof

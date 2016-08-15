@@ -1,0 +1,28 @@
+drmf_bof
+'''Main Page'''
+drmf_eof
+drmf_bof
+'''Definition:Definition1'''
+<div id="drmf_head">
+<div id="alignright"> >> </div>
+</div>
+Definition1 Text.
+<br />
+<div id="drmf_foot">
+</div>
+drmf_eof
+drmf_bof
+'''Definition:Definition2'''
+<div id="drmf_head">
+<div id="alignright"> >> </div>
+</div>
+Definition2 Text.
+<br />
+<div id="drmf_foot">
+</div>
+drmf_eof
+drmf_bof
+'''Definition:Definition3'''
+Definition3 Text.
+<br />
+drmf_eof
