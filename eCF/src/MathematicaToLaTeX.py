@@ -13,7 +13,7 @@ __credits__ = ["Divya Gandla", "Kevin Chen"]
 
 import os
 
-symbols = {
+SYMBOLS = {
     'Alpha': 'alpha', 'Beta': 'beta', 'Gamma': 'gamma', 'Delta': 'delta',
     'Epsilon': 'epsilon', 'Zeta': 'zeta', 'Eta': 'eta', 'Theta': 'theta',
     'Iota': 'iota', 'Kappa': 'kappa', 'Lambda': 'lambda', 'Mu': 'mu',
@@ -746,13 +746,13 @@ def replace_vars(line):
     Replaces the easy to convert variables in Mathematica to its equivalent
     LaTeX code in the dictionary 'symbols'.
     """
-    for word in symbols:
-        if symbols[word][0] == ' ':
-            line = line.replace('\\[' + word + ']', symbols[word][1:])
+    for word in SYMBOLS:
+        if SYMBOLS[word][0] == ' ':
+            line = line.replace('\\[' + word + ']', SYMBOLS[word][1:])
         elif word == 'Infinity':
-            line = line.replace('Infinity', r'\infty')
+            line = line.replace('Infinity', '\\infty')
         else:
-            line = line.replace('[' + word + ']', symbols[word])
+            line = line.replace('[' + word + ']', SYMBOLS[word])
 
     return line
 
@@ -762,7 +762,7 @@ def main():
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
     """
-    test = True
+    test = False
 
     with open(os.path.dirname(os.path.realpath(__file__)) +
               '/../data/newIdentities.tex', 'w') as latex:
