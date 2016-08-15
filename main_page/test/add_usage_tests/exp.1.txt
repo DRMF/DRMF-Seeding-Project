@@ -1,0 +1,45 @@
+drmf_bof
+'''Main Page'''
+drmf_eof
+drmf_bof
+'''Definition:DefinitionOne'''
+The LaTeX DLMF and DRMF macro '''\DefinitionOne''' represents the DefinitionOne.
+
+This macro is in the category of real or complex valued functions.
+
+In math mode, this macro can be called in the following way:
+
+:'''\DefinitionOne@{x}''' produces <math>{\displaystyle \DefinitionOne@{x}}</math><br />
+
+These are defined by
+<math>\displaystyle{
+\DefinitionOne@{x}:=\DefinitionTwo@{x}+1
+}</math>
+<br />
+drmf_eof
+drmf_bof
+'''Definition:DefinitionTwo'''
+The LaTeX DLMF and DRMF macro '''\DefinitionTwo''' represents the DefinitionTwo.
+
+This macro is in the category of real or complex valued functions.
+
+In math mode, this macro can be called in the following way:
+
+:'''\DefinitionTwo@{x}''' produces <math>{\displaystyle \DefinitionTwo@{x}}</math><br />
+
+These are defined by
+<math>\displaystyle{
+\DefinitionTwo@{x}:=\frac{6}{127}
+}</math>
+<br />
+drmf_eof
+drmf_bof
+'''Definition:DefinitionTwoTwo'''
+The LaTeX DLMF and DRMF macro '''\DefinitionTwoTwo''' represents the DefinitionTwoTwo.
+
+These are defined by
+<math>\displaystyle{
+\DefinitionTwoTwo:=22
+<br />
+
+drmf_eof

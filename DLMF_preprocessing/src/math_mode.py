@@ -76,6 +76,29 @@ def does_enter(string):
     return any(string.startswith(delim) for delim in MATH_START)
 
 
+def skip_escaped(string, loop=True):
+    # type: (str) -> int
+    """
+    Returns the distance to skip from escaped delimiters in the string.
+    :param string: The string to check.
+    :param loop: Whether to skip repeatedly or not.
+    :return: The distance to skip.
+    """
+    if loop:
+        s = skip_escaped(string, False)
+        index = 0
+        while s != 0:
+            string = string[s:]
+            index += s
+            s = skip_escaped(string, False)
+        return index
+    else:
+        for escape in ["\\$", "\\\\]", "\\\\)", "\\\\(", "\\\\[", "\\%"]:
+            if string.startswith(escape):
+                return len(escape)
+        return 0
+
+
 def parse_math(string, start, ranges):
     # type: (str) -> str, int
     """
@@ -88,24 +111,26 @@ def parse_math(string, start, ranges):
     delim = first_delim(string)
     i = len(delim)
     begin = start + i
+    commented = False
     while i < len(string):
-        if string[i:].startswith("\\$"):
-            i += 1
-        elif string[i:].startswith("\\\\]"):
-            i += 2
-        elif string[i:].startswith("\\\\)"):
-            i += 2
-        else:
-            if does_exit(string[i:]):
-                if begin != start + i:
-                    ranges.append((begin, start + i))
-                i += parse_non_math(string[i:], start + i, ranges)
-                begin = start + i
-                i -= 1
-            if string[i:].startswith(MATH_START[delim]):
-                if begin != start + i:
-                    ranges.append((begin, start + i))
-                return i + len(MATH_START[delim]) - 1
+        if not commented:
+            i += skip_escaped(string[i:])
+            sub = string[i:]
+            if sub[0] == "%":
+                commented = True
+            else:
+                if does_exit(sub):
+                    if begin != start + i:
+                        ranges.append((begin, start + i))
+                    i += parse_non_math(sub, start + i, ranges)
+                    begin = start + i
+                    i -= 1
+                if sub.startswith(MATH_START[delim]):
+                    if begin != start + i:
+                        ranges.append((begin, start + i))
+                    return i + len(MATH_START[delim]) - 1
+        elif string[i] == "\n":
+            commented = False
         i += 1
     raise SyntaxError("missing " + MATH_START[delim])
 
@@ -124,23 +149,27 @@ def parse_non_math(string, start, ranges):
         delim = ""
     level = 0
     i = len(delim)
+    commented = False
     while i < len(string):
-        if string[i:].startswith("\\$"):
-            i += 1
-        elif string[i:].startswith("\\\\["):
-            i += 2
-        elif string[i:].startswith("\\\\("):
-            i += 2
-        elif does_enter(string[i:]):
-            i += parse_math(string[i:], start + i, ranges)
-        elif string[i] == "{":
-            level += 1
-        elif string[i] == "}":
-            if level == 0 and delim != "":
-                i += 1
-                return i
-            else:
-                level -= 1
+        if not commented:
+            i += skip_escaped(string[i:])
+            if i >= len(string):
+                break
+            sub = string[i:]
+            if sub[0] == "%":
+                commented = True
+            elif does_enter(sub):
+                i += parse_math(sub, start + i, ranges)
+            elif sub[0] == "{":
+                level += 1
+            elif sub[0] == "}":
+                if level == 0 and delim != "":
+                    i += 1
+                    return i
+                else:
+                    level -= 1
+        elif string[i] == "\n":
+            commented = False
         i += 1
     if delim == "" and level == 0:
         return i
