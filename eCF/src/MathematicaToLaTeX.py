@@ -762,7 +762,7 @@ def main():
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
     """
-    test = False
+    test = True
 
     with open(os.path.dirname(os.path.realpath(__file__)) +
               '/../data/newIdentities.tex', 'w') as latex:
