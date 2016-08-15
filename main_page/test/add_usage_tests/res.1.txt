@@ -7,8 +7,10 @@ The LaTeX DLMF and DRMF macro '''\DefinitionOne''' represents the DefinitionOne.
 
 This macro is in the category of real or complex valued functions.
 
-In math mode, this macro can be called in the following way:
+In math mode, this macro can be called in the following ways:
 
+:'''\DefinitionOne''' produces <math>{\displaystyle \DefinitionOne}</math><br />
+:'''\DefinitionOne@{x}''' produces <math>{\displaystyle \DefinitionOne@{x}}</math><br />
 :'''\DefinitionOne@{x}''' produces <math>{\displaystyle \DefinitionOne@{x}}</math><br />
 
 These are defined by
@@ -23,8 +25,10 @@ The LaTeX DLMF and DRMF macro '''\DefinitionTwo''' represents the DefinitionTwo.
 
 This macro is in the category of real or complex valued functions.
 
-In math mode, this macro can be called in the following way:
+In math mode, this macro can be called in the following ways:
 
+:'''\DefinitionTwo''' produces <math>{\displaystyle \DefinitionTwo}</math><br />
+:'''\DefinitionTwo@{x}''' produces <math>{\displaystyle \DefinitionTwo@{x}}</math><br />
 :'''\DefinitionTwo@{x}''' produces <math>{\displaystyle \DefinitionTwo@{x}}</math><br />
 
 These are defined by
