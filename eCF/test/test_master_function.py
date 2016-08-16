@@ -54,6 +54,8 @@ class TestMasterFunction(TestCase):
                                      '\\HyperpFq{3}{3}@@{a,b,c}{d,e,f}{g}')
                     self.assertEqual(master_function('--HypergeometricPFQ[{a,b,c},{d,e,f},g]--', function),
                                      '--\\HyperpFq{3}{3}@@{a,b,c}{d,e,f}{g}--')
+                    self.assertEqual(master_function('HypergeometricPFQ[{},{},HypergeometricPFQ[{},{},a]]', function),
+                                     '\\HyperpFq{0}{0}@@{}{}{\\HyperpFq{0}{0}@@{}{}{a}}')
                 elif function[0] == 'QHypergeometricPFQ':
                     self.assertEqual(master_function('QHypergeometricPFQ[{},{},a,b]', function),
                                      '\\qHyperrphis{0}{0}@@{}{}{a}{b}')
