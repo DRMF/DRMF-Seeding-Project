@@ -22,15 +22,25 @@ Parts of this code were developed by Alex Danoff and Azeem Mohammed.
 
 To achieve the desired result, one should execute the progams in the following order (using the output of the previous program as input for the next one):
 
-1. remove_excess.py
-2. replace_special.py
-3. prepare_annotations.py
+1. `remove_excess.py`
+2. `replace_special.py`
+3. `prepare_annotations.py`
 
-## eCF Seeding Project
+## BMP Seeding Project
+
+## Maple CFSF Seeding Project
+
+This Python code (developed by Joon Bang) translates Maple files from Annie Cuyt's continued fractions package for special functions (CFSF) to LaTeX.
+
+The project is located in the `maple2latex` folder.
 
 ## DLMF Seeding Project
 
-## BMP Seeding Project
+## Mathematica eCF Seeding Project
+
+This Python code (mostly developed by Kevin Chen) translates Mathematica files to LaTeX.
+
+The project is currently awaiting approval to be merged into the main branch of the repository.
 
 ## KLSadd Insertion Project
 linetest.py and updateChapters.py written by Rahul Shah and Edward Bian
