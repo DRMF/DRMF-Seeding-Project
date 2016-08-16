@@ -1,6 +1,8 @@
 __author__ = "Joon Bang"
 __status__ = "Prototype"
 
+METADATA_TYPES = {"substitution": "Substitution(s)", "constraint": "Constraint(s)"}
+
 
 class LatexEquation(object):
     def __init__(self, label, equation, metadata):
@@ -18,7 +20,18 @@ def generate_html(tag_name, options, text, spacing=True):
     result = "<" + tag_name
     if options != "":
         result += " " + options
-    result += ">\n" + text + "\n</" + tag_name + ">\n"
+
+    result += ">"
+
+    if tag_name == "math":
+        result += "{\\displaystyle"
+
+    result += "\n" + text + "\n"
+
+    if tag_name == "math":
+        result += "}"
+
+    result += "</" + tag_name + ">\n"
 
     if not spacing:
         return result.replace("\n", " ")[:-1] + "\n"
@@ -53,9 +66,9 @@ def convert_dollar_signs(string):
 
 
 def translate(data):
+    result = list()
     for section_data in data:
-        print section_data[0]
-        equations = section_data[1]
+        equations = section_data[1][:-1]
         for i, equation in enumerate(equations):
             # formula stuff
             try:
@@ -66,7 +79,6 @@ def translate(data):
 
             # get metadata
             raw_metadata = list()
-            metadata_types = {"substitution": "Substitution(s)", "constraint": "Constraint(s)"}
 
             equation = equation.split("\n")[1:]
 
@@ -80,13 +92,42 @@ def translate(data):
             raw_metadata = ''.join([line[1:].strip() for line in raw_metadata])
 
             metadata = dict()
-            for data_type in metadata_types:
-                metadata[data_type] = convert_dollar_signs(get_data_str(raw_metadata, latex="\\"+data_type))
+            for data_type in METADATA_TYPES:
+                metadata[data_type] = convert_dollar_signs(get_data_str(raw_metadata, latex="\\"+data_type)).strip()
 
-            equations[i] = LatexEquation(formula, ''.join(equation), metadata)
+            equations[i] = LatexEquation(formula, ' '.join(equation), metadata)
 
-        for equation in equations:
-            print equation
+        result.append([section_data[0], equations])
+
+    return result
+
+
+def create_general_pages(data):
+    ret = ""
+
+    for section_data in data:
+        section_name = section_data[0]
+        result = "drmf_bof\n'''" + section_name + "'''\n{{DISPLAYTITLE:" + section_name + "}}\n"
+
+        # TODO: headers code (recycle from main_page code?)
+
+        result += "\n== " + section_name + " ==\n\n"
+
+        text = ""
+        for equation in section_data[1]:
+            # equation is of type LatexEquation
+            text += generate_html("math", "id=\"" + equation.label + "\"", equation.equation)
+
+            for data_type, info in equation.metadata.iteritems():
+                if info != "":
+                    text += generate_html("div", "align=\"right\"", METADATA_TYPES[data_type] + ": " + info,
+                                          spacing=False)[:-1] + "<br />\n"
+
+        result += text + "drmf_eof\n"
+
+        ret += result
+
+    return ret
 
 
 def find_end(text, left_delimiter, right_delimiter, start=0):
@@ -130,7 +171,8 @@ def main():
 
         data.append([section_name, equations])
 
-    translate(data)
+    data = translate(data)
+    print create_general_pages(data)
 
 if __name__ == '__main__':
     main()
