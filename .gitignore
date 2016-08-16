@@ -251,14 +251,3 @@ sympy-plots-for-*.tex/
 *.bak
 *.sav
 
-# ecf project
-*.sty
-Identities.*
-newIdentities.*
-*.csv
-macros.txt
-test.*
-*.log
-*.aux
-ZE.3.*
-

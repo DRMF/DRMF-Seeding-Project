@@ -16,3 +16,14 @@ tasks.txt
 *.sty
 *.aux
 *.csv
+
+
+# ecf project
+*.sty
+Identities.*
+newIdentities.*
+*.csv
+macros.txt
+*.log
+*.aux
+ZE.3.*
