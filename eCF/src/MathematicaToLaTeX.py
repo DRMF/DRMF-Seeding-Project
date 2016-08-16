@@ -651,22 +651,22 @@ def convert_fraction(line):
                 # ()/()
                 line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
                     .format(line[:j + 1], line[j + 2:i - 1],
-                           line[i + 2:k], line[k + 1:])
+                            line[i + 2:k], line[k + 1:])
             elif line[j + 1] == '(' and line[i - 1] == ')':
                 # ()/--
                 line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
                     .format(line[:j + 1], line[j + 2:i - 1],
-                           line[i + 1:k + 1], line[k + 1:])
+                            line[i + 1:k + 1], line[k + 1:])
             elif line[i + 1] == '(' and line[k] == ')':
                 # --/()
                 line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
                     .format(line[:j + 1], line[j + 1:i],
-                           line[i + 2:k], line[k + 1:])
+                            line[i + 2:k], line[k + 1:])
             else:
                 # --/--
                 line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
                     .format(line[:j + 1], line[j + 1:i],
-                           line[i + 1:k + 1], line[k + 1:])
+                            line[i + 1:k + 1], line[k + 1:])
 
         i += 1
 
@@ -757,21 +757,14 @@ def replace_vars(line):
     return line
 
 
-def main():
+def main(pathw, pathr, test):
     """
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
     """
-    test = False
 
-    with open(os.path.dirname(os.path.realpath(__file__)) +
-              '/../data/newIdentities.tex', 'w') as latex:
-        if test:
-            to_open = 'IdentitiesTest.m'
-        else:
-            to_open = 'Identities.m'
-        with open(os.path.dirname(os.path.realpath(__file__)) + '/../data/' +
-                  to_open, 'r') as mathematica:
+    with open(pathw, 'w') as latex:
+        with open(pathr, 'r') as mathematica:
 
             latex.write('\n\\documentclass{article}\n\n'
                         '\\usepackage{amsmath}\n'
@@ -866,4 +859,8 @@ for index, item in enumerate(FUNCTION_CONVERSIONS):
 FUNCTION_CONVERSIONS = tuple(FUNCTION_CONVERSIONS)
 
 if __name__ == '__main__':
-    main()
+    main(
+        os.path.dirname(os.path.realpath(__file__)) +
+        '/../data/newIdentities.tex',
+        os.path.dirname(os.path.realpath(__file__)) +
+        '/../data/IdentitiesTest.m', False)
