@@ -35,10 +35,10 @@ class TestReplaceVars(TestCase):
     def test_replace_symbols(self):
         for word in SYMBOLS:
             after = '\\' + SYMBOLS[word]
-            self.assertEquals(replace_vars('\\[' + word + ']'), after.replace('\\ ', ''))
+            self.assertEqual(replace_vars('\\[' + word + ']'), after.replace('\\ ', ''))
 
     def test_replace_infinity(self):
-        self.assertEquals(replace_vars('Infinity'), '\\infty')
+        self.assertEqual(replace_vars('Infinity'), '\\infty')
 
     def test_none(self):
         self.assertEqual(replace_vars('novariables'), 'novariables')

@@ -758,9 +758,9 @@ def replace_vars(line):
 
 
 def main(pathw=os.path.dirname(os.path.realpath(__file__)) +
-               '/../data/newIdentities.tex',
+         '/../data/newIdentities.tex',
          pathr=os.path.dirname(os.path.realpath(__file__)) +
-               '/../data/Identities.m', test=False):
+         '/../data/IdentitiesTest.m', test=True):
     """
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
@@ -806,8 +806,8 @@ def main(pathw=os.path.dirname(os.path.realpath(__file__)) +
 
                     line = line.replace('EulerGamma', '\\EulerConstant')
 
-                    for i in FUNCTION_CONVERSIONS:
-                        line = master_function(line, i)
+                    for func in FUNCTION_CONVERSIONS:
+                        line = master_function(line, func)
 
                     line = carat(line)
 
@@ -861,5 +861,7 @@ for index, item in enumerate(FUNCTION_CONVERSIONS):
 
 FUNCTION_CONVERSIONS = tuple(FUNCTION_CONVERSIONS)
 
+
 if __name__ == '__main__':
     main()
+
