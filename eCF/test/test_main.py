@@ -14,7 +14,7 @@ PATHR = os.path.dirname(os.path.realpath(__file__)) + '/data/test.m'
 class TestMain(TestCase):
 
     def test_test(self):
-        main(PATHW, PATHR, True)
+        main(pathw=PATHW, pathr=PATHR, test=True)
         with open(PATHW, 'r') as l:
             latex = l.read()
         self.assertEqual(
@@ -44,7 +44,7 @@ class TestMain(TestCase):
                     '\\end{document}\n'))
 
     def test_nottest(self):
-        main(PATHW, PATHR, False)
+        main(pathw=PATHW, pathr=PATHR, test=False)
         with open(PATHW, 'r') as l:
             latex = l.read()
         self.assertEqual(

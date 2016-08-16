@@ -757,7 +757,10 @@ def replace_vars(line):
     return line
 
 
-def main(pathw, pathr, test):
+def main(pathw=os.path.dirname(os.path.realpath(__file__)) +
+               '/../data/newIdentities.tex',
+         pathr=os.path.dirname(os.path.realpath(__file__)) +
+               '/../data/Identities.m', test=False):
     """
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
@@ -859,8 +862,4 @@ for index, item in enumerate(FUNCTION_CONVERSIONS):
 FUNCTION_CONVERSIONS = tuple(FUNCTION_CONVERSIONS)
 
 if __name__ == '__main__':
-    main(
-        os.path.dirname(os.path.realpath(__file__)) +
-        '/../data/newIdentities.tex',
-        os.path.dirname(os.path.realpath(__file__)) +
-        '/../data/IdentitiesTest.m', False)
+    main()
