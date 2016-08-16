@@ -1,6 +1,6 @@
 # tex2Wiki
 
-## Azeem Mohammed
+## Azeem Mohammed, Joon Bang
 
 WIP code
 
