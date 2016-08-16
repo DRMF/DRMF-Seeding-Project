@@ -13,6 +13,8 @@ __credits__ = ["Divya Gandla", "Kevin Chen"]
 
 import os
 
+DIR_NAME = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
+
 SYMBOLS = {
     'Alpha': 'alpha', 'Beta': 'beta', 'Gamma': 'gamma', 'Delta': 'delta',
     'Epsilon': 'epsilon', 'Zeta': 'zeta', 'Eta': 'eta', 'Theta': 'theta',
@@ -41,9 +43,21 @@ SYMBOLS = {
 
 
 def find_surrounding(line, function, ex=(), start=0):
+    # (str, str(, tuple, int)) -> tuple
     """
     Finds the indices of the beginning and end of a function; this is the main
     function that powers the converter.
+
+    :param line: line to be converted
+    :param function: the function you're trying to find the surrounding
+                     brackets for
+    :param ex: exceptions that shouldn't be converted, because conversions do
+               not see if a function is a part of another function (e.g. the
+               function "NotEquals" could get converted if a program was told
+               the original is "Equals"
+    :param start: index of where to start finding (used if there are multiple
+                  of one function in a line
+    :returns: converted line
     """
     positions = [0, 0]
     line = line[start:]
@@ -79,9 +93,14 @@ def find_surrounding(line, function, ex=(), start=0):
 
 
 def arg_split(line, sep):
+    # (str, str) -> list
     """
-    Does the same thing as 'split', but does not split when the separator is
+    Works very much like 'split', but does not split when the separator is
     inside parentheses, brackets, or braces. Useful for nested statements.
+
+    :param line: line to be split
+    :param sep: seperator (character)
+    :returns: list of segments
     """
     l = list('([{')
     r = list(')]}')
@@ -107,9 +126,16 @@ def arg_split(line, sep):
 
 
 def master_function(line, params):
+    # (str, tuple) -> str
     """
     A master function, reads in the conversion templates from the 'functions'
     file and performs the conversion.
+
+    :param line: line to be converted
+    :param params: tuple containing Mathematica function, equivalent LaTeX
+                   function, the format, using "-" as argument placings, and
+                   exceptions, if any
+    :returns: converted line
     """
     m, l, sep, ex = params[:5]
     sep = [i.split('-') for i in sep]
@@ -154,7 +180,13 @@ def master_function(line, params):
 
 
 def remove_inactive(line):
-    """Removes 'Inactive' and its surrounding brackets."""
+    # (str) -> str
+    """
+    Removes 'Inactive' and its surrounding brackets.
+
+    :param line: line to be converted
+    :returns: converted line
+    """
     for _ in range(line.count('Inactive')):
         pos = find_surrounding(line, 'Inactive')
         if pos[0] != pos[1]:
@@ -164,7 +196,13 @@ def remove_inactive(line):
 
 
 def remove_conditionalexpression(line):
-    """Removes 'ConditionalExpression' and its surrounding brackets."""
+    # (str) -> str
+    """
+    Removes 'ConditionalExpression' and its surrounding brackets.
+
+    :param line: line to be converted
+    :returns: converted line
+    """
     for _ in range(line.count('ConditionalExpression')):
         pos = find_surrounding(line, 'ConditionalExpression')
         if pos[0] != pos[1]:
@@ -174,7 +212,13 @@ def remove_conditionalexpression(line):
 
 
 def remove_symbol(line):
-    """Removes 'Symbol' and its surrounding brackets."""
+    # (str) -> str
+    """
+    Removes 'Symbol' and its surrounding brackets.
+
+    :param line: line to be converted
+    :returns: converted line
+    """
     for _ in range(line.count('Symbol')):
         pos = find_surrounding(line, 'Symbol')
         if pos[0] != pos[1]:
@@ -184,12 +228,16 @@ def remove_symbol(line):
 
 
 def carat(line):
+    # (str) -> str
     """
     Converts carats ('^') to ones with braces instead of parentheses. e.g:
     'a ^ (b + c)' would only show the first character 'b' as superscript in
                   LaTeX, but converting it to
     'a ^ {b + c}' would make it look correct in LaTeX, with 'b + c' as the
                   superscript.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     l = list('([{')
     r = list(')]}')
@@ -224,13 +272,12 @@ def carat(line):
 
 
 def beta(line):
+    # (str) -> str
     """
     Converts Mathematica's 'Beta' function to the equivalent LaTeX macro,
     taking into account the variations for the different number of arguments.
 
-    :type line: str
     :param line: line to be converted
-    :rtype: str
     :returns: converted line
     """
     for _ in range(line.count('Beta')):
@@ -258,8 +305,12 @@ def beta(line):
 
 
 def cfk(line):
+    # (str) -> str
     """
     Converts Mathematica's 'ContinuedFractionK' to the equivalent LaTeX macro.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     for _ in range(line.count('ContinuedFractionK')):
         try:
@@ -289,9 +340,13 @@ def cfk(line):
 
 
 def gamma(line):
+    # (str) -> str
     """
     Converts Mathematica's 'Gamma' function to the equivalent LaTeX macro,
     taking into account the variations for the different number of arguments.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     for _ in range(line.count('Gamma')):
         try:
@@ -329,8 +384,12 @@ def gamma(line):
 
 
 def integrate(line):
+    # (str) -> str
     """
     Converts Mathematica's 'Integrate' function to the equivalent LaTeX macro.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     for _ in range(line.count('Integrate')):
         try:
@@ -353,9 +412,13 @@ def integrate(line):
 
 
 def legendrep(line):
+    # (str) -> str
     """
     Converts Mathematica's 'LegendreP' function to the equivalent LaTeX macro,
     taking into account the variations for the different number of arguments.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     for _ in range(line.count('LegendreP')):
         try:
@@ -386,9 +449,13 @@ def legendrep(line):
 
 
 def legendreq(line):
+    # (str) -> str
     """
     Converts Mathematica's 'LegendreQ' function to the equivalent LaTeX macro,
     taking into account the variations for the different number of arguments.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     for _ in range(line.count('LegendreQ')):
         try:
@@ -419,9 +486,13 @@ def legendreq(line):
 
 
 def polyeulergamma(line):
+    # (str) -> str
     """
     Converts Mathematica's 'Polygamma' function to the equivalent LaTeX macro,
     taking into account the variations for the different number of arguments.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     for _ in range(line.count('PolyGamma')):
         try:
@@ -446,8 +517,12 @@ def polyeulergamma(line):
 
 
 def product(line):
+    # (str) -> str
     """
     Converts Mathematica's product sum function to the equivalent LaTeX macro.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     for _ in range(line.count('Product')):
         try:
@@ -470,9 +545,13 @@ def product(line):
 
 
 def qpochhammer(line):
+    # (str) -> str
     """
     Converts Mathematica's 'QPochhammer' function to the equivalent LaTeX
     macro.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     for _ in range(line.count('QPochhammer')):
         try:
@@ -501,8 +580,12 @@ def qpochhammer(line):
 
 
 def summation(line):
+    # (str) -> str
     """
     Converts Mathematica's summation function to the equivalent LaTeX macro.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     for _ in range(line.count('Sum')):
         try:
@@ -525,9 +608,13 @@ def summation(line):
 
 
 def constraint(line):
+    # (str) -> str
     """
     Converts Mathematica's 'Element', 'NotElement', and 'Inequality' functions
     to LaTeX formatting using \\constraint{}.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     sections = arg_split(line, ',')
 
@@ -599,9 +686,13 @@ def constraint(line):
 
 
 def convert_fraction(line):
+    # (str) -> str
     """
     Converts Mathematica fractions, which are only '/', to LaTeX
     \\frac{}{}-ions.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     l = list('([{')
     r = list(')]}')
@@ -674,7 +765,13 @@ def convert_fraction(line):
 
 
 def piecewise(line):
-    """Converts Mathematica's piecewise function to LaTeX, using 'cases'."""
+    # (str) -> str
+    """
+    Converts Mathematica's piecewise function to LaTeX, using 'cases'.
+
+    :param line: line to be converted
+    :returns: converted line
+    """
     for _ in range(line.count('Piecewise')):
         try:
             pos
@@ -703,7 +800,13 @@ def piecewise(line):
 
 
 def replace_operators(line):
-    """Replaces basic operators."""
+    # (str) -> str
+    """
+    Replaces basic operators.
+
+    :param line: line to be converted
+    :returns: converted line
+    """
     line = line.replace('==', '=')
     line = line.replace('||', ' \\lor ')
     line = line.replace('>=', ' \\geq ')
@@ -742,9 +845,13 @@ def replace_operators(line):
 
 
 def replace_vars(line):
+    # (str) -> str
     """
     Replaces the easy to convert variables in Mathematica to its equivalent
     LaTeX code in the dictionary 'symbols'.
+
+    :param line: line to be converted
+    :returns: converted line
     """
     for word in SYMBOLS:
         if SYMBOLS[word][0] == ' ':
@@ -757,13 +864,18 @@ def replace_vars(line):
     return line
 
 
-def main(pathw=os.path.dirname(os.path.realpath(__file__)) +
-         '/../data/newIdentities.tex',
-         pathr=os.path.dirname(os.path.realpath(__file__)) +
-         '/../data/IdentitiesTest.m', test=True):
+def main(pathw=DIR_NAME + 'newIdentities.tex',
+         pathr=DIR_NAME + 'IdentitiesTest.m', test=False):
+    # ((str, str, bool)) -> None
     """
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
+
+    :param pathw: directory of file to be written to
+    :param pathr: directory of file to be read from
+    :param test: if True, replaces "(* *)" with quotes; if False: uses "\\tag"
+                 to mark the functions
+    :returns: None
     """
 
     with open(pathw, 'w') as latex:
@@ -841,7 +953,7 @@ def main(pathw=os.path.dirname(os.path.realpath(__file__)) +
             latex.write('\n\n\\end{document}\n')
 
 
-with open(os.path.dirname(os.path.realpath(__file__)) + '/../data/functions') \
+with open(DIR_NAME + 'functions') \
         as functions:
     FUNCTION_CONVERSIONS = list(arg_split(line.replace(' ', ''), ',') for line
                                 in functions.read().split('\n')
@@ -864,4 +976,3 @@ FUNCTION_CONVERSIONS = tuple(FUNCTION_CONVERSIONS)
 
 if __name__ == '__main__':
     main()
-
