@@ -63,20 +63,18 @@ def find_surrounding(line, function, ex=(), start=0):
     line = line[start:]
     positions[0] = line.find(function)
 
+    # Finds the exceptions (if any) and returns indeces after the exception
     if ex != '' and len(ex) >= 1:
         for e in ex:
             if (line.find(e) != -1 and
                 line.find(e) <= positions[0] and
-                line.find(e) + len(e) >= positions[0] + len(
-                        function)):
+                    line.find(e) + len(e) >= positions[0] + len(function)):
                 return [line.find(e) + len(e) + start,
                         line.find(e) + len(e) + start]
 
+    # Finds the start and end of a function
     count = 0
     for j in range(positions[0] + len(function), len(line) + 1):
-        if j == len(line) and count == 0:
-            positions[1] = positions[0]
-            break
 
         if line[j] in list('([{'):
             count += 1
@@ -153,7 +151,7 @@ def master_function(line, params):
         if pos[0] != pos[1]:
             args = arg_split(line[pos[0] + len(m) + 1:pos[1] - 1], ',')
 
-            # exceptions:
+            # Special functions that change the order of arguments:
             if m == 'GegenbauerC':
                 args[0], args[1] = args[1], args[0]
             if m == 'HarmonicNumber' and len(args) == 2:
@@ -247,6 +245,8 @@ def carat(line):
     while i != len(line):
         if line[i] == '^':
             count = 0
+
+            # Searches for when a carat ends
             for k in range(i + 1, len(line)):
                 if line[k] in l:
                     count += 1
@@ -702,7 +702,7 @@ def convert_fraction(line):
     while i != len(line):
         if line[i] == '/':
 
-            # Searching left.
+            # Searches left
             count = 0
             for j in range(i - 1, -1, -1):
                 if line[j] in r:
@@ -717,7 +717,7 @@ def convert_fraction(line):
                     j -= 1
                     break
 
-            # Searching right.
+            # Searches right
             count = 0
             for k in range(i + 1, len(line)):
                 if line[k] in l:
@@ -822,6 +822,8 @@ def replace_operators(line):
     line = line.replace('-', ' - ')
     line = line.replace(',', ', ')
 
+    # This is so that things in a constraint, which is denoted by percentage
+    # signs, don't get operators converted
     if '%' in line:
         parts = (line[:line.index('%')], line[line.index('%'):])
         line = parts[0]
@@ -865,7 +867,7 @@ def replace_vars(line):
 
 
 def main(pathw=DIR_NAME + 'newIdentities.tex',
-         pathr=DIR_NAME + 'IdentitiesTest.m', test=False):
+         pathr=DIR_NAME + 'Identities.m', test=False):
     # ((str, str, bool)) -> None
     """
     Opens Mathematica file with identities and puts converted lines into
@@ -898,8 +900,8 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
             for line in mathematica:
                 line = line.replace('\n', '')
 
+                # If line is a comment, make it a LaTeX comment or "\tag"
                 if '(*' in line and '*)' in line:
-
                     if test:
                         line = line.replace('(*', '%').replace('*)', '%')
                     else:
@@ -907,7 +909,6 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                                 line[4:-3].replace('"', '') + '}')
 
                     latex.write(line + '\n')
-
                 else:
 
                     line = line.replace(' ', '')
@@ -953,6 +954,8 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
             latex.write('\n\n\\end{document}\n')
 
 
+# Open data/functions, and process the data into a comprehensible tuple that
+# gets fed into "master_function" function
 with open(DIR_NAME + 'functions') \
         as functions:
     FUNCTION_CONVERSIONS = list(arg_split(line.replace(' ', ''), ',') for line
