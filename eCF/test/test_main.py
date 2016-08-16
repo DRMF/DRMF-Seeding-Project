@@ -43,7 +43,7 @@ class TestMain(TestCase):
                     '\n'
                     '\\end{document}\n'))
 
-    def test_test(self):
+    def test_nottest(self):
         main(PATHW, PATHR, False)
         with open(PATHW, 'r') as l:
             latex = l.read()
