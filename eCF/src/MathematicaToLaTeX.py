@@ -51,7 +51,7 @@ def find_surrounding(line, function, ex=(), start=0):
     Finds the indices of the beginning and end of a function; this is the main
     function that powers the converter.
 
-    :param line: line to be converted
+    :param line: line with functions that are going to be searched
     :param function: the function you're trying to find the surrounding
                      brackets for
     :param ex: exceptions that shouldn't be converted, because conversions do
@@ -60,7 +60,7 @@ def find_surrounding(line, function, ex=(), start=0):
                the original is "Equals"
     :param start: index of where to start finding (used if there are multiple
                   of one function in a line
-    :returns: converted line
+    :returns: positions of opening and ending brackets
     """
     positions = [0, 0]
     line = line[start:]
@@ -70,9 +70,8 @@ def find_surrounding(line, function, ex=(), start=0):
     if ex != '' and len(ex) >= 1:
         for e in ex:
             if (line.find(e) != -1 and
-                        line.find(e) <= positions[0] and
-                            line.find(e) + len(e) >= positions[0] + len(
-                        function)):
+                line.find(e) <= positions[0] and
+                    line.find(e) + len(e) >= positions[0] + len(function)):
                 return [line.find(e) + len(e) + start,
                         line.find(e) + len(e) + start]
 
@@ -86,7 +85,7 @@ def find_surrounding(line, function, ex=(), start=0):
             count -= 1
         if count == 0:
             if j == positions[0] + len(function):
-                positions[1] = positions[0]
+                positions[1], positions[0] = j, j
             else:
                 positions[1] = j + 1
             break
@@ -126,12 +125,23 @@ def arg_split(line, sep):
 
 
 def search(line, i, sign, direction=-1):
+    # (str, list, str(, int)) -> int
+    """
+    Searches for the ends of fractions or carats; excludes signs in brackets
+
+    :param line: line to be searched
+    :param i: the starting point, usually a "/" or a "^"
+    :param sign: list of excluding symbols
+    :param direction: direction of search, left: -1, right: 1
+    :returns: indice of end
+    """
     j = i + direction
     if direction == -1:
         end = -1
     else:
         end = len(line)
     count = 0
+
     for j in range(i + direction, end, direction):
         if line[j] in LEFT_BRACKETS:
             count += direction
@@ -144,8 +154,10 @@ def search(line, i, sign, direction=-1):
         if count == 0 and j == end - direction:
             j += direction
             break
+
     if direction == 1:
         j -= 1
+
     return j
 
 
@@ -314,6 +326,8 @@ def beta(line):
 
 
 def cfk(line):
+    print(line)
+    print(line)
     # (str) -> str
     """
     Converts Mathematica's 'ContinuedFractionK' to the equivalent LaTeX macro.
@@ -344,6 +358,7 @@ def cfk(line):
                         '\\CFK{{{0}}}{{{1}}}{{{2}}}@@{{1}}{{{3}}}'
                         .format(moreargs[0], moreargs[1], moreargs[2],
                                 args[0]) + line[pos[1]:])
+    print(line)
 
     return line
 
@@ -632,13 +647,13 @@ def constraint(line):
 
     constraints = arg_split(sections[-1].replace('&&', '&'), '&')
 
-    for i, item, in enumerate(constraints):
+    for i, element, in enumerate(constraints):
         if i == 0:
             constraints[i] = ('\n%  \\constraint{$' +
-                              item.replace('&', ' \\land '))
+                              element.replace('&', ' \\land '))
         else:
             constraints[i] = ('\n%    & $' +
-                              item.replace('&', ' \\land '))
+                              element.replace('&', ' \\land '))
         if i == len(constraints) - 1:
             constraints[i] += '$}'
         else:
@@ -704,15 +719,12 @@ def convert_fraction(line):
     :returns: converted line
     """
     i = 0
-    l = list("([{")
-    r = list(")}]")
     sign = list('*+-=,<>&')
 
     while i != len(line):
         if line[i] == '/':
 
             j = search(line, i, sign)
-
             k = search(line, i, sign, 1)
 
             # Removes extra surrounding parentheses, if there are any.
@@ -849,7 +861,7 @@ def replace_vars(line):
 
 
 def main(pathw=DIR_NAME + 'newIdentities.tex',
-         pathr=DIR_NAME + 'Identities.m', test=False):
+         pathr=DIR_NAME + 'IdentitiesTest.m', test=True):
     # ((str, str, bool)) -> None
     """
     Opens Mathematica file with identities and puts converted lines into
