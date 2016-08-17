@@ -1,11 +1,5 @@
 functions/
 out/
-!out/test.pdf
 notes.txt
 resources/
 .DS_Store
-../.DS_Store
-*differences.py
-../AzeemOldCode/
-../tex2wiki/
-../main_page/

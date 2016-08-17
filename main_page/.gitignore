@@ -1,5 +1,4 @@
 .DS_Store
 backups/
-../.DS_Store
 *Glossary.csv*
 !test/fake.Glossary.csv
