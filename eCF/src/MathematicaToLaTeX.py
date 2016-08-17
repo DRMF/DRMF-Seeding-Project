@@ -46,6 +46,9 @@ RIGHT_BRACKETS = list(')]}')
 
 
 def find_surrounding(line, function, ex=(), start=0):
+    print(function)
+    print(line)
+    print(ex)
     # (str, str(, tuple, int)) -> tuple
     """
     Finds the indices of the beginning and end of a function; this is the main
@@ -85,7 +88,7 @@ def find_surrounding(line, function, ex=(), start=0):
             count -= 1
         if count == 0:
             if j == positions[0] + len(function):
-                positions[1], positions[0] = j, j
+                positions[0] = positions[1]
             else:
                 positions[1] = j + 1
             break
@@ -858,7 +861,7 @@ def replace_vars(line):
 
 
 def main(pathw=DIR_NAME + 'newIdentities.tex',
-         pathr=DIR_NAME + 'Identities.m', test=False):
+         pathr=DIR_NAME + 'IdentitiesTest.m', test=True):
     # ((str, str, bool)) -> None
     """
     Opens Mathematica file with identities and puts converted lines into

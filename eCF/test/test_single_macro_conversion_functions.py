@@ -45,7 +45,6 @@ class TestCFK(TestCase):
         self.assertEqual(cfk('--ContinuedFractionK[g,{i,imin,imax}]--'), '--\\CFK{i}{imin}{imax}@@{1}{g}--')
         self.assertEqual(cfk('ContinuedFractionK[f,g,{i,imin,imax}]ContinuedFractionK[g,{i,imin,imax}]'), '\\CFK{i}{imin}{imax}@@{f}{g}\\CFK{i}{imin}{imax}@@{1}{g}')
         self.assertEqual(cfk('--ContinuedFractionK[f,g,{i,imin,imax}]--ContinuedFractionK[g,{i,imin,imax}]--'), '--\\CFK{i}{imin}{imax}@@{f}{g}--\\CFK{i}{imin}{imax}@@{1}{g}--')
-        self.assertEqual(cfk('ContinuedFractionK[\\[Delta]+\\[Epsilon],a,{k,1,Infinity}]'), '\CFK{k}{1}{Infinity}@@{\\[Delta]+\\[Epsilon]}{a}')
 
     def test_nested(self):
         self.assertEqual(cfk('ContinuedFractionK[ContinuedFractionK[f,g,{i,imin,imax}],ContinuedFractionK[f,g,{i,imin,imax}],{i,imin,imax}]'), '\\CFK{i}{imin}{imax}@@{\\CFK{i}{imin}{imax}@@{f}{g}}{\\CFK{i}{imin}{imax}@@{f}{g}}')
