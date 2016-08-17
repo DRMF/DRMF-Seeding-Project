@@ -46,9 +46,6 @@ RIGHT_BRACKETS = list(')]}')
 
 
 def find_surrounding(line, function, ex=(), start=0):
-    print(function)
-    print(line)
-    print(ex)
     # (str, str(, tuple, int)) -> tuple
     """
     Finds the indices of the beginning and end of a function; this is the main
