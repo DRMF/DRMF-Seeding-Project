@@ -35,9 +35,6 @@ class TestBeta(TestCase):
         self.assertEqual(beta('BetaRegularized[z,a,b]'), 'BetaRegularized[z,a,b]')
         self.assertEqual(beta('\\[Beta]'), '\\[Beta]')
 
-    def test_none(self):
-        self.assertEqual(beta('none'), 'none')
-
 
 class TestCFK(TestCase):
 
