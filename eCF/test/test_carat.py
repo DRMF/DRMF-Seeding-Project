@@ -20,12 +20,12 @@ class TestCarat(TestCase):
 
     def test_parentheses(self):
         self.assertEqual(carat('a^(b+c)'), 'a^{b+c}')
-        self.assertEqual(carat('a^(b+c)*d'), 'a^{(b+c)}*d')
-        self.assertEqual(carat('a^(b+c)/d'), 'a^{(b+c)}/d')
-        self.assertEqual(carat('a^(b+c)+d'), 'a^{(b+c)}+d')
-        self.assertEqual(carat('a^(b+c)-d'), 'a^{(b+c)}-d')
-        self.assertEqual(carat('a^(b+c)=d'), 'a^{(b+c)}=d')
-        self.assertEqual(carat('a^(b+c),d'), 'a^{(b+c)},d')
+        self.assertEqual(carat('a^(b+c)*d'), 'a^{b+c}*d')
+        self.assertEqual(carat('a^(b+c)/d'), 'a^{b+c}/d')
+        self.assertEqual(carat('a^(b+c)+d'), 'a^{b+c}+d')
+        self.assertEqual(carat('a^(b+c)-d'), 'a^{b+c}-d')
+        self.assertEqual(carat('a^(b+c)=d'), 'a^{b+c}=d')
+        self.assertEqual(carat('a^(b+c),d'), 'a^{b+c},d')
 
     def test_none(self):
         self.assertEqual(carat('nocarat'), 'nocarat')

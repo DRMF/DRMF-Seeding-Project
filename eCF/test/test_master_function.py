@@ -68,6 +68,8 @@ class TestMasterFunction(TestCase):
                 else:
                     self.assertEqual(master_function(before, function), after)
                     self.assertEqual(master_function('--{0}--'.format(before), function), '--{0}--'.format(after))
+                    if function[0] == 'D':
+                        self.assertEqual(master_function('\\[Delta]', function), '\\[Delta]')
 
     def test_exception(self):
         for function in FUNCTION_CONVERSIONS:

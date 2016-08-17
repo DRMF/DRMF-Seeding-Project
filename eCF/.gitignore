@@ -8,7 +8,7 @@ data/References.txt
 src/Glossary.csv
 src/new.Glossary.csv
 src/new.Glossary.updated.csv
-src/pythonTest.py
+src/MathematicaToLaTeXTest.py
 IdentitiesTest.txt
 README_Glossary
 x.log

@@ -41,14 +41,20 @@ SYMBOLS = {
 
     'Infinity': 'infty'}
 
+LEFT_BRACKETS = list('([{')
+RIGHT_BRACKETS = list(')]}')
+
 
 def find_surrounding(line, function, ex=(), start=0):
+    print(function)
+    print(line)
+    print(ex)
     # (str, str(, tuple, int)) -> tuple
     """
     Finds the indices of the beginning and end of a function; this is the main
     function that powers the converter.
 
-    :param line: line to be converted
+    :param line: line with functions that are going to be searched
     :param function: the function you're trying to find the surrounding
                      brackets for
     :param ex: exceptions that shouldn't be converted, because conversions do
@@ -57,7 +63,7 @@ def find_surrounding(line, function, ex=(), start=0):
                the original is "Equals"
     :param start: index of where to start finding (used if there are multiple
                   of one function in a line
-    :returns: converted line
+    :returns: positions of opening and ending brackets
     """
     positions = [0, 0]
     line = line[start:]
@@ -82,7 +88,7 @@ def find_surrounding(line, function, ex=(), start=0):
             count -= 1
         if count == 0:
             if j == positions[0] + len(function):
-                positions[1] = positions[0]
+                positions[0] = positions[1]
             else:
                 positions[1] = j + 1
             break
@@ -100,17 +106,15 @@ def arg_split(line, sep):
     :param sep: seperator (character)
     :returns: list of segments
     """
-    l = list('([{')
-    r = list(')]}')
     args = []
     count = i = 0
     end = len(line) + 1
     line = line + sep
 
     while i != end:
-        if line[i] in l:
+        if line[i] in LEFT_BRACKETS:
             count += 1
-        if line[i] in r:
+        if line[i] in RIGHT_BRACKETS:
             count -= 1
         if count == 0 and line[i] == sep:
             args.append(line[:i])
@@ -121,6 +125,43 @@ def arg_split(line, sep):
             i += 1
 
     return args
+
+
+def search(line, i, sign, direction=-1):
+    # (str, list, str(, int)) -> int
+    """
+    Searches for the ends of fractions or carats; excludes signs in brackets
+
+    :param line: line to be searched
+    :param i: the starting point, usually a "/" or a "^"
+    :param sign: list of excluding symbols
+    :param direction: direction of search, left: -1, right: 1
+    :returns: indice of end
+    """
+    j = i + direction
+    if direction == -1:
+        end = -1
+    else:
+        end = len(line)
+    count = 0
+
+    for j in range(i + direction, end, direction):
+        if line[j] in LEFT_BRACKETS:
+            count += direction
+        if line[j] in RIGHT_BRACKETS:
+            count -= direction
+        if count == 0 and line[j] in sign:
+            count -= 1
+        if count < 0:
+            break
+        if count == 0 and j == end - direction:
+            j += direction
+            break
+
+    if direction == 1:
+        j -= 1
+
+    return j
 
 
 def master_function(line, params):
@@ -237,31 +278,14 @@ def carat(line):
     :param line: line to be converted
     :returns: converted line
     """
-    l = list('([{')
-    r = list(')]}')
-    sign = list('*/+-=, ')
     i = 0
 
     while i != len(line):
         if line[i] == '^':
-            count = 0
 
-            # Searches for when a carat ends
-            for k in range(i + 1, len(line)):
-                if line[k] in l:
-                    count += 1
-                if line[k] in r:
-                    count -= 1
-                if count == 0 and line[k] in sign:
-                    count -= 1
-                if count < 0:
-                    break
-                if count == 0 and k == len(line) - 1:
-                    k += 1
-                    break
-            k -= 1
+            k = search(line, i, list('*/+-=, '), 1)
 
-            if line[i + 1] == '(' and line[-1] == ')':
+            if line[i + 1] == '(' and line[k] == ')':
                 line = line[:i] + '^{' + line[i + 2:k] + '}' + line[k + 1:]
             else:
                 line = line[:i] + '^{' + line[i + 1:k + 1] + '}' + line[k + 1:]
@@ -623,13 +647,13 @@ def constraint(line):
 
     constraints = arg_split(sections[-1].replace('&&', '&'), '&')
 
-    for i, item, in enumerate(constraints):
+    for i, element, in enumerate(constraints):
         if i == 0:
             constraints[i] = ('\n%  \\constraint{$' +
-                              item.replace('&', ' \\land '))
+                              element.replace('&', ' \\land '))
         else:
             constraints[i] = ('\n%    & $' +
-                              item.replace('&', ' \\land '))
+                              element.replace('&', ' \\land '))
         if i == len(constraints) - 1:
             constraints[i] += '$}'
         else:
@@ -694,44 +718,14 @@ def convert_fraction(line):
     :param line: line to be converted
     :returns: converted line
     """
-    l = list('([{')
-    r = list(')]}')
-    sign = list('*+-=,<>&')
     i = 0
+    sign = list('*+-=,<>&')
 
     while i != len(line):
         if line[i] == '/':
 
-            # Searches left
-            count = 0
-            for j in range(i - 1, -1, -1):
-                if line[j] in r:
-                    count += 1
-                if line[j] in l:
-                    count -= 1
-                if count == 0 and line[j] in sign:
-                    count -= 1
-                if count < 0:
-                    break
-                if count == 0 and j == 0:
-                    j -= 1
-                    break
-
-            # Searches right
-            count = 0
-            for k in range(i + 1, len(line)):
-                if line[k] in l:
-                    count += 1
-                if line[k] in r:
-                    count -= 1
-                if count == 0 and line[k] in sign:
-                    count -= 1
-                if count < 0:
-                    break
-                if count == 0 and k == len(line) - 1:
-                    k += 1
-                    break
-            k -= 1
+            j = search(line, i, sign)
+            k = search(line, i, sign, 1)
 
             # Removes extra surrounding parentheses, if there are any.
             # This won't work if you're doing "( )( )/( )( )", it will
@@ -740,22 +734,22 @@ def convert_fraction(line):
             if (line[j + 1] == '(' and line[i - 1] == ')' and
                     line[i + 1] == '(' and line[k] == ')'):
                 # ()/()
-                line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
+                line = '{0}\\frac{{{1}}}{{{2}}}{3}' \
                     .format(line[:j + 1], line[j + 2:i - 1],
                             line[i + 2:k], line[k + 1:])
             elif line[j + 1] == '(' and line[i - 1] == ')':
                 # ()/--
-                line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
+                line = '{0}\\frac{{{1}}}{{{2}}}{3}' \
                     .format(line[:j + 1], line[j + 2:i - 1],
                             line[i + 1:k + 1], line[k + 1:])
             elif line[i + 1] == '(' and line[k] == ')':
                 # --/()
-                line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
+                line = '{0}\\frac{{{1}}}{{{2}}}{3}' \
                     .format(line[:j + 1], line[j + 1:i],
                             line[i + 2:k], line[k + 1:])
             else:
                 # --/--
-                line = '{0}\\frac{{{1}}}{{{2}}}{3}'\
+                line = '{0}\\frac{{{1}}}{{{2}}}{3}' \
                     .format(line[:j + 1], line[j + 1:i],
                             line[i + 1:k + 1], line[k + 1:])
 
@@ -975,7 +969,6 @@ for index, item in enumerate(FUNCTION_CONVERSIONS):
     FUNCTION_CONVERSIONS[index] = tuple(FUNCTION_CONVERSIONS[index])
 
 FUNCTION_CONVERSIONS = tuple(FUNCTION_CONVERSIONS)
-
 
 if __name__ == '__main__':
     main()
