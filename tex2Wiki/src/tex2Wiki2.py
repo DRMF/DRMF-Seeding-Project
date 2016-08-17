@@ -3,7 +3,10 @@ __status__ = "Prototype"
 
 INPUT_FILE = "tex2Wiki/data/01outb.tex"
 OUTPUT_FILE = "tex2Wiki/data/01outb.mmd"
+GLOSSARY_LOCATION = "tex2Wiki/src/new.Glossary.csv"
 METADATA_TYPES = {"substitution": "Substitution(s)", "constraint": "Constraint(s)"}
+
+import csv
 
 
 class LatexEquation(object):
@@ -157,10 +160,120 @@ def extract_data(data):
     return result
 
 
+def find_end(text, left_delimiter, right_delimiter, start=0):
+    net = 0  # left delimiters encountered - right delimiters encountered
+    for i, ch in enumerate(text[start:]):
+        if ch == left_delimiter:
+            net += 1
+        elif ch == right_delimiter:
+            if net == 1:
+                return i + start
+            else:
+                net -= 1
+
+    return -1
+
+
+def get_data_str(text, latex=""):
+    if latex + "{" not in text:
+        return ""
+
+    start = text.find(latex + "{")
+    return text[start + len(latex + "{"):find_end(text, "{", "}", start)]
+
+
+def generate_nav_bar(main_title, hash_code, sections, i, middle=""):
+    # TODO: Rewrite this function.
+
+    sections = ["Orthogonal Polynomials"] + sections + ["Orthogonal Polynomials"]
+
+    center_text = (main_title + "#" + hash_code).replace(" ", "_")
+
+    sections = [s.replace("''", "") for s in sections]
+
+    if middle == "":
+        middle = sections[i + 1]
+
+    nav_section = generate_html("div", "<< " + generate_link(sections[i]), options={"id": "alignleft"},
+                                spacing=1) + "\n" + \
+                  generate_html("div", generate_link(center_text, middle), options={"id": "aligncenter"},
+                                spacing=1) + "\n" + \
+                  generate_html("div", generate_link(sections[i + 2]) + " >>", options={"id": "alignright"},
+                                spacing=1)
+
+    header = generate_html("div", nav_section, options={"id": "drmf_head"})
+    footer = generate_html("div", nav_section, options={"id": "drmf_foot"})
+
+    return header, footer
+
+
+def get_macro_name(macro):
+    # (str) -> str
+    """Obtains the macro name."""
+    macro_name = ""
+    for ch in macro:
+        if ch.isalpha() or ch == "\\":
+            macro_name += ch
+        elif ch in ["@", "{", "["]:
+            break
+
+    return macro_name
+
+
+def find_all(pattern, string):
+    # (str, str) -> generator
+    """Finds all instances of pattern in string."""
+
+    i = string.find(pattern)
+    while i != -1:
+        yield i
+        i = string.find(pattern, i + 1)
+
+
+def get_symbols(text, glossary):
+    # (str, dict) -> str
+    """Generates span text based on symbols present in text."""
+    symbols = set()
+
+    for keyword in glossary:
+        for index in find_all(keyword, text):
+            # if the macro is present in the text
+            if index != -1:
+                index += len(keyword)  # now index of next character
+                if index >= len(text) or not text[index].isalpha():
+                    symbols.add(keyword)
+
+    span_text = ""
+    for symbol in sorted(symbols, key=str.lower):
+        links = list()
+        for cell in glossary[symbol]:
+            if "http://" in cell or "https://" in cell:
+                links.append(cell)
+
+        id_link = links[0]
+        links = ["[" + link + " " + link + "]" for link in links]
+
+        meaning = list(glossary[symbol][1])
+
+        count = 0
+        for i, ch in enumerate(meaning):
+            if ch == "$" and count % 2 == 0:
+                meaning[i] = "<math>{\\displaystyle "
+                count += 1
+            elif ch == "$":
+                meaning[i] = "}</math>"
+                count += 1
+
+        appearance = glossary[symbol][4].strip("$")
+
+        span_text += "<span class=\"plainlinks\">[" + id_link + " <math>{\\displaystyle " + appearance + \
+                     "}</math>]</span> : " + ''.join(meaning) + " : " + " ".join(links) + "<br />\n"
+
+    return span_text[:-7]  # slice off the extra br and endline
+
+
 def create_general_pages(data, title):
     ret = ""
-
-    print [d[0] for d in data]
 
     section_names = [d[0] for d in data]  # list of section names
 
@@ -169,7 +282,7 @@ def create_general_pages(data, title):
         result = "drmf_bof\n'''" + section_name.replace("''", "") + "'''\n{{DISPLAYTITLE:" + section_name + "}}\n"
 
         # header/footer code
-        header, footer = generate_nav_bar(title, section_names, i)
+        header, footer = generate_nav_bar("Orthogonal Polynomials", "Sections in " + title, section_names, i)
 
         result += header + "\n== " + section_name + " ==\n\n"
 
@@ -195,47 +308,59 @@ def create_general_pages(data, title):
     return ret
 
 
-def find_end(text, left_delimiter, right_delimiter, start=0):
-    net = 0  # left delimiters encountered - right delimiters encountered
-    for i, ch in enumerate(text[start:]):
-        if ch == left_delimiter:
-            net += 1
-        elif ch == right_delimiter:
-            if net == 1:
-                return i + start
-            else:
-                net -= 1
+def create_specific_pages(data):
+    pages = list()
 
-    return -1
+    formulae = list()
+    for section_data in data:
+        for equations in section_data[1:]:
+            for eq in equations:
+                formulae.append("Formula:" + eq.label)
+            formulae.append(section_data[0])
 
+    print formulae
 
-def get_data_str(text, latex=""):
-    if latex + "{" not in text:
-        return ""
+    glossary = dict()
+    with open(GLOSSARY_LOCATION, "rb") as csv_file:
+        glossary_file = csv.reader(csv_file, delimiter=',', quotechar='\"')
+        for row in glossary_file:
+            glossary[get_macro_name(row[0])] = row
 
-    start = text.find(latex + "{")
-    return text[start + len(latex + "{"):find_end(text, "{", "}", start)]
+    i = 0
+    for j, section_data in enumerate(data):
+        section_name = section_data[0]
+        for eq in section_data[1]:
+            header, footer = generate_nav_bar(section_name, eq.label, formulae, i, middle="formula in " + section_name)
 
+            result = "drmf_bof\n'''Formula:" + eq.label + "'''\n{{DISPLAYTITLE:Formula:" + eq.label + "}}\n" + header \
+                     + "\n<br />"
 
-def generate_nav_bar(title, sections, i):
-    main_title = "Orthogonal Polynomials"
-    sections = [main_title] + sections + [main_title]
+            result += generate_html("div", generate_math_html(eq.equation)[:-1], options={"align": "center"},
+                                    spacing=0) + "\n\n"
 
-    center_text = main_title.replace(" ", "_") + "#Sections_in_" + title.replace(" ", "_")
+            for data_type, info in eq.metadata.iteritems():
+                if info != "":
+                    result += "== " + METADATA_TYPES[data_type] + " ==\n\n"
+                    result += generate_html("div", info, options={"align": "left"}, spacing=0) + "<br />\n\n"
 
-    sections = [s.replace("''", "") for s in sections]
+            result += "== Proof ==\n\nWe ask users to provide proof(s), reference(s) to proof(s), or further " \
+                      "clarification on the proof(s) in this space.\n\n== Symbols List ==\n\n"
+            result += get_symbols(result, glossary) + "\n<br />\n\n"
 
-    nav_section = generate_html("div", "<< " + generate_link(sections[i]), options={"id": "alignleft"},
-                                spacing=1) + "\n" + \
-                  generate_html("div", generate_link(center_text, sections[i + 1]), options={"id": "aligncenter"},
-                                spacing=1) + "\n" + \
-                  generate_html("div", generate_link(sections[i + 2]) + " >>", options={"id": "alignright"},
-                                spacing=1)
+            result += "== Bibliography ==\n\n"
+            result += "<span class=\"plainlinks\">[http://homepage.tudelft.nl/11r49/askey/contents.html " \
+                      "Equation in Section 1." + str(j + 1) + "]</span> of [[Bibliography#KLS|'''KLS''']]."
 
-    header = generate_html("div", nav_section, options={"id": "drmf_head"})
-    footer = generate_html("div", nav_section, options={"id": "drmf_foot"})
+            result += "\n\n== URL links ==\n\nWe ask users to provide relevant URL links in this space.\n\n"
 
-    return header, footer
+            result += "<br />" + footer + "\ndrmf_eof"
+            pages.append(result)
+
+            i += 1
+
+        i += 1
+
+    return "\n".join(pages) + "\n"
 
 
 def main():
@@ -257,10 +382,10 @@ def main():
         data.append([section_name, equations])
 
     data = extract_data(data)
-    output_1 = create_general_pages(data, title)
+    output = create_general_pages(data, title) + create_specific_pages(data)
 
     with open(OUTPUT_FILE, "w") as output_file:
-        output_file.write(output_1)
+        output_file.write(output)
 
 if __name__ == '__main__':
     main()
