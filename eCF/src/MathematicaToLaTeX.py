@@ -326,8 +326,6 @@ def beta(line):
 
 
 def cfk(line):
-    print(line)
-    print(line)
     # (str) -> str
     """
     Converts Mathematica's 'ContinuedFractionK' to the equivalent LaTeX macro.
@@ -358,7 +356,6 @@ def cfk(line):
                         '\\CFK{{{0}}}{{{1}}}{{{2}}}@@{{1}}{{{3}}}'
                         .format(moreargs[0], moreargs[1], moreargs[2],
                                 args[0]) + line[pos[1]:])
-    print(line)
 
     return line
 
