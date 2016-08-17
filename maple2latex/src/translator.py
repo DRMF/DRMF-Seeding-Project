@@ -183,8 +183,8 @@ class LatexEquation(object):
 
         return cls(eq.label, replace_strings(equation, SPECIAL), metadata)
 
-    @classmethod
-    def get_sortable_label(cls, equation):
+    @staticmethod
+    def get_sortable_label(equation):
         if equation.label == "x.x.x":
             return [100, 100, 100]  # should be three very large numbers
 
@@ -242,7 +242,7 @@ def trim_parens(exp):
     # type: (str/list) -> str
     """Removes unnecessary parentheses."""
 
-    if type(exp) == str and exp == "":
+    if type(exp) in [unicode, str] and exp == "":
         return ""
 
     elif type(exp) == list and exp == []:
@@ -352,7 +352,7 @@ def get_arguments(function, arg_string):
     # handling for trigamma
     elif function == "Psi" and arg_string[0] == "1":
         function = "special-trigamma"
-        args = basic_translate(arg_string[2])
+        args = [basic_translate(arg_string[2])]
 
     # handling for hypergeometric, q-hypergeometric functions
     elif function in ["hypergeom", "qhyper"]:
