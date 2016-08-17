@@ -112,6 +112,7 @@ class LatexEquation(object):
         elif eq.eq_type == "contfrac":
             forms = list()
 
+            # substitution handling
             if len(parse_brackets(eq.general[0])) > 1:
                 forms = parse_brackets(eq.general[0])
 
@@ -120,29 +121,7 @@ class LatexEquation(object):
                     for form in eq.general:
                         forms += parse_brackets(form)
 
-                replacements = list()
-                if len(eq.general) == 2:
-                    replacements = ["2j", "2j+1"]
-                elif forms:
-                    for i in range(len(forms)):
-                        replacement = str(len(forms)) + "j"
-                        if i < len(forms) - 1:
-                            replacement += "-" + str(len(forms) - i - 1)
-
-                        replacements.append(replacement)
-
-                for i, form in enumerate(forms):
-                    for j, half in enumerate(form):
-                        half = tokenize(half)
-                        for k, ch in enumerate(half):
-                            if ch == "m":
-                                half[k] = "(" + replacements[i] + ")"
-
-                        form[j] = ' '.join(half)
-
-                    forms[i] = "s_{" + replacements[i] + "} = " + make_frac(form)
-
-                metadata["substitution"] = ','.join(forms)
+                metadata["substitution"] = ','.join(perform_substitution(eq, forms))
                 pieces = ["s_m", "1"]
 
             else:
@@ -323,6 +302,35 @@ def basic_translate(exp):
     return ''.join(exp)
 
 
+def perform_substitution(eq, forms):
+    # (MapleEquation, list) -> list
+    """Performs variable substitutions on the strings in eq.general."""
+
+    replacements = list()
+    if len(eq.general) == 2:
+        replacements = ["2j", "2j+1"]
+    elif forms:
+        for i, _ in enumerate(forms):
+            replacement = str(len(forms)) + "j"
+            if i < len(forms) - 1:
+                replacement += "-" + str(len(forms) - i - 1)
+
+            replacements.append(replacement)
+
+    for i, form in enumerate(forms):
+        for j, half in enumerate(form):
+            half = tokenize(half)
+            for k, ch in enumerate(half):
+                if ch == "m":
+                    half[k] = "(" + replacements[i] + ")"
+
+            form[j] = ' '.join(half)
+
+        forms[i] = "s_{" + replacements[i] + "} = " + make_frac(form)
+
+    return forms
+
+
 def get_arguments(function, arg_string):
     # type: (str, list) -> (list, list)
     """Generates the function pieces and the arguments."""
@@ -333,6 +341,7 @@ def get_arguments(function, arg_string):
     if not arg_string:
         args = []
 
+    # handling for not
     elif function == "not":
         inversion = {"<": "\\geq ", ">": "\\leq ", "\\in": "\\notin "}
 
@@ -342,6 +351,7 @@ def get_arguments(function, arg_string):
 
         args = [basic_translate(arg_string)]
 
+    # handling for ranges (constraints)
     elif function == "RealRange":
         for i, piece in enumerate(arg_string):
             if trim_parens(piece) != piece:
@@ -377,6 +387,7 @@ def get_arguments(function, arg_string):
         if args[1] == "infinity":
             args[1] = "\\infty"
 
+    # handling for function in case it has optional parentheses
     elif function in MULTI_ARGS and len(arg_string) == 1:
         parens_mod = True
         args = basic_translate(arg_string).split(",")
