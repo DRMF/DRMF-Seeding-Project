@@ -858,7 +858,7 @@ def replace_vars(line):
 
 
 def main(pathw=DIR_NAME + 'newIdentities.tex',
-         pathr=DIR_NAME + 'Identities.m', test=False):
+         pathr=DIR_NAME + 'Identities.m'):
     # ((str, str, bool)) -> None
     """
     Opens Mathematica file with identities and puts converted lines into
@@ -884,7 +884,7 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                         '\\usepackage{DRMFfcns}\n'
                         '\\usepackage{DLMFfcns}\n'
                         '\\usepackage{graphicx}\n'
-                        '\\usepackage[paperwidth=20in, paperheight=20in, '
+                        '\\usepackage[paperwidth=15in, paperheight=20in, '
                         'margin=0.5in]{geometry}\n\n'
                         '\\begin{document}\n\n\n')
 
@@ -893,12 +893,9 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
 
                 # If line is a comment, make it a LaTeX comment or "\tag"
                 if '(*' in line and '*)' in line:
-                    if test:
-                        line = line.replace('(*', '%').replace('*)', '%')
-                    else:
-                        line = ('\\begin{equation*} \\tag{' +
-                                line[4:-3].replace('"', '') + '}')
-
+                    mtt = line[4:-3].replace('"', '')
+                    #print(mtt)
+                    line = ('\\begin{equation}')
                     latex.write(line + '\n')
                 else:
 
@@ -932,13 +929,10 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                     line = replace_operators(line)
                     line = replace_vars(line)
 
-                    print(line)
-
-                    if test and line != '':
-                        line = '\\begin{equation*}\n' + line
-
                     if line != '':
-                        line += '\n\\end{equation*}'
+                        print(mtt)
+                        line += '\n%  \\mathematicatag{$\\tt{' + mtt + '}$}'
+                        line += '\n\\end{equation}'
 
                     latex.write(line + '\n')
 

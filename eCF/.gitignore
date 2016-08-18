@@ -3,9 +3,11 @@ other/
 
 data/Identities.*
 data/newIdentities.*
+data/newIdentitiesnew.*
 data/IdentitiesTest.m
 data/References.txt
 data/ZE.3.*
+data/ZE.3new.*
 data/ZE.4.*
 
 src/test.txt
