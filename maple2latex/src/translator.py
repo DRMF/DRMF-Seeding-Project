@@ -110,43 +110,58 @@ class LatexEquation(object):
                 equation += "(" + eq.general + ")"
 
         elif eq.eq_type == "contfrac":
-            forms = list()
+            forms = parse_brackets(eq.general[0])
 
-            # substitution handling
-            if len(parse_brackets(eq.general[0])) > 1:
-                forms = parse_brackets(eq.general[0])
-
-            if len(eq.general) == 2 or forms:
-                if not forms:  # forms is empty
+            if len(eq.general) == 2 or len(forms) > 1:
+                if len(forms) == 1:
+                    forms = list()
                     for form in eq.general:
                         forms += parse_brackets(form)
 
-                metadata["substitution"] = ','.join(perform_substitution(eq, forms))
+                replacements = list()
+                if len(eq.general) == 2:
+                    replacements = ["2j", "2j+1"]
+                elif forms:
+                    for i in range(len(forms)):
+                        replacement = str(len(forms)) + "j"
+                        if i < len(forms) - 1:
+                            replacement += "-" + str(len(forms) - i - 1)
+
+                        replacements.append(replacement)
+
+                for i, form in enumerate(forms):
+                    for j, half in enumerate(form):
+                        half = tokenize(half)
+                        for k, ch in enumerate(half):
+                            if ch == "m":
+                                half[k] = "(" + replacements[i] + ")"
+
+                        form[j] = ' '.join(half)
+
+                    forms[i] = "s_{" + replacements[i] + "} = " + make_frac(form)
+
+                metadata["substitution"] = ','.join(forms)
                 pieces = ["s_m", "1"]
 
             else:
                 pieces = parse_brackets(eq.general[0])[0]
 
-            if eq.begin != "":
-                eq.begin = parse_brackets(eq.begin)
-
             start = 1  # in case the value of start isn't assigned
+
+            eq.begin = parse_brackets(eq.begin)
+            for piece in eq.begin:
+                equation += make_frac(piece) + " \\subplus "
+                start += 1
 
             # add terms before general
             if eq.front != "":
                 equation += eq.front + "+"
                 start = 1
 
-            if eq.begin != "":
-                for piece in eq.begin:
-                    equation += make_frac(piece) + " \\subplus "
-                    start += 1
-
-            if eq.factor != "":
-                if eq.factor == "-1":
-                    equation += "-"
-                else:
-                    equation += eq.factor + " "
+            if eq.factor == "-1":
+                equation += "-"
+            elif eq.factor != "":
+                equation += eq.factor + " "
 
             # trim unnecessary parentheses
             for i, element in enumerate(pieces):
@@ -162,20 +177,17 @@ class LatexEquation(object):
 
         return cls(eq.label, replace_strings(equation, SPECIAL), metadata)
 
-    @staticmethod
-    def get_sortable_label(equation):
+    @classmethod
+    def get_sortable_label(cls, equation):
         if equation.label == "x.x.x":
-            return [100, 100, 100]  # should be three very large numbers
+            return [float("inf"), float("inf"), float("inf")]  # should be three very large numbers
 
         label = copy.copy(equation.label)
         for i, ch in enumerate(ascii_lowercase):
             if label[-1] == ch:
                 label = label[:-1] + "." + str(i + 1)
 
-        if label[-1] == ".":
-            label = label[:-1]
-
-        return map(int, label.split("."))
+        return map(int, filter(lambda x: x != "", label.split(".")))
 
     def __str__(self):
         metadata = ""
@@ -205,9 +217,11 @@ def parse_brackets(string):
     # type: ((str, list)) -> list
     """Obtains the contents from data encapsulated in square brackets."""
 
+    if string == "":
+        return ""
+
+    string = replace_strings(string, {"[": "", "]": ""})
     exp = string[1:-1].split(",")
-    for i, e in enumerate(exp):
-        exp[i] = replace_strings(e, {"[": "", "]": ""}).strip()
 
     i = 0
     while i + 1 < len(exp):
@@ -221,7 +235,7 @@ def trim_parens(exp):
     # type: (str/list) -> str
     """Removes unnecessary parentheses."""
 
-    if type(exp) in [unicode, str] and exp == "":
+    if type(exp) == str and exp == "":
         return ""
 
     elif type(exp) == list and exp == []:
@@ -302,35 +316,6 @@ def basic_translate(exp):
     return ''.join(exp)
 
 
-def perform_substitution(eq, forms):
-    # (MapleEquation, list) -> list
-    """Performs variable substitutions on the strings in eq.general."""
-
-    replacements = list()
-    if len(eq.general) == 2:
-        replacements = ["2j", "2j+1"]
-    elif forms:
-        for i, _ in enumerate(forms):
-            replacement = str(len(forms)) + "j"
-            if i < len(forms) - 1:
-                replacement += "-" + str(len(forms) - i - 1)
-
-            replacements.append(replacement)
-
-    for i, form in enumerate(forms):
-        for j, half in enumerate(form):
-            half = tokenize(half)
-            for k, ch in enumerate(half):
-                if ch == "m":
-                    half[k] = "(" + replacements[i] + ")"
-
-            form[j] = ' '.join(half)
-
-        forms[i] = "s_{" + replacements[i] + "} = " + make_frac(form)
-
-    return forms
-
-
 def get_arguments(function, arg_string):
     # type: (str, list) -> (list, list)
     """Generates the function pieces and the arguments."""
@@ -341,7 +326,6 @@ def get_arguments(function, arg_string):
     if not arg_string:
         args = []
 
-    # handling for not
     elif function == "not":
         inversion = {"<": "\\geq ", ">": "\\leq ", "\\in": "\\notin "}
 
@@ -351,7 +335,6 @@ def get_arguments(function, arg_string):
 
         args = [basic_translate(arg_string)]
 
-    # handling for ranges (constraints)
     elif function == "RealRange":
         for i, piece in enumerate(arg_string):
             if trim_parens(piece) != piece:
@@ -362,7 +345,7 @@ def get_arguments(function, arg_string):
     # handling for trigamma
     elif function == "Psi" and arg_string[0] == "1":
         function = "special-trigamma"
-        args = [basic_translate(arg_string[2])]
+        args = basic_translate(arg_string[2])
 
     # handling for hypergeometric, q-hypergeometric functions
     elif function in ["hypergeom", "qhyper"]:
@@ -387,7 +370,6 @@ def get_arguments(function, arg_string):
         if args[1] == "infinity":
             args[1] = "\\infty"
 
-    # handling for function in case it has optional parentheses
     elif function in MULTI_ARGS and len(arg_string) == 1:
         parens_mod = True
         args = basic_translate(arg_string).split(",")
