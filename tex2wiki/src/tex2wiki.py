@@ -1,9 +1,9 @@
 __author__ = "Joon Bang"
 __status__ = "Prototype"
 
-INPUT_FILE = "tex2wiki/data/09outb.tex"
-OUTPUT_FILE = "tex2wiki/data/09outb.mmd"
-GLOSSARY_LOCATION = "tex2wiki/src/new.Glossary.csv"
+INPUT_FILE = "tex2wiki/data/01outb.tex"
+OUTPUT_FILE = "tex2wiki/data/01outb.mmd"
+GLOSSARY_LOCATION = "tex2wiki/data/new.Glossary.csv"
 METADATA_TYPES = ["substitution", "constraint"]
 METADATA_MEANING = {"substitution": "Substitution(s)", "constraint": "Constraint(s)"}
 
