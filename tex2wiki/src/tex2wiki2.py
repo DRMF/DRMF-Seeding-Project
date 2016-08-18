@@ -1,10 +1,11 @@
 __author__ = "Joon Bang"
 __status__ = "Prototype"
 
-INPUT_FILE = "tex2Wiki/data/01outb.tex"
-OUTPUT_FILE = "tex2Wiki/data/01outb.mmd"
-GLOSSARY_LOCATION = "tex2Wiki/src/new.Glossary.csv"
-METADATA_TYPES = {"substitution": "Substitution(s)", "constraint": "Constraint(s)"}
+INPUT_FILE = "tex2wiki/data/09outb.tex"
+OUTPUT_FILE = "tex2wiki/data/09outb.mmd"
+GLOSSARY_LOCATION = "tex2wiki/src/new.Glossary.csv"
+METADATA_TYPES = ["substitution", "constraint"]
+METADATA_MEANING = {"substitution": "Substitution(s)", "constraint": "Constraint(s)"}
 
 import csv
 
@@ -88,6 +89,9 @@ def convert_dollar_signs(string):
 
 
 def format_formula(formula):
+    if formula[0] == ":":
+        return formula[1:].zfill(2)
+
     formula = multi_split(formula.split("Formula:", 1)[1], [".", ":"])
 
     for j in [-1, -2, -3]:
@@ -182,24 +186,16 @@ def get_data_str(text, latex=""):
     return text[start + len(latex + "{"):find_end(text, "{", "}", start)]
 
 
-def generate_nav_bar(main_title, hash_code, sections, i, middle=""):
-    # TODO: Rewrite this function.
+def generate_nav_bar(info):
+    links = list()
+    for link, text in info:
+        link = link.replace("''", "")
+        text = text.replace("''", "")
+        links.append(generate_link(link, text))
 
-    sections = ["Orthogonal Polynomials"] + sections + ["Orthogonal Polynomials"]
-
-    center_text = (main_title + "#" + hash_code).replace(" ", "_")
-
-    sections = [s.replace("''", "") for s in sections]
-
-    if middle == "":
-        middle = sections[i + 1]
-
-    nav_section = generate_html("div", "<< " + generate_link(sections[i]), options={"id": "alignleft"},
-                                spacing=1) + "\n" + \
-                  generate_html("div", generate_link(center_text, middle), options={"id": "aligncenter"},
-                                spacing=1) + "\n" + \
-                  generate_html("div", generate_link(sections[i + 2]) + " >>", options={"id": "alignright"},
-                                spacing=1)
+    nav_section = generate_html("div", "<< " + links[0], options={"id": "alignleft"}, spacing=1) + "\n" + \
+                  generate_html("div", links[1], options={"id": "aligncenter"}, spacing=1) + "\n" + \
+                  generate_html("div", links[2] + " >>", options={"id": "alignright"}, spacing=1)
 
     header = generate_html("div", nav_section, options={"id": "drmf_head"})
     footer = generate_html("div", nav_section, options={"id": "drmf_foot"})
@@ -275,26 +271,33 @@ def get_symbols(text, glossary):
 def create_general_pages(data, title):
     ret = ""
 
-    section_names = [d[0] for d in data]  # list of section names
+    # get list of section names
+    section_names = [d[0] for d in data]
+    section_names = ["Orthogonal Polynomials"] + section_names + ["Orthogonal Polynomials"]
 
     for i, section_data in enumerate(data):
         section_name = section_data[0]
         result = "drmf_bof\n'''" + section_name.replace("''", "") + "'''\n{{DISPLAYTITLE:" + section_name + "}}\n"
 
-        # header/footer code
-        header, footer = generate_nav_bar("Orthogonal Polynomials", "Sections in " + title, section_names, i)
+        # get header and footer
+        center_text = ("Orthogonal Polynomials" + "#Sections in " + title).replace(" ", "_")
+        link_info = [[section_names[i], section_names[i]], [center_text, section_names[i + 1]],
+                     [section_names[i + 2], section_names[i + 2]]]
+        header, footer = generate_nav_bar(link_info)
 
         result += header + "\n== " + section_name + " ==\n\n"
 
         text = ""
         for eq in section_data[1]:
             # equation is of type LatexEquation
+            print eq
+            print
             text += generate_math_html(eq.equation, options={"id": eq.label})
 
             metadata_exists = False
             for data_type in sorted(eq.metadata.keys()):
                 if eq.metadata[data_type] != "":
-                    text += generate_html("div", METADATA_TYPES[data_type] + ": " + eq.metadata[data_type],
+                    text += generate_html("div", METADATA_MEANING[data_type] + ": " + eq.metadata[data_type],
                                           options={"align": "right"}, spacing=False) + "<br />\n"
                     metadata_exists = True
 
@@ -308,9 +311,7 @@ def create_general_pages(data, title):
     return ret
 
 
-def create_specific_pages(data):
-    pages = list()
-
+def create_specific_pages(data, glossary):
     formulae = list()
     for section_data in data:
         for equations in section_data[1:]:
@@ -318,41 +319,50 @@ def create_specific_pages(data):
                 formulae.append("Formula:" + eq.label)
             formulae.append(section_data[0])
 
-    print formulae
-
-    glossary = dict()
-    with open(GLOSSARY_LOCATION, "rb") as csv_file:
-        glossary_file = csv.reader(csv_file, delimiter=',', quotechar='\"')
-        for row in glossary_file:
-            glossary[get_macro_name(row[0])] = row
+    formulae = ["Orthogonal Polynomials"] + formulae[:-1] + ["Orthogonal Polynomials"]
 
     i = 0
+    pages = list()
     for j, section_data in enumerate(data):
         section_name = section_data[0]
         for eq in section_data[1]:
-            header, footer = generate_nav_bar(section_name, eq.label, formulae, i, middle="formula in " + section_name)
+            # get header and footer
+            center_text = (section_name + "#" + eq.label).replace(" ", "_")
+            middle = "formula in " + section_name
+            link_info = [[formulae[i].replace(" ", "_"), formulae[i]], [center_text, middle],
+                         [formulae[i + 2].replace(" ", "_"), formulae[i + 2]]]
+            header, footer = generate_nav_bar(link_info)
 
+            # add title of page, navigation headers
             result = "drmf_bof\n'''Formula:" + eq.label + "'''\n{{DISPLAYTITLE:Formula:" + eq.label + "}}\n" + header \
                      + "\n<br />"
 
+            # add formula
             result += generate_html("div", generate_math_html(eq.equation)[:-1], options={"align": "center"},
                                     spacing=0) + "\n\n"
 
+            # add metadata
             for data_type, info in eq.metadata.iteritems():
                 if info != "":
-                    result += "== " + METADATA_TYPES[data_type] + " ==\n\n"
+                    result += "== " + METADATA_MEANING[data_type] + " ==\n\n"
                     result += generate_html("div", info, options={"align": "left"}, spacing=0) + "<br />\n\n"
 
+            # proof section
             result += "== Proof ==\n\nWe ask users to provide proof(s), reference(s) to proof(s), or further " \
-                      "clarification on the proof(s) in this space.\n\n== Symbols List ==\n\n"
+                      "clarification on the proof(s) in this space.\n\n"
+
+            # symbols list section
+            result += "== Symbols List ==\n\n"
             result += get_symbols(result, glossary) + "\n<br />\n\n"
 
+            # bibliography section
             result += "== Bibliography ==\n\n"
             result += "<span class=\"plainlinks\">[http://homepage.tudelft.nl/11r49/askey/contents.html " \
                       "Equation in Section 1." + str(j + 1) + "]</span> of [[Bibliography#KLS|'''KLS''']]."
 
             result += "\n\n== URL links ==\n\nWe ask users to provide relevant URL links in this space.\n\n"
 
+            # end of page
             result += "<br />" + footer + "\ndrmf_eof"
             pages.append(result)
 
@@ -366,6 +376,12 @@ def create_specific_pages(data):
 def main():
     with open(INPUT_FILE) as input_file:
         text = input_file.read()
+
+    glossary = dict()
+    with open(GLOSSARY_LOCATION, "rb") as csv_file:
+        glossary_file = csv.reader(csv_file, delimiter=',', quotechar='\"')
+        for row in glossary_file:
+            glossary[get_macro_name(row[0])] = row
 
     text = text.split("\\begin{document}", 1)[1]
     text = text.split("\\section")
@@ -382,7 +398,7 @@ def main():
         data.append([section_name, equations])
 
     data = extract_data(data)
-    output = create_general_pages(data, title) + create_specific_pages(data)
+    output = create_general_pages(data, title) + create_specific_pages(data, glossary)
 
     with open(OUTPUT_FILE, "w") as output_file:
         output_file.write(output)
