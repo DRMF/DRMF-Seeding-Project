@@ -891,10 +891,8 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
             for line in mathematica:
                 line = line.replace('\n', '')
 
-                # If line is a comment, make it a LaTeX comment or "\tag"
                 if '(*' in line and '*)' in line:
                     mtt = line[4:-3].replace('"', '')
-                    #print(mtt)
                     line = ('\\begin{equation}')
                     latex.write(line + '\n')
                 else:
