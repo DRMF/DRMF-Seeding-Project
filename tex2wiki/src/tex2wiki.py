@@ -17,7 +17,7 @@ class LatexEquation(object):
         self.metadata = metadata
 
 
-def generate_html(tag_name, text, options=dict(), spacing=2):
+def generate_html(tag_name, text, options=None, spacing=2):
     # (str, str(, dict, bool)) -> str
     """
     Generates an html tag, with optional html parameters.
@@ -25,6 +25,9 @@ def generate_html(tag_name, text, options=dict(), spacing=2):
     When spacing = 1, the tag, text, and end tag are padded with spaces.
     When spacing = 2, the tag, text, and end tag are padded with newlines.
     """
+    if options is None:
+        options = {}
+
     option_text = [key + "=\"" + value + "\"" for key, value in options.iteritems()]
     result = "<" + tag_name + " " * (option_text != []) + ", ".join(option_text) + ">"
 
@@ -38,10 +41,13 @@ def generate_html(tag_name, text, options=dict(), spacing=2):
     return result
 
 
-def generate_math_html(text, options=dict(), spacing=True):
+def generate_math_html(text, options=None, spacing=True):
     """
     Special case of generate_html, where the tag is "math".
     """
+    if options is None:
+        options = {}
+
     option_text = [key + "=\"" + value + "\"" for key, value in options.iteritems()]
     result = "<math" + " " * (option_text != []) + ", ".join(option_text) + ">"
 
