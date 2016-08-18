@@ -799,6 +799,7 @@ def replace_operators(line):
     :returns: converted line
     """
     line = line.replace('==', '=')
+    line = line.replace('!=', ' \\ne ')
     line = line.replace('||', ' \\lor ')
     line = line.replace('>=', ' \\geq ')
     line = line.replace('<=', ' \\leq ')
@@ -831,8 +832,7 @@ def replace_operators(line):
     line = line.replace('Catalan', '\\CatalansConstant')
     line = line.replace('GoldenRatio', '\\GoldenRatio')
     line = line.replace('Pi', '\\pi')
-    line = line.replace('CalculateData`Private`nu',
-                        '\\text{CalculateData`Private`nu}')
+    line = line.replace('CalculateData`Private`nu', '\\nu')
 
     return line
 
@@ -858,7 +858,7 @@ def replace_vars(line):
 
 
 def main(pathw=DIR_NAME + 'newIdentities.tex',
-         pathr=DIR_NAME + 'Identities.m'):
+         pathr=DIR_NAME + 'IdentitiesTest.m'):
     # ((str, str, bool)) -> None
     """
     Opens Mathematica file with identities and puts converted lines into

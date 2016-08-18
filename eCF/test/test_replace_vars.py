@@ -3,7 +3,7 @@ __author__ = 'Kevin Chen'
 __status__ = 'Development'
 
 from unittest import TestCase
-from MathematicaToLaTeX import replace_vars
+from mathematica_to_latex import replace_vars
 
 SYMBOLS = {
     'Alpha': 'alpha', 'Beta': 'beta', 'Gamma': 'gamma', 'Delta': 'delta',

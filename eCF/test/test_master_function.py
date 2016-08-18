@@ -4,8 +4,8 @@ __status__ = 'Development'
 
 import os
 from unittest import TestCase
-from MathematicaToLaTeX import master_function
-from MathematicaToLaTeX import arg_split
+from mathematica_to_latex import master_function
+from mathematica_to_latex import arg_split
 
 
 with open(os.path.dirname(os.path.realpath(__file__)) + '/../data/functions') as functions:

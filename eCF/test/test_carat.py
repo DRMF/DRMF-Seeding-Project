@@ -3,7 +3,7 @@ __author__ = 'Kevin Chen'
 __status__ = 'Development'
 
 from unittest import TestCase
-from MathematicaToLaTeX import carat
+from mathematica_to_latex import carat
 
 
 class TestCarat(TestCase):
