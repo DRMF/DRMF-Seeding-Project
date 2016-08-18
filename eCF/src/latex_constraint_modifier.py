@@ -24,6 +24,7 @@ CONVERSIONS = {'\\constraint': '{\\bf C}:~',
                '\\drmfname': '{\\bf NAME}:~',
                '\\proof': '{\\bf PROOF}:~',
                '\\mathematicatag': '{\\bf MtT}:~',
+               '\\mathematicareference': '{\\bf MtR}:~',
                '\\mapletag': '{\\bf MpT}:~'}
 
 
