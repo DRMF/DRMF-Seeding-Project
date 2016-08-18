@@ -893,7 +893,7 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
 
                 if '(*' in line and '*)' in line:
                     mtt = line[4:-3].replace('"', '')
-                    line = ('\\begin{equation}')
+                    line = '\\begin{equation}'
                     latex.write(line + '\n')
                 else:
 
