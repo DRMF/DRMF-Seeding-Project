@@ -157,7 +157,8 @@ def main():
     with open(PATHW, 'w') as after:
         for line in before:
             if len(line) >= 3 and line[:3] == '%  ' and \
-                            before.index(line) > before.index('\\begin{document}'):
+                            before.index(line) > \
+                            before.index('\\begin{document}'):
                 line = replace(line)
                 line = dollarsign(line)
                 line = '\\begin{flushright}\n' + line.replace('%', ' ') + \
