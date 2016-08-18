@@ -62,10 +62,11 @@ def find_surrounding(line, function):
 def combine_percent(lines):
     # (list) -> list
     """
-    Combines
+    Combines terms with constraints (ones with percent signs) so that replacing
+    is easier.
 
-    :param lines:
-    :return:
+    :param lines: list of all lines
+    :return: same list, but groups of constraint terms are combined
     """
     index = 0
     while index < len(lines):
@@ -116,7 +117,7 @@ def replace(line):
 def dollarsign(line):
     # (str) -> str
     """
-    Description.
+    Changes "$ $" to "${\\displaystyle }$".
 
     :param line: line to be converted
     :returns: converted line
