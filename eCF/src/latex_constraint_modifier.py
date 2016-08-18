@@ -28,7 +28,7 @@ CONVERSIONS = {'\\constraint': '{\\bf C}:~',
 
 
 def find_surrounding(line, function):
-    # (str, str(, tuple, int)) -> tuple
+    # (str, str) -> tuple
     """
     Finds the indices of the beginning and end of a function; this is the main
     function that powers the converter.
