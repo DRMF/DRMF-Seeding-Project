@@ -151,11 +151,7 @@ def main():
     with open(PATHR, 'r') as b:
         before = b.read().split('\n')
 
-    print(before)
-
     before = combine_percent(before)
-
-    print(before)
 
     with open(PATHW, 'w') as after:
         for line in before:
