@@ -859,7 +859,7 @@ def replace_vars(line):
 
 def main(pathw=DIR_NAME + 'newIdentities.tex',
          pathr=DIR_NAME + 'Identities.m'):
-    # ((str, str, bool)) -> None
+    # ((str, str)) -> None
     """
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
