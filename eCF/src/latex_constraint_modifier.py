@@ -128,8 +128,8 @@ def dollarsign(line):
         if line[index] == '$':
             count.insert(0, index)
         if len(count) == 2:
-            # Checks to see if there is already a "displaystyle", so it doesn't
-            # add a second useless one.
+            # This checks to see if there is already a "displaystyle", so it
+            # doesn't add a second useless one.
             if line[count[0]:count[0] + 15] == '${\\displaystyle':
                 pass
             else:
