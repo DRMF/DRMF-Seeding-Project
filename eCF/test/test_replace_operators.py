@@ -10,6 +10,7 @@ class TestReplaceOperators(TestCase):
 
     def test_without_percent(self):
         self.assertEqual(replace_operators('=='), ' = ')
+        self.assertEqual(replace_operators('!='), ' \\ne ')
         self.assertEqual(replace_operators('||'), ' \\lor ')
         self.assertEqual(replace_operators('>='), ' \\geq ')
         self.assertEqual(replace_operators('<='), ' \\leq ')
