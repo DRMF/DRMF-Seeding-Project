@@ -52,4 +52,4 @@ TODO in updateChapters.py:
 FINISHED- implemented smart fix for "hypergeometric representation" paragraphs. Now the content in these paragraphs are appended directly from the KLS section into the chapter's hypergeometric representation paragraphs
 
 Needs to be done:
--implemenent the same smart fix for "Limit relations" paragraphs. Current code for this implementation does not work and has spotty logic that does not encompass all variations of limit relations paragraphs (such as the one subsubsection in chapter 9)
+-implement the same smart fix for "Limit relations" paragraphs. Current code for this implementation does not work and has spotty logic that does not encompass all variations of limit relations paragraphs (such as the one subsubsection in chapter 9)
