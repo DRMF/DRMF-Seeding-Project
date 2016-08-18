@@ -928,10 +928,10 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                     line = replace_vars(line)
 
                     if line != '':
-                        print(mtt)
                         line += '\n%  \\mathematicatag{$\\tt{' + mtt + '}$}'
                         line += '\n\\end{equation}'
 
+                    print line
                     latex.write(line + '\n')
 
             latex.write('\n\n\\end{document}\n')
