@@ -43,11 +43,11 @@ This Python code (mostly developed by Kevin Chen) translates Mathematica files t
 The project is currently awaiting approval to be merged into the main branch of the repository.
 
 ## KLSadd Insertion Project
-linetest.py and updateChapters.py written by Rahul Shah and Edward Bian
+`linetest.py` and `updateChapters.py` written by Rahul Shah and Edward Bian
 
-Edits the DRMF chapter files to include the relevant KLS addendum additions. Additions are (currently) only being added right before the "References" paragraphs in each section. The linetest.py file is the first working model of the code, but it is very messy and esoteric. Comments have been made to aid interpretation. The new project file, updateChapters.py is a more readable version.
+Edits the DRMF chapter files to include the relevant KLS addendum additions. Additions are (currently) only being added right before the "References" paragraphs in each section. The `linetest.py` file is the first working model of the code, but it is very messy and esoteric. Comments have been made to aid interpretation. The new project file, `updateChapters.py` is a more readable version.
 
-TODO in updateChapters.py:
+TODO in `updateChapters.py`:
 
 FINISHED- implemented smart fix for "hypergeometric representation" paragraphs. Now the content in these paragraphs are appended directly from the KLS section into the chapter's hypergeometric representation paragraphs
 
