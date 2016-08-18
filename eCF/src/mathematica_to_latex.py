@@ -896,7 +896,6 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                     line = '\\begin{equation}'
                     latex.write(line + '\n')
                 else:
-
                     line = line.replace(' ', '')
 
                     line = remove_inactive(line)
