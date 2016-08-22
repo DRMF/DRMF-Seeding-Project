@@ -161,6 +161,28 @@ def search(line, i, sign, direction=-1):
     return j
 
 
+def process_references(pathr):
+    # (str) -> dict
+    """
+    Opens references file and process it into a dictionary
+
+    :param pathr: directory of file to be read from
+    :return: dictionary of processed references
+    """
+    with open(pathr) as refs:
+        references = list(line.split('\n') for line in
+                          refs.read().split('\n\n'))
+
+    key = []
+    value = []
+    print(references)
+    for pair in references:
+        key.append(pair[0][3:-1].replace('"', ''))
+        value.append('&'.join(pair[1:]))
+
+    return dict(zip(key, value))
+
+
 def master_function(line, params):
     # (str, tuple) -> str
     """
@@ -858,7 +880,8 @@ def replace_vars(line):
 
 
 def main(pathw=DIR_NAME + 'newIdentities.tex',
-         pathr=DIR_NAME + 'Identities.m'):
+         pathr=DIR_NAME + 'Identities.m',
+         pathref=DIR_NAME + 'References.txt'):
     # ((str, str)) -> None
     """
     Opens Mathematica file with identities and puts converted lines into
@@ -866,10 +889,10 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
 
     :param pathw: directory of file to be written to
     :param pathr: directory of file to be read from
-    :param test: if True, replaces "(* *)" with quotes; if False: uses "\\tag"
-                 to mark the functions
+    :param pathref: directory of file with references to be inserted
     :returns: None
     """
+    references = process_references(pathref)
 
     with open(pathw, 'w') as latex:
         with open(pathr, 'r') as mathematica:
@@ -928,9 +951,14 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
 
                     if line != '':
                         line += '\n%  \\mathematicatag{$\\tt{' + mtt + '}$}'
+                        try:
+                            line += '\n%  \\mathematicareference{$\\text{' + \
+                                    references[mtt] + '}$}'
+                        except KeyError:
+                            print(mtt)
                         line += '\n\\end{equation}'
 
-                    print line
+                    # print line
                     latex.write(line + '\n')
 
             latex.write('\n\n\\end{document}\n')
@@ -938,8 +966,7 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
 
 # Open data/functions, and process the data into a comprehensible tuple that
 # gets fed into "master_function" function
-with open(DIR_NAME + 'functions') \
-        as functions:
+with open(DIR_NAME + 'functions') as functions:
     FUNCTION_CONVERSIONS = list(arg_split(line.replace(' ', ''), ',') for line
                                 in functions.read().split('\n')
                                 if (line != '' and '#' not in line))
@@ -957,6 +984,7 @@ for index, item in enumerate(FUNCTION_CONVERSIONS):
     FUNCTION_CONVERSIONS[index] = tuple(FUNCTION_CONVERSIONS[index])
 
 FUNCTION_CONVERSIONS = tuple(FUNCTION_CONVERSIONS)
+
 
 if __name__ == '__main__':
     main()

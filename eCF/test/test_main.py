@@ -9,12 +9,13 @@ import os
 
 PATHW = os.path.dirname(os.path.realpath(__file__)) + '/data/test.tex'
 PATHR = os.path.dirname(os.path.realpath(__file__)) + '/data/test.m'
+PATHREF = os.path.dirname(os.path.realpath(__file__)) + '/data/testref.txt'
 
 
 class TestMain(TestCase):
 
     def test_gen(self):
-        main(pathw=PATHW, pathr=PATHR)
+        main(pathw=PATHW, pathr=PATHR, pathref=PATHREF)
         with open(PATHW, 'r') as l:
             latex = l.read()
         self.assertEqual(
@@ -38,6 +39,7 @@ class TestMain(TestCase):
                     '\\begin{equation}\n'
                     'equation\n'
                     '%  \\mathematicatag{$\\tt{description, number}$}\n'
+                    '%  \\mathematicareference{$\\text{test reference line 1&test reference line 2}$}\n'
                     '\\end{equation}\n'
                     '\n'
                     '\n'

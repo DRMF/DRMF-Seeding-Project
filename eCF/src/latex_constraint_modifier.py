@@ -25,7 +25,10 @@ CONVERSIONS = {'\\constraint': '{\\bf C}:~',
                '\\proof': '{\\bf PROOF}:~',
                '\\mathematicatag': '{\\bf MtT}:~',
                '\\mathematicareference': '{\\bf MtR}:~',
-               '\\mapletag': '{\\bf MpT}:~'}
+               '\\mapletag': '{\\bf MpT}:~',
+               '\\category': '{\\bf CAT}:~'}
+TT = ('\\mathematicatag', '\\mapletag')
+TEXT = ('\\mathematicareference', '\\category')
 
 
 def find_surrounding(line, function):
@@ -72,7 +75,7 @@ def combine_percent(lines):
     index = 0
     while index < len(lines):
         if len(lines[index]) >= 3 and lines[index][:3] == '%  ' and \
-               index > lines.index('\\begin{document}'):
+               index > lines.index('\\begin{equation}'):
             if len(lines[index + 1]) != '' and lines[index + 1][0] == '%':
                 print(lines[index])
                 add = lines.pop(index + 1)
@@ -100,8 +103,15 @@ def replace(line):
             if pos[0] != pos[1]:
                 arg = line[pos[0] + len(word) + 1:pos[1] - 1]\
                     .replace('\n', '').replace('    &', ' &')
-                arg = ('\\\\[0.2cm]\n   ' + CONVERSIONS[word])\
-                    .join(arg.split('&'))
+                if word in TT:
+                    arg = ('}$ \\\\[0.2cm]\n   ' + CONVERSIONS[word] +
+                           '$\\tt{').join(arg.split('&'))
+                if word in TEXT:
+                    arg = ('}$ \\\\[0.2cm]\n   ' + CONVERSIONS[word] +
+                           '$\\text{').join(arg.split('&'))
+                else:
+                    arg = ('\\\\[0.2cm]\n   ' + CONVERSIONS[word])\
+                        .join(arg.split('&'))
 
                 if (max([line.find(item) for item in CONVERSIONS]) > pos[1] or
                     max([line.find(CONVERSIONS[item]) for
@@ -158,7 +168,7 @@ def main():
         for line in before:
             if len(line) >= 3 and line[:3] == '%  ' and \
                             before.index(line) > \
-                            before.index('\\begin{document}'):
+                            before.index('\\begin{equation}'):
                 line = replace(line)
                 line = dollarsign(line)
                 line = '\\begin{flushright}\n' + line.replace('%', ' ') + \
