@@ -1,0 +1,13 @@
+drmf_bof
+
+== Definition Pages ==
+
+= Copyright =
+
+drmf_eof
+drmf_bof
+'''Definition:Definition1'''
+drmf_eof
+drmf_bof
+'''Definition:Definition2'''
+drmf_eof

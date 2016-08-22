@@ -3,3 +3,9 @@ omit =
     */python?.?/*
     */test/*
     */site-packages/nose/*
+exclude_lines =
+    if __name__ == .__main__.:
+
+[run]
+include =
+    */src/*.py

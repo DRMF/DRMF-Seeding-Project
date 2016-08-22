@@ -1,0 +1,34 @@
+drmf_bof
+'''Main Page'''
+drmf_eof
+drmf_bof
+'''Definition:DefinitionOne'''
+
+\DefinitionOne@{x}:=\DefinitionTwo@{x}+1
+
+== Symbols List ==
+
+<span class="plainlinks">[http://fake-hyperlink.com/Definition1 <math>{\displaystyle \mathrm{Def1}{x}}</math>]</span> : sample definition 1 : [http://fake-hyperlink.com/Definition1 http://fake-hyperlink.com/Definition1]<br />
+<span class="plainlinks">[http://fake-hyperlink.com/Definition2 <math>{\displaystyle \mathrm{Def2}{x}}</math>]</span> : sample definition 2 : [http://fake-hyperlink.com/Definition2 http://fake-hyperlink.com/Definition2]
+<br />
+drmf_eof
+drmf_bof
+'''Definition:DefinitionTwo'''
+
+\DefinitionTwo@{x}:=\frac{6}{127}
+
+== Symbols List ==
+
+<span class="plainlinks">[http://fake-hyperlink.com/Definition2 <math>{\displaystyle \mathrm{Def2}{x}}</math>]</span> : sample definition 2 : [http://fake-hyperlink.com/Definition2 http://fake-hyperlink.com/Definition2]
+<br />
+drmf_eof
+drmf_bof
+'''Definition:DefinitionTwoTwo'''
+
+\DefinitionTwoTwo:=22
+
+== Symbols List ==
+
+<span class="plainlinks">[http://fake-hyperlink.com/Definition22 <math>{\displaystyle \mathrm{twenty two}}</math>]</span> : sample definition 22 : [http://fake-hyperlink.com/Definition22 http://fake-hyperlink.com/Definition22]
+<br />
+drmf_eof

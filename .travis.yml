@@ -2,6 +2,6 @@ language: python
 install:
   - pip install coveralls
 script:
-  nosetests --with-coverage tex2Wiki DLMF_preprocessing maple2latex
+  nosetests --with-coverage -v tex2Wiki DLMF_preprocessing maple2latex main_page eCF
 after_success:
   coveralls

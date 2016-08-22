@@ -1,0 +1,18 @@
+drmf_bof
+
+== Definition Pages ==
+
+<div style="-moz-column-count:2; column-count:2;-webkit-column-count:2">
+* [[Definition:Definition1|Definition1]]
+* [[Definition:Definition2|Definition2]]
+</div>
+
+= Copyright =
+
+drmf_eof
+drmf_bof
+'''Definition:Definition1'''
+drmf_eof
+drmf_bof
+'''Definition:Definition2'''
+drmf_eof
