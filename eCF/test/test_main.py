@@ -42,5 +42,10 @@ class TestMain(TestCase):
                     '%  \\mathematicareference{$\\text{test reference line 1&test reference line 2}$}\n'
                     '\\end{equation}\n'
                     '\n'
+                    '\\begin{equation}\n'
+                    'equation\n'
+                    '%  \\mathematicatag{$\\tt{nodescription, number}$}\n'
+                    '\\end{equation}\n'
+                    '\n'
                     '\n'
                     '\\end{document}\n'))

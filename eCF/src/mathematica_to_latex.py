@@ -955,7 +955,7 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                             line += '\n%  \\mathematicareference{$\\text{' + \
                                     references[mtt] + '}$}'
                         except KeyError:
-                            print(mtt)
+                            pass
                         line += '\n\\end{equation}'
 
                     # print line
