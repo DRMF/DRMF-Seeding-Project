@@ -77,8 +77,6 @@ def remove_special(content):
             "proof": [r'\proof{', False]
         }
 
-        should_replace = False
-        in_ind = False
         in_eq = True
 
         pi_pat = re.compile(r'(\s*)\\pi(\s*\b|[aeiou])')
@@ -176,7 +174,7 @@ def remove_special(content):
         content[counter] = function
         counter += 1
 
-    return "\n".join(content)
+    return content
 
 # replaces "i"s as necessary in words
 def _replace_i(words):
