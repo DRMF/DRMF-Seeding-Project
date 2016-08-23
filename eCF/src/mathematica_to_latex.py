@@ -231,6 +231,9 @@ def master_function(line, params):
                     args.insert(0, 0)
                 else:
                     args.insert(0, len(arg_split(args[1][1:-1], ',')))
+
+            # If the arguments in a trig function are more than one variable,
+            # then instead of "@@" make it "@"
             if m in TRIG and \
                     sum([args[0].count(element) for element in multi]) != 0:
                 sep[0][0] = sep[0][0].replace('@@', '@')
