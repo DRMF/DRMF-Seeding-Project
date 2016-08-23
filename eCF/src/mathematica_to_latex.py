@@ -976,7 +976,7 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
 
 
 # Open data/functions, and process the data into a comprehensible tuple that
-# gets fed into "master_function" function
+# gets fed into the "master_function" function
 with open(DIR_NAME + 'functions') as functions:
     FUNCTION_CONVERSIONS = list(arg_split(line.replace(' ', ''), ',') for line
                                 in functions.read().split('\n')
