@@ -15,7 +15,8 @@ before = """
 where $\\ell$ = last term of the series = $a + (n-1)d$.
 
 \\paragraph{Geometric Progression}
-\\index{geometric progression (or series)}"""
+\\index{geometric progression (or series)}
+"""
 
 just_math = ["""
   a + (a + d) + (a + 2d) + \\dots + (a + (n-1)d)
@@ -23,15 +24,18 @@ just_math = ["""
   = \\tfrac{1}{2} n (a + \\ell)\n""", "\\ell", "a + (n-1)d"]
 
 no_text = """
+
 \\index{arithmetic progression}
 
 \\begin{equation}\\label{eq:AL.ES.AR}
-  a + (a + d) + (a + 2d) + \\dots + (a + (n-1)d)
-  = na + \\tfrac{1}{2} n(n-1) d
-  = \\tfrac{1}{2} n (a + \\ell)
+a + (a + d) + (a + 2d) + \\dots + (a + (n-1)d)
+= na + \\tfrac{1}{2} n(n-1) d
+= \\tfrac{1}{2} n (a + \\ell)
 \\end{equation}
 
-\\index{geometric progression (or series)}"""
+\\index{geometric progression (or series)}
+
+"""
 
 
 
