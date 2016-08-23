@@ -325,7 +325,10 @@ def remove_excess(content):
                     cleaned = cleaned.lstrip()[:16] + eqmix_label + str(eq_counter) + '}'
             else:
                 # just in eq, add command and label only: make sure no in line comments get added
-                cleaned = cleaned.lstrip()[:16] + cleaned[16: 17 + cleaned[16:].index('}')] + eqmix_label
+                if '\\label' not in cleaned:
+                    cleaned = cleaned.lstrip() + eqmix_label
+                else:
+                    cleaned = cleaned.lstrip()[:16] + cleaned[16: 17 + cleaned[16:].index('}')] + eqmix_label
             in_eq = True
 
         # if this line marks the end of an equation, set the flag
