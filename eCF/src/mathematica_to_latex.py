@@ -43,6 +43,10 @@ SYMBOLS = {
 
 LEFT_BRACKETS = list('([{')
 RIGHT_BRACKETS = list(')]}')
+TRIG = ('ArcCos', 'ArcCosh', 'ArcCot', 'ArcCoth', 'ArcCsc', 'ArcCsch',
+        'ArcSec', 'ArcSech', 'ArcSin', 'ArcSinh', 'ArcTan', 'ArcTanh',
+        'Cos', 'Cosh', 'Cot', 'Coth', 'Csc', 'Csch', 'Sec', 'Sech', 'Sinc',
+        'Sin', 'Sinh', 'Tan', 'Tanh')
 
 
 def find_surrounding(line, function, ex=(), start=0):
@@ -175,7 +179,6 @@ def process_references(pathr):
 
     key = []
     value = []
-    print(references)
     for pair in references:
         key.append(pair[0][3:-1].replace('"', ''))
         value.append('&'.join(pair[1:]))
@@ -197,6 +200,7 @@ def master_function(line, params):
     """
     m, l, sep, ex = params[:5]
     sep = [i.split('-') for i in sep]
+    multi = list('+-*/')
 
     for _ in range(line.count(m)):
         try:
@@ -227,6 +231,9 @@ def master_function(line, params):
                     args.insert(0, 0)
                 else:
                     args.insert(0, len(arg_split(args[1][1:-1], ',')))
+            if m in TRIG and \
+                    sum([args[0].count(element) for element in multi]) != 0:
+                sep[0][0] = sep[0][0].replace('@@', '@')
 
             line = (line[:pos[0]] + l + '%s'.join(sep[[len(y) for y in sep]
                                                   .index(len(args) + 1)]) +
@@ -958,7 +965,8 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                             pass
                         line += '\n\\end{equation}'
 
-                    # print line
+                    print(line)
+
                     latex.write(line + '\n')
 
             latex.write('\n\n\\end{document}\n')

@@ -25,6 +25,11 @@ for index, item in enumerate(FUNCTION_CONVERSIONS):
     FUNCTION_CONVERSIONS[index] = tuple(FUNCTION_CONVERSIONS[index])
 
 FUNCTION_CONVERSIONS = tuple(FUNCTION_CONVERSIONS)
+TRIG = ('ArcCos', 'ArcCosh', 'ArcCot', 'ArcCoth', 'ArcCsc', 'ArcCsch',
+        'ArcSec', 'ArcSech', 'ArcSin', 'ArcSinh', 'ArcTan', 'ArcTanh',
+        'Cos', 'Cosh', 'Cot', 'Coth', 'Csc', 'Csch', 'Sec', 'Sech', 'Sinc',
+        'Sin', 'Sinh', 'Tan', 'Tanh')
+MULTI = list('+-*/')
 
 
 class TestMasterFunction(TestCase):
@@ -68,6 +73,13 @@ class TestMasterFunction(TestCase):
                 else:
                     self.assertEqual(master_function(before, function), after)
                     self.assertEqual(master_function('--{0}--'.format(before), function), '--{0}--'.format(after))
+                    if function[0] in TRIG:
+                        for sep in MULTI:
+                            before = before[:-1] + sep + 'b]'
+                            after = after.replace('@@', '@')[:-1] + sep + 'b}'
+                            self.assertEqual(master_function(before, function), after)
+                            self.assertEqual(master_function('--{0}--'.format(before), function), '--{0}--'.format(after))
+
                     if function[0] == 'D':
                         self.assertEqual(master_function('\\[Delta]', function), '\\[Delta]')
 

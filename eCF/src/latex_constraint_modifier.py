@@ -5,8 +5,8 @@ __status__ = 'Development'
 import argparse
 
 parser = argparse.ArgumentParser(
-    description='Receive .tex file with constraints and convert'
-                ' them viewable metadata.')
+         description='Receive .tex file with constraints and convert'
+                     ' them viewable metadata.')
 parser.add_argument('PATHR', type=str,
                     help='path of input .tex file, with the current'
                          ' directory as the starting point',)
@@ -103,6 +103,8 @@ def replace(line):
             if pos[0] != pos[1]:
                 arg = line[pos[0] + len(word) + 1:pos[1] - 1]\
                     .replace('\n', '').replace('    &', ' &')
+
+                # Splits lines if there are any "&".
                 if word in TT:
                     arg = ('}$ \\\\[0.2cm]\n   ' + CONVERSIONS[word] +
                            '$\\tt{').join(arg.split('&'))
@@ -140,9 +142,7 @@ def dollarsign(line):
         if len(count) == 2:
             # This checks to see if there is already a "displaystyle", so it
             # doesn't add a second useless one.
-            if line[count[0]:count[0] + 15] == '${\\displaystyle':
-                pass
-            else:
+            if line[count[0]:count[0] + 15] != '${\\displaystyle':
                 begin = count[0]
                 end = count[1]
                 line = line[:begin] + '${\\displaystyle ' + \
