@@ -130,8 +130,6 @@ def remove_special(content):
 
                         comment_str = comment_str[:-1]
 
-                        # print([x for x in inside if inside[x][SEEN]])
-
                         # reset special block flags
                         for flag in inside:
                             inside[flag][SEEN] = False

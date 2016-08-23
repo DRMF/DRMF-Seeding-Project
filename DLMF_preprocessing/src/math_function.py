@@ -1,5 +1,4 @@
 import math_mode
-import string
 import re
 
 
@@ -29,14 +28,7 @@ def change_original(o_file, changed_math_string_list):
     # print math_ranges
     for i in math_ranges[::-1]:
         edited = edited[:i[0]] + changed_math_string_list[::-1][num] + edited[i[1]:]
-        # edited = edited.replace(o_string[i[0]:i[1]], changed_math_string_list[num])
-        # print edited
         num += 1
-    # re check NM.2new.tex isn't changing all of the i chars to \iunit
-
-    check = open('whatevs.txt', 'w')
-    check.write(edited)
-    check.close()
     return edited
 
 
