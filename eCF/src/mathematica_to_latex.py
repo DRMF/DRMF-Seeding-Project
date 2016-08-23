@@ -311,7 +311,6 @@ def carat(line):
 
     while i != len(line):
         if line[i] == '^':
-
             k = search(line, i, list('*/+-=, '), 1)
 
             if line[i + 1] == '(' and line[k] == ')':
@@ -757,7 +756,7 @@ def convert_fraction(line):
             k = search(line, i, sign, 1)
 
             # Removes extra surrounding parentheses, if there are any.
-            # This won't work if you're doing "( )( )/( )( )", it will
+            # This won't work if you're doing "( )( )/( )( )": it will
             # incorrectly change it to " )( / )( ", but there are no cases of
             # this happening yet, so I have not gone to fixing this yet.
             if (line[j + 1] == '(' and line[i - 1] == ')' and
@@ -781,7 +780,6 @@ def convert_fraction(line):
                 line = '{0}\\frac{{{1}}}{{{2}}}{3}' \
                     .format(line[:j + 1], line[j + 1:i],
                             line[i + 1:k + 1], line[k + 1:])
-
         i += 1
 
     return line
