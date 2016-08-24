@@ -238,9 +238,14 @@ def master_function(line, params):
                     sum([args[0].count(element) for element in multi]) != 0:
                 sep[0][0] = sep[0][0].replace('@@', '@')
 
-            line = (line[:pos[0]] + l + '%s'.join(sep[[len(y) for y in sep]
-                                                  .index(len(args) + 1)]) +
-                    line[pos[1]:])
+            if m in TRIG and len(line) != pos[1] and line[pos[1]] == '^':
+                line = line[:pos[0]] + '(' + l + \
+                       '%s'.join(sep[[len(y) for y in sep]
+                                 .index(len(args) + 1)]) + ')' + line[pos[1]:]
+            else:
+                line = line[:pos[0]] + l + \
+                       '%s'.join(sep[[len(y) for y in sep].
+                                 index(len(args) + 1)]) + line[pos[1]:]
 
             line %= tuple(args)
 
@@ -311,8 +316,8 @@ def carat(line):
 
     while i != len(line):
         if line[i] == '^':
+            print(line)
             k = search(line, i, list('*/+-=, '), 1)
-
             if line[i + 1] == '(' and line[k] == ')':
                 line = line[:i] + '^{' + line[i + 2:k] + '}' + line[k + 1:]
             else:
@@ -329,7 +334,7 @@ def beta(line):
     Converts Mathematica's 'Beta' function to the equivalent LaTeX macro,
     taking into account the variations for the different number of arguments.
 
-    :param line: line to be converted
+    :param line: line to be convertedmathematica_to_latex.py:324
     :returns: converted line
     """
     for _ in range(line.count('Beta')):
@@ -966,7 +971,7 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                             pass
                         line += '\n\\end{equation}'
 
-                    print(line)
+                    # print(line)
 
                     latex.write(line + '\n')
 

@@ -77,7 +77,6 @@ def combine_percent(lines):
         if len(lines[index]) >= 3 and lines[index][:3] == '%  ' and \
                index > lines.index('\\begin{equation}'):
             if len(lines[index + 1]) != '' and lines[index + 1][0] == '%':
-                print(lines[index])
                 add = lines.pop(index + 1)
                 lines[index] += '\n' + add.replace('%', ' ')
             else:

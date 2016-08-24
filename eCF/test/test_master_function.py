@@ -75,10 +75,15 @@ class TestMasterFunction(TestCase):
                     self.assertEqual(master_function('--{0}--'.format(before), function), '--{0}--'.format(after))
                     if function[0] in TRIG:
                         for sep in MULTI:
-                            before = before[:-1] + sep + 'b]'
-                            after = after.replace('@@', '@')[:-1] + sep + 'b}'
-                            self.assertEqual(master_function(before, function), after)
-                            self.assertEqual(master_function('--{0}--'.format(before), function), '--{0}--'.format(after))
+                            before2 = before[:-1] + sep + 'b]'
+                            after2 = after.replace('@@', '@')[:-1] + sep + 'b}'
+                            self.assertEqual(master_function(before2, function), after2)
+                            self.assertEqual(master_function('--{0}--'.format(before2), function), '--{0}--'.format(after2))
+
+                            before2 += '^'
+                            after2 = '(' + after2 + ')^'
+                            self.assertEqual(master_function(before2, function), after2)
+                            self.assertEqual(master_function('--{0}--'.format(before2), function), '--{0}--'.format(after2))
 
                     if function[0] == 'D':
                         self.assertEqual(master_function('\\[Delta]', function), '\\[Delta]')
