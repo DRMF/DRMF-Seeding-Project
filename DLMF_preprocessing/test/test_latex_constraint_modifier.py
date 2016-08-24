@@ -15,3 +15,4 @@ class TestReplace(TestCase):
 class TestDollarsign(TestCase):
 
 
+class TestMain(TestCase):

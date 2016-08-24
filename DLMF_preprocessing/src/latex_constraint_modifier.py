@@ -40,10 +40,7 @@ def find_surrounding(line, function):
         if line[j] in list(')]}'):
             count -= 1
         if count == 0:
-            if j == positions[0] + len(function):
-                positions[0] = positions[1]
-            else:
-                positions[1] = j + 1
+            positions[1] = j + 1
             break
 
     return positions[0], positions[1]
