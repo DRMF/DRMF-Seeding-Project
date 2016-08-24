@@ -7,20 +7,17 @@ from latex_constraint_modifier import *
 
 import os
 PATHR = os.path.dirname(os.path.realpath(__file__)) + '/data/in.tex'
-PATHW = os.path.dirname(os.path.realpath(__file__)) + '/data/out.tex'
-
-
-#class TestFindSurrounding(TestCase):
-
-
-#class TestCombinePercent(TestCase):
-
-
-#class TestReplace(TestCase):
-
-
-#class TestDollarsign(TestCase):
+PATHW = os.path.dirname(os.path.realpath(__file__)) + '/data/testout.tex'
+PATHC = os.path.dirname(os.path.realpath(__file__)) + '/data/correctout.tex'
 
 
 class TestMain(TestCase):
 
+    def test_generation(self):
+        main(PATHR, PATHW)
+        with open(PATHW, 'r') as r:
+            out = r.read()
+        with open(PATHC, 'r') as c:
+            correct = c.read()
+
+        self.assertEqual(out, correct)

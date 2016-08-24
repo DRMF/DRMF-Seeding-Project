@@ -969,10 +969,9 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                                     references[mtt] + '}$}'
                         except KeyError:
                             pass
-                        line += '\n\\end{equation}'
+                        line = '  ' + line + '\n\\end{equation}'
 
-                    # print(line)
-
+                    print line
                     latex.write(line + '\n')
 
             latex.write('\n\n\\end{document}\n')

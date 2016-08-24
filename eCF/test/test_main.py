@@ -14,7 +14,7 @@ PATHREF = os.path.dirname(os.path.realpath(__file__)) + '/data/testref.txt'
 
 class TestMain(TestCase):
 
-    def test_gen(self):
+    def test_generation(self):
         main(pathw=PATHW, pathr=PATHR, pathref=PATHREF)
         with open(PATHW, 'r') as l:
             latex = l.read()
@@ -37,13 +37,13 @@ class TestMain(TestCase):
                     '\n'
                     '\n'
                     '\\begin{equation}\n'
-                    'equation\n'
+                    '  equation\n'
                     '%  \\mathematicatag{$\\tt{description, number}$}\n'
                     '%  \\mathematicareference{$\\text{test reference line 1&test reference line 2}$}\n'
                     '\\end{equation}\n'
                     '\n'
                     '\\begin{equation}\n'
-                    'equation\n'
+                    '  equation\n'
                     '%  \\mathematicatag{$\\tt{nodescription, number}$}\n'
                     '\\end{equation}\n'
                     '\n'
