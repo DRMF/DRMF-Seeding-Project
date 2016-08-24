@@ -3,9 +3,9 @@ __author__ = 'Kevin Chen'
 __status__ = 'Development'
 
 from unittest import TestCase
-from MathematicaToLaTeX import remove_inactive
-from MathematicaToLaTeX import remove_conditionalexpression
-from MathematicaToLaTeX import remove_symbol
+from mathematica_to_latex import remove_inactive
+from mathematica_to_latex import remove_conditionalexpression
+from mathematica_to_latex import remove_symbol
 
 
 BEFORE1 = ('Inactive[test]',

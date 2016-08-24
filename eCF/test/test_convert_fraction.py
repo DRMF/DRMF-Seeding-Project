@@ -3,7 +3,7 @@ __author__ = 'Kevin Chen'
 __status__ = 'Development'
 
 from unittest import TestCase
-from MathematicaToLaTeX import convert_fraction
+from mathematica_to_latex import convert_fraction
 
 
 class TestConvertFraction(TestCase):

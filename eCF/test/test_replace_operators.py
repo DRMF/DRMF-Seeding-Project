@@ -3,13 +3,14 @@ __author__ = 'Kevin Chen'
 __status__ = 'Development'
 
 from unittest import TestCase
-from MathematicaToLaTeX import replace_operators
+from mathematica_to_latex import replace_operators
 
 
 class TestReplaceOperators(TestCase):
 
     def test_without_percent(self):
         self.assertEqual(replace_operators('=='), ' = ')
+        self.assertEqual(replace_operators('!='), ' \\ne ')
         self.assertEqual(replace_operators('||'), ' \\lor ')
         self.assertEqual(replace_operators('>='), ' \\geq ')
         self.assertEqual(replace_operators('<='), ' \\leq ')
@@ -32,7 +33,7 @@ class TestReplaceOperators(TestCase):
         self.assertEqual(replace_operators('Catalan'), '\\CatalansConstant')
         self.assertEqual(replace_operators('GoldenRatio'), '\\GoldenRatio')
         self.assertEqual(replace_operators('Pi'), '\\pi')
-        self.assertEqual(replace_operators('CalculateData`Private`nu'), '\\text{CalculateData`Private`nu}')
+        self.assertEqual(replace_operators('CalculateData`Private`nu'), '\\nu')
 
     def test_with_percent(self):
         self.assertEqual(replace_operators('(%('), '\\left( %(')

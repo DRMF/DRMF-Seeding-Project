@@ -43,6 +43,10 @@ SYMBOLS = {
 
 LEFT_BRACKETS = list('([{')
 RIGHT_BRACKETS = list(')]}')
+TRIG = ('ArcCos', 'ArcCosh', 'ArcCot', 'ArcCoth', 'ArcCsc', 'ArcCsch',
+        'ArcSec', 'ArcSech', 'ArcSin', 'ArcSinh', 'ArcTan', 'ArcTanh',
+        'Cos', 'Cosh', 'Cot', 'Coth', 'Csc', 'Csch', 'Sec', 'Sech', 'Sinc',
+        'Sin', 'Sinh', 'Tan', 'Tanh')
 
 
 def find_surrounding(line, function, ex=(), start=0):
@@ -161,6 +165,27 @@ def search(line, i, sign, direction=-1):
     return j
 
 
+def process_references(pathr):
+    # (str) -> dict
+    """
+    Opens references file and process it into a dictionary
+
+    :param pathr: directory of file to be read from
+    :return: dictionary of processed references
+    """
+    with open(pathr) as refs:
+        references = list(line.split('\n') for line in
+                          refs.read().split('\n\n'))
+
+    key = []
+    value = []
+    for pair in references:
+        key.append(pair[0][3:-1].replace('"', ''))
+        value.append('&'.join(pair[1:]))
+
+    return dict(zip(key, value))
+
+
 def master_function(line, params):
     # (str, tuple) -> str
     """
@@ -175,6 +200,7 @@ def master_function(line, params):
     """
     m, l, sep, ex = params[:5]
     sep = [i.split('-') for i in sep]
+    multi = list('+-*/')
 
     for _ in range(line.count(m)):
         try:
@@ -206,10 +232,21 @@ def master_function(line, params):
                 else:
                     args.insert(0, len(arg_split(args[1][1:-1], ',')))
 
-            line = (line[:pos[0]] + l + '%s'.join(sep[[len(y) for y in sep]
-                                                  .index(len(args) + 1)]) +
-                    line[pos[1]:])
+            # If the arguments in a trig function are more than one variable,
+            # then instead of "@@" make it "@"
+            if m in TRIG and \
+                    sum([args[0].count(element) for element in multi]) != 0:
+                sep[0][0] = sep[0][0].replace('@@', '@')
 
+            # Add parens around ambiguous functions (trig functions)
+            if m in TRIG and len(line) != pos[1] and line[pos[1]] == '^':
+                line = line[:pos[0]] + '(' + l + \
+                       '%s'.join(sep[[len(y) for y in sep]
+                                 .index(len(args) + 1)]) + ')' + line[pos[1]:]
+            else:
+                line = line[:pos[0]] + l + \
+                       '%s'.join(sep[[len(y) for y in sep].
+                                 index(len(args) + 1)]) + line[pos[1]:]
             line %= tuple(args)
 
     return line
@@ -279,9 +316,8 @@ def carat(line):
 
     while i != len(line):
         if line[i] == '^':
-
+            print(line)
             k = search(line, i, list('*/+-=, '), 1)
-
             if line[i + 1] == '(' and line[k] == ')':
                 line = line[:i] + '^{' + line[i + 2:k] + '}' + line[k + 1:]
             else:
@@ -298,7 +334,7 @@ def beta(line):
     Converts Mathematica's 'Beta' function to the equivalent LaTeX macro,
     taking into account the variations for the different number of arguments.
 
-    :param line: line to be converted
+    :param line: line to be convertedmathematica_to_latex.py:324
     :returns: converted line
     """
     for _ in range(line.count('Beta')):
@@ -725,7 +761,7 @@ def convert_fraction(line):
             k = search(line, i, sign, 1)
 
             # Removes extra surrounding parentheses, if there are any.
-            # This won't work if you're doing "( )( )/( )( )", it will
+            # This won't work if you're doing "( )( )/( )( )": it will
             # incorrectly change it to " )( / )( ", but there are no cases of
             # this happening yet, so I have not gone to fixing this yet.
             if (line[j + 1] == '(' and line[i - 1] == ')' and
@@ -749,7 +785,6 @@ def convert_fraction(line):
                 line = '{0}\\frac{{{1}}}{{{2}}}{3}' \
                     .format(line[:j + 1], line[j + 1:i],
                             line[i + 1:k + 1], line[k + 1:])
-
         i += 1
 
     return line
@@ -799,6 +834,7 @@ def replace_operators(line):
     :returns: converted line
     """
     line = line.replace('==', '=')
+    line = line.replace('!=', ' \\ne ')
     line = line.replace('||', ' \\lor ')
     line = line.replace('>=', ' \\geq ')
     line = line.replace('<=', ' \\leq ')
@@ -831,8 +867,7 @@ def replace_operators(line):
     line = line.replace('Catalan', '\\CatalansConstant')
     line = line.replace('GoldenRatio', '\\GoldenRatio')
     line = line.replace('Pi', '\\pi')
-    line = line.replace('CalculateData`Private`nu',
-                        '\\text{CalculateData`Private`nu}')
+    line = line.replace('CalculateData`Private`nu', '\\nu')
 
     return line
 
@@ -858,18 +893,19 @@ def replace_vars(line):
 
 
 def main(pathw=DIR_NAME + 'newIdentities.tex',
-         pathr=DIR_NAME + 'Identities.m', test=False):
-    # ((str, str, bool)) -> None
+         pathr=DIR_NAME + 'Identities.m',
+         pathref=DIR_NAME + 'References.txt'):
+    # ((str, str)) -> None
     """
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
 
     :param pathw: directory of file to be written to
     :param pathr: directory of file to be read from
-    :param test: if True, replaces "(* *)" with quotes; if False: uses "\\tag"
-                 to mark the functions
+    :param pathref: directory of file with references to be inserted
     :returns: None
     """
+    references = process_references(pathref)
 
     with open(pathw, 'w') as latex:
         with open(pathr, 'r') as mathematica:
@@ -884,24 +920,18 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                         '\\usepackage{DRMFfcns}\n'
                         '\\usepackage{DLMFfcns}\n'
                         '\\usepackage{graphicx}\n'
-                        '\\usepackage[paperwidth=20in, paperheight=20in, '
+                        '\\usepackage[paperwidth=15in, paperheight=20in, '
                         'margin=0.5in]{geometry}\n\n'
                         '\\begin{document}\n\n\n')
 
             for line in mathematica:
                 line = line.replace('\n', '')
 
-                # If line is a comment, make it a LaTeX comment or "\tag"
                 if '(*' in line and '*)' in line:
-                    if test:
-                        line = line.replace('(*', '%').replace('*)', '%')
-                    else:
-                        line = ('\\begin{equation*} \\tag{' +
-                                line[4:-3].replace('"', '') + '}')
-
+                    mtt = line[4:-3].replace('"', '')
+                    line = '\\begin{equation}'
                     latex.write(line + '\n')
                 else:
-
                     line = line.replace(' ', '')
 
                     line = remove_inactive(line)
@@ -932,23 +962,24 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                     line = replace_operators(line)
                     line = replace_vars(line)
 
-                    print(line)
-
-                    if test and line != '':
-                        line = '\\begin{equation*}\n' + line
-
                     if line != '':
-                        line += '\n\\end{equation*}'
+                        line += '\n%  \\mathematicatag{$\\tt{' + mtt + '}$}'
+                        try:
+                            line += '\n%  \\mathematicareference{$\\text{' + \
+                                    references[mtt] + '}$}'
+                        except KeyError:
+                            pass
+                        line = '  ' + line + '\n\\end{equation}'
 
+                    print line
                     latex.write(line + '\n')
 
             latex.write('\n\n\\end{document}\n')
 
 
 # Open data/functions, and process the data into a comprehensible tuple that
-# gets fed into "master_function" function
-with open(DIR_NAME + 'functions') \
-        as functions:
+# gets fed into the "master_function" function
+with open(DIR_NAME + 'functions') as functions:
     FUNCTION_CONVERSIONS = list(arg_split(line.replace(' ', ''), ',') for line
                                 in functions.read().split('\n')
                                 if (line != '' and '#' not in line))
@@ -966,6 +997,7 @@ for index, item in enumerate(FUNCTION_CONVERSIONS):
     FUNCTION_CONVERSIONS[index] = tuple(FUNCTION_CONVERSIONS[index])
 
 FUNCTION_CONVERSIONS = tuple(FUNCTION_CONVERSIONS)
+
 
 if __name__ == '__main__':
     main()

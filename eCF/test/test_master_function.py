@@ -4,8 +4,8 @@ __status__ = 'Development'
 
 import os
 from unittest import TestCase
-from MathematicaToLaTeX import master_function
-from MathematicaToLaTeX import arg_split
+from mathematica_to_latex import master_function
+from mathematica_to_latex import arg_split
 
 
 with open(os.path.dirname(os.path.realpath(__file__)) + '/../data/functions') as functions:
@@ -25,6 +25,11 @@ for index, item in enumerate(FUNCTION_CONVERSIONS):
     FUNCTION_CONVERSIONS[index] = tuple(FUNCTION_CONVERSIONS[index])
 
 FUNCTION_CONVERSIONS = tuple(FUNCTION_CONVERSIONS)
+TRIG = ('ArcCos', 'ArcCosh', 'ArcCot', 'ArcCoth', 'ArcCsc', 'ArcCsch',
+        'ArcSec', 'ArcSech', 'ArcSin', 'ArcSinh', 'ArcTan', 'ArcTanh',
+        'Cos', 'Cosh', 'Cot', 'Coth', 'Csc', 'Csch', 'Sec', 'Sech', 'Sinc',
+        'Sin', 'Sinh', 'Tan', 'Tanh')
+MULTI = list('+-*/')
 
 
 class TestMasterFunction(TestCase):
@@ -68,6 +73,18 @@ class TestMasterFunction(TestCase):
                 else:
                     self.assertEqual(master_function(before, function), after)
                     self.assertEqual(master_function('--{0}--'.format(before), function), '--{0}--'.format(after))
+                    if function[0] in TRIG:
+                        for sep in MULTI:
+                            before2 = before[:-1] + sep + 'b]'
+                            after2 = after.replace('@@', '@')[:-1] + sep + 'b}'
+                            self.assertEqual(master_function(before2, function), after2)
+                            self.assertEqual(master_function('--{0}--'.format(before2), function), '--{0}--'.format(after2))
+
+                            before2 += '^'
+                            after2 = '(' + after2 + ')^'
+                            self.assertEqual(master_function(before2, function), after2)
+                            self.assertEqual(master_function('--{0}--'.format(before2), function), '--{0}--'.format(after2))
+
                     if function[0] == 'D':
                         self.assertEqual(master_function('\\[Delta]', function), '\\[Delta]')
 

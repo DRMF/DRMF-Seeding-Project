@@ -3,16 +3,16 @@ __author__ = 'Kevin Chen'
 __status__ = 'Development'
 
 from unittest import TestCase
-from MathematicaToLaTeX import beta
-from MathematicaToLaTeX import cfk
-from MathematicaToLaTeX import gamma
-from MathematicaToLaTeX import integrate
-from MathematicaToLaTeX import legendrep
-from MathematicaToLaTeX import legendreq
-from MathematicaToLaTeX import polyeulergamma
-from MathematicaToLaTeX import product
-from MathematicaToLaTeX import qpochhammer
-from MathematicaToLaTeX import summation
+from mathematica_to_latex import beta
+from mathematica_to_latex import cfk
+from mathematica_to_latex import gamma
+from mathematica_to_latex import integrate
+from mathematica_to_latex import legendrep
+from mathematica_to_latex import legendreq
+from mathematica_to_latex import polyeulergamma
+from mathematica_to_latex import product
+from mathematica_to_latex import qpochhammer
+from mathematica_to_latex import summation
 
 
 class TestBeta(TestCase):
