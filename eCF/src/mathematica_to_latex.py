@@ -238,6 +238,7 @@ def master_function(line, params):
                     sum([args[0].count(element) for element in multi]) != 0:
                 sep[0][0] = sep[0][0].replace('@@', '@')
 
+            # Add parens around ambiguous functions (trig functions)
             if m in TRIG and len(line) != pos[1] and line[pos[1]] == '^':
                 line = line[:pos[0]] + '(' + l + \
                        '%s'.join(sep[[len(y) for y in sep]
@@ -246,7 +247,6 @@ def master_function(line, params):
                 line = line[:pos[0]] + l + \
                        '%s'.join(sep[[len(y) for y in sep].
                                  index(len(args) + 1)]) + line[pos[1]:]
-
             line %= tuple(args)
 
     return line
