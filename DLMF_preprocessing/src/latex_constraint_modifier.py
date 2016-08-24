@@ -138,12 +138,12 @@ def dollarsign(line):
 
 
 def main(pathr, pathw):
-    # ((str, str)) -> None
+    # (str, str) -> None
     """
     Main function that reads data and calls other functions to process data.
 
-    :param pathr:
-    :param pathw:
+    :param pathr: directory of file to be read from
+    :param pathw: directory of file to be written to
     :return: None
     """
     with open(pathr, 'r') as b:
