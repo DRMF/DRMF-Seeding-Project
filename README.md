@@ -40,8 +40,6 @@ The project is located in the `maple2latex` folder.
 
 This Python code (mostly developed by Kevin Chen) translates Mathematica files to LaTeX.
 
-The project is currently awaiting approval to be merged into the main branch of the repository.
-
 ## KLSadd Insertion Project
 `linetest.py` and `updateChapters.py` written by Rahul Shah and Edward Bian
 
