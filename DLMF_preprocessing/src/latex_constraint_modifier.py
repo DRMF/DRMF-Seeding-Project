@@ -4,20 +4,6 @@ __status__ = 'Development'
 
 import argparse
 
-parser = argparse.ArgumentParser(
-         description='Receive .tex file with constraints and convert'
-                     ' them viewable metadata.')
-parser.add_argument('PATHR', type=str,
-                    help='path of input .tex file, with the current'
-                         ' directory as the starting point',)
-parser.add_argument('PATHW', type=str,
-                    help='path of file to be outputted to, with the current'
-                         ' directory as the starting point')
-
-args = parser.parse_args()
-PATHR = args.PATHR
-PATHW = args.PATHW
-
 CONVERSIONS = {'\\constraint': '{\\bf C}:~',
                '\\substitution': '{\\bf S}:~',
                '\\drmfnote': '{\\bf NOTE}:~',
@@ -151,19 +137,21 @@ def dollarsign(line):
     return line
 
 
-def main():
-    # (None) -> None
+def main(pathr, pathw):
+    # ((str, str)) -> None
     """
     Main function that reads data and calls other functions to process data.
 
+    :param pathr:
+    :param pathw:
     :return: None
     """
-    with open(PATHR, 'r') as b:
+    with open(pathr, 'r') as b:
         before = b.read().split('\n')
 
     before = combine_percent(before)
 
-    with open(PATHW, 'w') as after:
+    with open(pathw, 'w') as after:
         for line in before:
             if len(line) >= 3 and line[:3] == '%  ' and \
                             before.index(line) > \
@@ -177,4 +165,15 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(
+        description='Receive .tex file with constraints and convert'
+                    ' them viewable metadata.')
+    parser.add_argument('PATHR', type=str,
+                        help='path of input .tex file, with the current'
+                             ' directory as the starting point', )
+    parser.add_argument('PATHW', type=str,
+                        help='path of file to be outputted to, with the current'
+                             ' directory as the starting point')
+    args = parser.parse_args()
+
+    main(args.PATHR, args.PATHW)
