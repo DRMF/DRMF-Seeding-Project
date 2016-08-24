@@ -18,7 +18,7 @@ TEXT = ('\\mathematicareference', '\\category')
 
 
 def find_surrounding(line, function):
-    # (str, str) -> tuple
+    # (str, str) -> list
     """
     Finds the indices of the beginning and end of a function; this is the main
     function that powers the converter.
@@ -43,7 +43,7 @@ def find_surrounding(line, function):
             positions[1] = j + 1
             break
 
-    return positions[0], positions[1]
+    return positions
 
 
 def combine_percent(lines):
@@ -169,8 +169,8 @@ if __name__ == '__main__':
                         help='path of input .tex file, with the current'
                              ' directory as the starting point', )
     parser.add_argument('PATHW', type=str,
-                        help='path of file to be outputted to, with the current'
-                             ' directory as the starting point')
+                        help='path of file to be outputted to, with the'
+                             ' current directory as the starting point')
     args = parser.parse_args()
 
     main(args.PATHR, args.PATHW)
