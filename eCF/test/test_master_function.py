@@ -83,12 +83,12 @@ class TestMasterFunction(TestCase):
                             self.assertEqual(master_function(before2, function), after2)
                             self.assertEqual(master_function('--{0}--'.format(before2), function), '--{0}--'.format(after2))
 
-                    # Test parentheses placement for powers in functions
-                    if function[0] in TRIG_OUTER:
-                        before2 = before + '^'
-                        after2 = '(' + after + ')^'
-                        self.assertEqual(master_function(before2, function), after2)
-                        self.assertEqual(master_function('--{0}--'.format(before2), function), '--{0}--'.format(after2))
+                            before2 = before + '^{b+c}'
+                            after2 = '(' + after + ')^{b+c}'
+                            self.assertEqual(master_function(before2, function), after2)
+                            self.assertEqual(master_function('--{0}--'.format(before2), function), '--{0}--'.format(after2))
+
+                    # Test powers for trig and hyperbolic functions
                     if function[0] in TRIG_INNER:
                         before2 = before + '^{b}'
                         after2 = after[:-5] + '^{b}@@{a}'
