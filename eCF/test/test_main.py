@@ -25,6 +25,7 @@ class TestMain(TestCase):
                     '\\usepackage{amsmath}\n'
                     '\\usepackage{amsfonts}\n'
                     '\\usepackage{amssymb}\n'
+                    '\\usepackage{breqn}\n'
                     '\\usepackage{DLMFmath}\n'
                     '\\usepackage{DRMFfcns}\n'
                     '\\usepackage[paperwidth=15in, paperheight=20in, margin=0.5in]{geometry}\n'

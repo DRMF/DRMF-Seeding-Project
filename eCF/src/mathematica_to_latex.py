@@ -915,7 +915,7 @@ def replace_vars(line):
 
 
 def main(pathw=DIR_NAME + 'newIdentities.tex',
-         pathr=DIR_NAME + 'IdentitiesTest.m',
+         pathr=DIR_NAME + 'Identities.m',
          pathref=DIR_NAME + 'References.txt'):
     # ((str, str)) -> None
     """
@@ -936,6 +936,7 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                         '\\usepackage{amsmath}\n'
                         '\\usepackage{amsfonts}\n'
                         '\\usepackage{amssymb}\n'
+                        '\\usepackage{breqn}\n'
                         '\\usepackage{DLMFmath}\n'
                         '\\usepackage{DRMFfcns}\n'
                         '\\usepackage[paperwidth=15in, paperheight=20in, '
@@ -989,7 +990,7 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
                             pass
                         line = '  ' + line + '\n\\end{equation}'
 
-                    # print line
+                    print line
                     latex.write(line + '\n')
 
             latex.write('\n\n\\end{document}\n')
