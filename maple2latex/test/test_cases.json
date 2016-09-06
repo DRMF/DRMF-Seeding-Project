@@ -124,7 +124,7 @@
                     "general = [ 2 * k - 3 ],",
                     "constraints = { k::integer },"
                 ],
-                "res": "\\begin{equation*}\\tag{0.0.0}\n  n\n  = \\frac{4}{5} \\sum_{k=0}^\\infty 2k-3\n  %  \\category{power series}\n  %  \\constraint{$k\\in\\mathbb{Z}$}\n\\end{equation*}\n"
+                "res": "\\begin{equation}\n  n\n  = \\frac{4}{5} \\sum_{k=0}^\\infty 2k-3\n  %  \\category{power series}\n  %  \\mapletag{0.0.0}\n  %  \\constraint{$k\\in\\mathbb{Z}$}\n\\end{equation}\n"
             },
 
             {
@@ -136,7 +136,7 @@
                     "front = 17,",
                     "general = [ k / 2 ],"
                 ],
-                "res": "\\begin{equation*}\\tag{0.0.0}\n  p\n  = 17+\\sum_{k=0}^\\infty \\left(\\frac{k}{2}\\right)\n  %  \\category{asymptotic series}\n  %  \\constraint{$$}\n\\end{equation*}\n"
+                "res": "\\begin{equation}\n  p\n  = 17+\\sum_{k=0}^\\infty \\left(\\frac{k}{2}\\right)\n  %  \\category{asymptotic series}\n  %  \\mapletag{0.0.0}\n\\end{equation}\n"
             },
 
             {
@@ -148,7 +148,7 @@
                     "factor = 15,",
                     "general = [ [3, 5] ],"
                 ],
-                "res": "\\begin{equation*}\\tag{0.0.0}\n  \\zeta\n  = 15 \\CFK{m}{1}{\\infty}@@{3}{5}\n  %  \\category{test_data}\n  %  \\constraint{$$}\n\\end{equation*}\n"
+                "res": "\\begin{equation}\n  \\zeta\n  = 15 \\CFK{m}{1}{\\infty}@@{3}{5}\n  %  \\category{test_data}\n  %  \\mapletag{0.0.0}\n\\end{equation}\n"
             },
 
             {
@@ -165,7 +165,7 @@
                     "factor = 1,",
                     "general = [[0, 1]],"
                 ],
-                "res": "\\begin{equation*}\\tag{0.0.0}\n  \\zeta\n  = 3+\\frac{1}{1} \\subplus \\frac{1}{2} \\subplus \\frac{1}{3} \\subplus \\frac{1}{4} \\subplus \\frac{1}{5} \\subplus \\frac{1}{6} \\subplus \\frac{1}{7} \\subplus \\frac{1}{8} \\subplus \\frac{1}{9} \\subplus \\frac{1}{10} \\subplus \\dots\n  %  \\category{test_data}\n  %  \\constraint{$$}\n\\end{equation*}\n"
+                "res": "\\begin{equation}\n  \\zeta\n  = 3+\\frac{1}{1} \\subplus \\frac{1}{2} \\subplus \\frac{1}{3} \\subplus \\frac{1}{4} \\subplus \\frac{1}{5} \\subplus \\frac{1}{6} \\subplus \\frac{1}{7} \\subplus \\frac{1}{8} \\subplus \\frac{1}{9} \\subplus \\frac{1}{10} \\subplus \\dots\n  %  \\category{test_data}\n  %  \\mapletag{0.0.0}\n\\end{equation}\n"
             },
 
             {
@@ -180,7 +180,7 @@
                     "even = [[0, 1]],",
                     "odd = [[2, 3]],"
                 ],
-                "res": "\\begin{equation*}\\tag{x.x.x}\n  \\zeta\n  = 4+\\frac{1}{2} \\subplus 3 \\CFK{m}{2}{\\infty}@@{s_m}{1}\n  %  \\category{test_data}\n  %  \\constraint{$$}\n  %  \\substitution{$s_{2j} = \\frac{0}{1},s_{2j+1} = \\frac{2}{3}$}\n\\end{equation*}\n"
+                "res": "\\begin{equation}\n  \\zeta\n  = 4+\\frac{1}{2} \\subplus 3 \\CFK{m}{2}{\\infty}@@{s_m}{1}\n  %  \\category{test_data}\n  %  \\substitution{$s_{2j} = \\frac{0}{1},s_{2j+1} = \\frac{2}{3}$}\n\\end{equation}\n"
             },
 
             {
@@ -194,7 +194,7 @@
                     "front = 4,",
                     "general = [[m, 2], [2, 3], [3, 4]],"
                 ],
-                "res": "\\begin{equation*}\\tag{x.x.x}\n  \\zeta\n  = 4+\\frac{1}{2} \\subplus -\\CFK{m}{2}{\\infty}@@{s_m}{1}\n  %  \\category{test_data}\n  %  \\constraint{$$}\n  %  \\substitution{$s_{3j-2} = \\frac{\\left(3j-2\\right)}{2},s_{3j-1} = \\frac{2}{3},s_{3j} = \\frac{3}{4}$}\n\\end{equation*}\n"
+                "res": "\\begin{equation}\n  \\zeta\n  = 4+\\frac{1}{2} \\subplus -\\CFK{m}{2}{\\infty}@@{s_m}{1}\n  %  \\category{test_data}\n  %  \\substitution{$s_{3j-2} = \\frac{\\left(3j-2\\right)}{2},s_{3j-1} = \\frac{2}{3},s_{3j} = \\frac{3}{4}$}\n\\end{equation}\n"
             }
         ],
 
@@ -211,7 +211,7 @@
                     "even = [[0, 1]],",
                     "odd = [[2, 3]],"
                 ],
-                "res": [100, 100, 100]
+                "res": [9223372036854775807, 9223372036854775807, 9223372036854775807]
             },
 
             {

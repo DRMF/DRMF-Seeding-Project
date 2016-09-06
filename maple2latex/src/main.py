@@ -44,14 +44,9 @@ class MapleFile(object):
         return "MapleFile of " + self.filename
 
 
-def translate_files(root_directory):
-    # type: ()
-    """Generates and writes the results of traversing the root directory, and translating all files in FILES."""
-
-    root_depth = len(root_directory.split("/"))
-
-    dirs = [d for d in os.walk(root_directory) if d[0].count("/") == root_depth]
-
+def get_sections_data(dirs, root_depth=0):
+    # type: (list(, int)) -> dict
+    """Obtain data from the functions/ directory."""
     sections = dict()
 
     for info in dirs:  # search through directories
@@ -76,15 +71,25 @@ def translate_files(root_directory):
                     else:
                         sections[section][subsection] = [repr_label, "\n".join(map(str, formulae))]
 
+    return sections
+
+
+def translate_files(root_directory):
+    # type: ()
+    """Generates and writes the results of traversing the root directory, and translating all files in FILES."""
+
+    root_depth = len(root_directory.split("/"))
+
+    dirs = [d for d in os.walk(root_directory) if d[0].count("/") == root_depth]
+
+    sections = get_sections_data(dirs, root_depth=root_depth)
+
     # generate subsection headers
     for section, subsections in sections.iteritems():
-        print section
-
         keys = sorted(subsections.keys(), key=lambda x: subsections[x][0])
 
         text = ""
         for subsection in keys:
-            print "    " + subsection
             text += "\n\\subsection{" + subsection + "}\n"
             text += subsections[subsection][1]
 
@@ -98,7 +103,7 @@ def translate_files(root_directory):
     # write output to file
     with open("maple2latex/out/test.tex", "w") as test:
         with open("maple2latex/out/primer") as primer:
-            test.write(primer.read() + result + "\n\\end{document}")
+            test.write(primer.read() + result + "\n\\end{document}\n")
 
 if __name__ == '__main__':
     translate_files("maple2latex/functions")
