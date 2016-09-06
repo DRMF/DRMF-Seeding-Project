@@ -25,10 +25,11 @@ for index, item in enumerate(FUNCTION_CONVERSIONS):
     FUNCTION_CONVERSIONS[index] = tuple(FUNCTION_CONVERSIONS[index])
 
 FUNCTION_CONVERSIONS = tuple(FUNCTION_CONVERSIONS)
-TRIG = ('ArcCos', 'ArcCosh', 'ArcCot', 'ArcCoth', 'ArcCsc', 'ArcCsch',
-        'ArcSec', 'ArcSech', 'ArcSin', 'ArcSinh', 'ArcTan', 'ArcTanh',
-        'Cos', 'Cosh', 'Cot', 'Coth', 'Csc', 'Csch', 'Sec', 'Sech', 'Sinc',
-        'Sin', 'Sinh', 'Tan', 'Tanh')
+TRIG_OUTER = ('ArcCos', 'ArcCosh', 'ArcCot', 'ArcCoth', 'ArcCsc', 'ArcCsch',
+              'ArcSec', 'ArcSech', 'ArcSin', 'ArcSinh', 'ArcTan', 'ArcTanh',
+              'Sinc')
+TRIG_INNER = ('Cos', 'Cot', 'Csc', 'Sec', 'Sin', 'Tan',
+              'Cosh', 'Coth', 'Csch', 'Sech', 'Sinh', 'Tanh')
 MULTI = list('+-*/')
 
 
@@ -73,18 +74,28 @@ class TestMasterFunction(TestCase):
                 else:
                     self.assertEqual(master_function(before, function), after)
                     self.assertEqual(master_function('--{0}--'.format(before), function), '--{0}--'.format(after))
-                    if function[0] in TRIG:
+
+                    # Test single and double "@" signs
+                    if function[0] in TRIG_OUTER or function[0] in TRIG_INNER:
                         for sep in MULTI:
                             before2 = before[:-1] + sep + 'b]'
                             after2 = after.replace('@@', '@')[:-1] + sep + 'b}'
                             self.assertEqual(master_function(before2, function), after2)
                             self.assertEqual(master_function('--{0}--'.format(before2), function), '--{0}--'.format(after2))
 
-                            before2 += '^'
-                            after2 = '(' + after2 + ')^'
+                            before2 = before + '^{b+c}'
+                            after2 = '(' + after + ')^{b+c}'
                             self.assertEqual(master_function(before2, function), after2)
                             self.assertEqual(master_function('--{0}--'.format(before2), function), '--{0}--'.format(after2))
 
+                    # Test powers for trig and hyperbolic functions
+                    if function[0] in TRIG_INNER:
+                        before2 = before + '^{b}'
+                        after2 = after[:-5] + '^{b}@@{a}'
+                        self.assertEqual(master_function(before2, function), after2)
+                        self.assertEqual(master_function('--{0}--'.format(before2), function), '--{0}--'.format(after2))
+
+                    # Test an exception
                     if function[0] == 'D':
                         self.assertEqual(master_function('\\[Delta]', function), '\\[Delta]')
 

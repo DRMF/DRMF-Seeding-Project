@@ -43,10 +43,13 @@ SYMBOLS = {
 
 LEFT_BRACKETS = list('([{')
 RIGHT_BRACKETS = list(')]}')
-TRIG = ('ArcCos', 'ArcCosh', 'ArcCot', 'ArcCoth', 'ArcCsc', 'ArcCsch',
-        'ArcSec', 'ArcSech', 'ArcSin', 'ArcSinh', 'ArcTan', 'ArcTanh',
-        'Cos', 'Cosh', 'Cot', 'Coth', 'Csc', 'Csch', 'Sec', 'Sech', 'Sinc',
-        'Sin', 'Sinh', 'Tan', 'Tanh')
+TRIG_OUTER = ('ArcCos', 'ArcCosh', 'ArcCot', 'ArcCoth', 'ArcCsc', 'ArcCsch',
+              'ArcSec', 'ArcSech', 'ArcSin', 'ArcSinh', 'ArcTan', 'ArcTanh',
+              'Sinc')
+TRIG_INNER = ('Cos', 'Cot', 'Csc', 'Sec', 'Sin', 'Tan',
+              'Cosh', 'Coth', 'Csch', 'Sech', 'Sinh', 'Tanh')
+E_EXCEPT = ('EulerGamma', 'Epsilon', 'EulerConstant', 'EulerBeta',
+            'ExpIntn', 'ExpInti', 'CompEllIntE', 'CompEllIntK')
 
 
 def find_surrounding(line, function, ex=(), start=0):
@@ -201,7 +204,6 @@ def master_function(line, params):
     m, l, sep, ex = params[:5]
     sep = [i.split('-') for i in sep]
     multi = list('+-*/')
-
     for _ in range(line.count(m)):
         try:
             pos
@@ -234,15 +236,27 @@ def master_function(line, params):
 
             # If the arguments in a trig function are more than one variable,
             # then instead of "@@" make it "@"
-            if m in TRIG and \
+            if (m in TRIG_OUTER or m in TRIG_INNER) and \
                     sum([args[0].count(element) for element in multi]) != 0:
                 sep[0][0] = sep[0][0].replace('@@', '@')
 
             # Add parens around ambiguous functions (trig functions)
-            if m in TRIG and len(line) != pos[1] and line[pos[1]] == '^':
+            if m in TRIG_OUTER and len(line) != pos[1] and line[pos[1]] == '^':
                 line = line[:pos[0]] + '(' + l + \
                        '%s'.join(sep[[len(y) for y in sep]
                                  .index(len(args) + 1)]) + ')' + line[pos[1]:]
+            # Add the inner square, like \cos^2{x}
+            elif m in TRIG_INNER and len(line) != pos[1] and \
+                    line[pos[1]] == '^':
+                if line[pos[1] + 1] == '{' and line[pos[1] + 3] == '}':
+                    line = line[:pos[0]] + l + line[pos[1]:pos[1] + 4] + \
+                           '%s'.join(sep[[len(y) for y in sep].
+                                     index(len(args) + 1)]) + line[pos[1] + 4:]
+                else:
+                    line = line[:pos[0]] + '(' + l + \
+                           '%s'.join(sep[[len(y) for y in sep].
+                                     index(len(args) + 1)]) + ')' + \
+                           line[pos[1]:]
             else:
                 line = line[:pos[0]] + l + \
                        '%s'.join(sep[[len(y) for y in sep].
@@ -316,7 +330,6 @@ def carat(line):
 
     while i != len(line):
         if line[i] == '^':
-            print(line)
             k = search(line, i, list('*/+-=, '), 1)
             if line[i + 1] == '(' and line[k] == ')':
                 line = line[:i] + '^{' + line[i + 2:k] + '}' + line[k + 1:]
@@ -868,6 +881,15 @@ def replace_operators(line):
     line = line.replace('GoldenRatio', '\\GoldenRatio')
     line = line.replace('Pi', '\\pi')
     line = line.replace('CalculateData`Private`nu', '\\nu')
+    line = line.replace('\\Jacobisn@{t}{m ^ {2}} ^ {2}',
+                        '\\Jacobisn^{2}@{t}{m ^ {2}}')
+
+    # Replaces "E" constant with "\\expe"
+    for word in E_EXCEPT:
+        line = line.replace(word, word.replace('E', 'A'))
+    line = line.replace('E', '\\expe')
+    for word in E_EXCEPT:
+        line = line.replace(word.replace('E', 'A'), word)
 
     return line
 
@@ -912,14 +934,11 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
 
             latex.write('\n\\documentclass{article}\n\n'
                         '\\usepackage{amsmath}\n'
-                        '\\usepackage{amsthm}\n'
-                        '\\usepackage{amssymb}\n'
                         '\\usepackage{amsfonts}\n'
+                        '\\usepackage{amssymb}\n'
                         '\\usepackage{breqn}\n'
                         '\\usepackage{DLMFmath}\n'
                         '\\usepackage{DRMFfcns}\n'
-                        '\\usepackage{DLMFfcns}\n'
-                        '\\usepackage{graphicx}\n'
                         '\\usepackage[paperwidth=15in, paperheight=20in, '
                         'margin=0.5in]{geometry}\n\n'
                         '\\begin{document}\n\n\n')
@@ -940,10 +959,10 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
 
                     line = line.replace('EulerGamma', '\\EulerConstant')
 
+                    line = carat(line)
+
                     for func in FUNCTION_CONVERSIONS:
                         line = master_function(line, func)
-
-                    line = carat(line)
 
                     line = beta(line)
                     line = cfk(line)

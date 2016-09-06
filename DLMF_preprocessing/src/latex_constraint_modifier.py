@@ -144,7 +144,7 @@ def main(pathr, pathw):
     :return: None
     """
     with open(pathr, 'r') as b:
-        before = b.read().split('\n')
+        before = [c.replace('  %', '%') for c in b.read().split('\n')]
 
     before = combine_percent(before)
 

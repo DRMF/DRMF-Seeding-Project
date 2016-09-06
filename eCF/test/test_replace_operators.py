@@ -34,6 +34,8 @@ class TestReplaceOperators(TestCase):
         self.assertEqual(replace_operators('GoldenRatio'), '\\GoldenRatio')
         self.assertEqual(replace_operators('Pi'), '\\pi')
         self.assertEqual(replace_operators('CalculateData`Private`nu'), '\\nu')
+        self.assertEqual(replace_operators('E EulerGamma Epsilon EulerConstant EulerBeta ExpIntn ExpInti CompEllIntE CompEllIntK'),
+                         '\\expe EulerGamma Epsilon EulerConstant EulerBeta ExpIntn ExpInti CompEllIntE CompEllIntK')
 
     def test_with_percent(self):
         self.assertEqual(replace_operators('(%('), '\\left( %(')
