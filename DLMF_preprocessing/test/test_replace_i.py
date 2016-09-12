@@ -20,14 +20,15 @@ matched = """
 %  \constraint{$s = 0,1,2,\dots$.}
 """
 
+
 class TestReplaceSpecial(TestCase):
     def test__replace_special(self):
         tex = "z^a = \\underbrace{z \\cdot z \\cdots z}_{n \n \\text{ times}} = 1 / z^{-a}"
         result = remove_special(tex)
-        self.assertEqual(tex, result)
+        self.assertEqual(tex.split('\n'), result)
     def test_dollar_loc(self):
         actual = remove_special(mismatched)
-        self.assertEqual(mismatched, actual)
+        self.assertEqual(mismatched.split('\n'), actual)
     def test_matching(self):
         result = remove_special(matched)
-        self.assertEqual(matched, result)
+        self.assertEqual(matched.split('\n'), result)
