@@ -74,7 +74,7 @@ def get_sections_data(dirs, root_depth=0):
     return sections
 
 
-def translate_files(root_directory):
+def translate_files(root_directory, output_file):
     # type: ()
     """Generates and writes the results of traversing the root directory, and translating all files in FILES."""
 
@@ -101,9 +101,9 @@ def translate_files(root_directory):
         result += "\\section{" + section + "}\n" + section_data + "\n\n\n"
 
     # write output to file
-    with open("maple2latex/out/test.tex", "w") as test:
+    with open(output_file, "w") as test:
         with open("maple2latex/out/primer") as primer:
             test.write(primer.read() + result + "\n\\end{document}\n")
 
 if __name__ == '__main__':
-    translate_files("maple2latex/functions")
+    translate_files("maple2latex/functions", "maple2latex/out/test.tex")
