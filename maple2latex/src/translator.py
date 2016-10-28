@@ -5,7 +5,9 @@ __status__ = "Development"
 
 import copy
 import json
-from src.maple_tokenize import tokenize
+import sys
+from string import ascii_lowercase
+from maple_tokenize import tokenize
 
 INFO = json.loads(open("maple2latex/data/keys.json").read())
 
@@ -14,6 +16,9 @@ SYMBOLS = INFO["symbols"]
 CONSTRAINTS = INFO["constraints"]
 
 SPECIAL = {"(": "\\left(", ")": "\\right)", "+-": "-", "\\subplus-": "-", "^{1}": "", "\\inNot": "\\notin"}
+
+MULTI_ARGS = ["sin", "cos", "tan", "arccos", "arccosh", "arcsin", "arcsinh", "arctanh", "sinh", "cosh", "coth", "tanh",
+              "erfc", "erf", "log", "ln"]
 
 
 class MapleEquation(object):
@@ -38,9 +43,6 @@ class MapleEquation(object):
                         temp = temp[:10]
                     line[1] = str(temp)[1:-1]
 
-                elif line[0] == "booklabelv1" and line[1] == '"",':
-                    line[1] = "No label"
-
                 elif line[0] in ["booklabelv1", "booklabelv2", "general", "constraints", "begin", "parameters"]:
                     line[1] = line[1].strip()[1:-2].strip()
 
@@ -63,9 +65,124 @@ class MapleEquation(object):
 
         # even-odd case handling
         if "general" in self.fields:
-            self.general = [self.fields["general"]]
+            self.general = self.fields["general"]
         elif "even" in self.fields and "odd" in self.fields:
             self.general = [self.fields["even"], self.fields["odd"]]
+
+
+class LatexEquation(object):
+    def __init__(self, label, equation, metadata):
+        self.label = label
+        self.equation = equation
+        self.metadata = metadata
+
+    @classmethod
+    def from_maple(cls, eq):
+        # (List[MapleEquation]) -> LatexEquation
+        # modify fields
+        eq.lhs = translate(eq.lhs)
+        eq.factor = translate(eq.fields["factor"])
+        eq.front = translate(eq.fields["front"])
+        eq.begin = parse_brackets(eq.begin)
+
+        if eq.factor == "1":
+            eq.factor = ""
+
+        equation = eq.lhs + "\n  = "
+        metadata = dict()
+
+        # translates the Maple information (with spacing)
+        if eq.eq_type == "series":
+            # add factor and front with accompanying symbols, if they exist
+            equation += evaluate(eq.factor + " ", eq.factor) + evaluate(eq.front + "+", eq.front)
+            equation += "\\sum_{k=0}^\\infty "
+
+            eq.general = translate(eq.general)
+
+            if eq.category == "power series":
+                equation += eq.general
+            elif eq.category == "asymptotic series":  # make sure to fix asymptotic series
+                equation += "(" + eq.general + ")"
+
+        elif eq.eq_type == "contfrac":
+            # obtain data from eq.general
+            try:
+                pieces = parse_brackets(eq.general)
+            except AttributeError:  # in form of even, odd
+                pieces = list()
+                for piece in eq.general:
+                    pieces += parse_brackets(piece)
+
+            # if there are multiple forms (requires substitution)
+            if len(pieces) > 1:
+                metadata["substitution"] = ','.join(perform_substitution(eq, pieces))
+                pieces = ["s_m", "1"]
+            else:
+                pieces = pieces[0]
+
+            start = 1  # in case the value of start isn't assigned
+
+            # add terms before general
+            equation += evaluate(eq.front + "+", eq.front)
+
+            for piece in eq.begin:
+                equation += make_frac(piece) + " \\subplus "
+                start += 1
+
+            if eq.factor == "-1":
+                equation += "-"
+            else:
+                equation += evaluate(eq.factor + " ", eq.factor)
+
+            # trim unnecessary parentheses
+            for i, element in enumerate(pieces):
+                pieces[i] = trim_parens(translate(element))
+
+            if pieces != ["0", "1"]:
+                equation += "\\CFK{m}{" + str(start) + "}{\\infty}@@{" + pieces[0] + "}{" + pieces[1] + "}"
+            else:
+                equation += "\\dots"
+
+        metadata["constraint"] = translate(eq.constraints)
+        metadata["category"] = eq.category
+        metadata["mapletag"] = eq.label
+
+        return cls(eq.label, replace_strings(equation, SPECIAL), metadata)
+
+    @staticmethod
+    def get_sortable_label(equation):
+        if equation.label == "":
+            return [sys.maxsize, sys.maxsize, sys.maxsize]
+
+        label = copy.copy(equation.label)
+        for i, ch in enumerate(ascii_lowercase):
+            if label[-1] == ch:
+                label = label[:-1] + "." + str(i + 1)
+
+        return map(int, filter(lambda x: x != "", label.split(".")))
+
+    def __str__(self):
+        metadata = ""
+        for data_type, data in self.metadata.iteritems():
+            if data == "":
+                continue
+
+            if data_type in ["constraint", "substitution"]:  # mathmode
+                metadata += "  %  \\" + data_type + "{$" + replace_strings(data, SPECIAL) + "$}\n"
+            else:
+                metadata += "  %  \\" + data_type + "{" + data + "}\n"\
+
+        return "\\begin{equation}\n  " + self.equation + "\n" + metadata + "\\end{equation}\n"
+
+
+def evaluate(data, key):
+    # (Any, bool) -> Any
+    """
+    Will return data as long as key is not False.
+    If key is False, returns 0 or blank string, depending on type(data).
+    Used as replacement for "if data != "": ...", and similar statements.
+    """
+    return data * bool(key)
 
 
 def replace_strings(string, keys):
@@ -77,11 +194,14 @@ def replace_strings(string, keys):
     return string
 
 
-def parse_brackets(exp):
-    # type: ((str, list)) -> list
+def parse_brackets(string):
+    # type: (str) -> List[str]
     """Obtains the contents from data encapsulated in square brackets."""
 
-    exp = exp[1:-1].split(",")
+    if not string:
+        return ""
+
+    exp = string[1:-1].split(",")
     for i, e in enumerate(exp):
         exp[i] = replace_strings(e, {"[": "", "]": ""}).strip()
 
@@ -94,11 +214,13 @@ def parse_brackets(exp):
 
 
 def trim_parens(exp):
-    # type: (str) -> str
+    # type: (str/List[str]) -> str
     """Removes unnecessary parentheses."""
 
-    if exp == "":
+    if type(exp) in [unicode, str] and exp == "":
         return ""
+    elif type(exp) == list and exp == []:
+        return []
 
     # checks whether the outer set of parentheses are necessary
     if exp[0] == "(" and exp[-1] == ")":
@@ -115,37 +237,30 @@ def trim_parens(exp):
                 else:
                     s.pop()
 
-        if len(s) != 0:
-            return exp
-
         return test
 
     return exp
 
 
 def make_frac(parts):
-    # type: (list) -> str
+    # type: (List[str]) -> str
     """Generate a LaTeX fraction from its numerator and denominator."""
 
     return translate("(" + parts[0] + ") / (" + parts[1] + ")")
 
 
 def basic_translate(exp):
-    # type: (list) -> str
+    # type: (List[str]) -> str
     """Translates basic mathematical operations."""
 
     # translates operations in place
-    for order in range(3): # order of operations
+    for order in range(3):  # order of operations
         i = 0
         while i < len(exp):
             modified = False
 
-            # the imaginary number
-            if exp[i] == "I":
-                exp[i] = "i"
-
             # factorial
-            elif exp[i] == "!" and order == 0:
+            if exp[i] == "!" and order == 0:
                 exp[i - 1] += "!"
                 modified = True
 
@@ -166,7 +281,8 @@ def basic_translate(exp):
 
             # division
             elif exp[i] == "/" and order == 1:
-                for index in [i - 1, i + 1]: # removes extra parentheses
+                # remove extra parentheses
+                for index in [i - 1, i + 1]:
                     exp[index] = trim_parens(exp[index])
                 exp[i - 1] = "\\frac{" + exp[i - 1] + "}{" + exp.pop(i + 1) + "}"
                 modified = True
@@ -181,52 +297,114 @@ def basic_translate(exp):
     return ''.join(exp)
 
 
-def get_arguments(function, arg_string):
-    # type: (str, list) -> list
-    """Obtains the arguments of a function."""
+def perform_substitution(eq, forms):
+    # (MapleEquation, List[str]) -> List[str]
+    """Performs variable substitutions on the strings in eq.general."""
+
+    replacements = list()
+    if len(eq.general) == 2:
+        replacements = ["2j", "2j+1"]
+    elif forms:
+        for i, _ in enumerate(forms):
+            replacement = str(len(forms)) + "j"
+            if i < len(forms) - 1:
+                replacement += "-" + str(len(forms) - i - 1)
+
+            replacements.append(replacement)
+
+    for i, form in enumerate(forms):
+        for j, half in enumerate(form):
+            half = tokenize(half)
+            for k, ch in enumerate(half):
+                if ch == "m":
+                    half[k] = "(" + replacements[i] + ")"
+
+            form[j] = ' '.join(half)
+
+        forms[i] = "s_{" + replacements[i] + "} = " + make_frac(form)
+
+    return forms
+
+
+def get_arguments(function_name, arg_string):
+    # type: (str, List[str]) -> (List[str], List[str])
+    """Generates the function pieces and the arguments."""
+
+    parens_mod = False
 
     # no arguments
-    if arg_string == ["(", ")"]:
-        return []
+    if not arg_string:  # arg_string == []
+        args = []
+
+    # handling for not
+    elif function_name == "not":
+        inversion = {"<": "\\geq ", ">": "\\leq ", "\\in": "\\notin "}
+
+        for i, ch in enumerate(arg_string):
+            if ch in inversion:
+                arg_string[i] = inversion[ch]
+
+        args = [basic_translate(arg_string)]
+
+    # handling for ranges (constraints)
+    elif function_name == "RealRange":
+        for i, piece in enumerate(arg_string):
+            if trim_parens(piece) != piece:
+                arg_string[i] = trim_parens(piece)
+
+        args = basic_translate(arg_string).split(",")
+
+    # handling for trigamma
+    elif function_name == "Psi" and arg_string[0] == "1":
+        function_name = "special-trigamma"
+        args = [basic_translate(arg_string[2])]
 
     # handling for hypergeometric, q-hypergeometric functions
-    elif function in ["hypergeom", "qhyper"]:
+    elif function_name in ["hypergeom", "qhyper"]:
         args = list()
-        for s in ' '.join(arg_string[1:-1]).split("] , "):
+        for s in ' '.join(arg_string).split("] , "):
             args.append(basic_translate(replace_strings(s, {"[": "", "]": ""}).split()))
 
-        if function == "qhyper":
+        if function_name == "qhyper":
             args += args.pop(2).split(",")
 
         for p, i in enumerate([1, 0]):
-            arg_count = 0
-            if args[i + p] != "":
-                arg_count = args[i + p].count(",") + 1
-
+            arg_count = evaluate(args[i + p].count(",") + 1, args[i + p])
             args.insert(0, str(arg_count))
 
     # handling for sums
-    elif function == "sum":
-        args = basic_translate(arg_string[1:-1]).split(",")
+    elif function_name == "sum":
+        args = basic_translate(arg_string).split(",")
         args = args.pop(1).split("..") + [args[0]]
         if args[1] == "infinity":
             args[1] = "\\infty"
 
-    else:
-        args = basic_translate(arg_string[1:-1]).split(",")
+    # handling for function in case it has optional parentheses
+    elif function_name in MULTI_ARGS and len(arg_string) == 1:
+        parens_mod = True
+        args = basic_translate(arg_string).split(",")
 
-    return args
+    else:
+        args = basic_translate(arg_string).split(",")
+
+    result = list()
+    for function in FUNCTIONS:
+        for variant in FUNCTIONS[function]:
+            if function_name == function and len(args) == variant["args"]:
+                result = copy.copy(variant["repr"])
+
+    # modify macro to form without parentheses
+    if parens_mod:
+        result[0] = result[0].replace("@", "@@")
+
+    return [result, args]
 
 
 def generate_function(name, args):
-    # type: (str, list) -> str
+    # type: (str, List[str]) -> str
     """Generate a function with the provided function name and arguments."""
 
-    result = list()
-    for n in FUNCTIONS:
-        for variant in FUNCTIONS[n]:
-            if name == n and len(args) == variant["args"]:
-                result = copy.copy(variant["repr"])
+    result, args = get_arguments(name, args)
 
     # places arguments between shell of function
     for n in range(1, len(result)):
@@ -264,7 +442,7 @@ def translate(exp):
 
             if exp[i - 1] in FUNCTIONS:  # handling for functions
                 i -= 1
-                piece = generate_function(exp[i], get_arguments(exp[i], piece))
+                piece = generate_function(exp[i], trim_parens(piece))
 
             else:
                 piece = basic_translate(piece)
@@ -279,85 +457,3 @@ def translate(exp):
         i -= 1
 
     return basic_translate(exp)
-
-
-def make_equation(eq, view_metadata=False):
-    # type: (MapleEquation{, bool}) -> str
-    """Make a LaTeX equation based on a MapleEquation object."""
-
-    # modify fields
-    eq.lhs = translate(eq.lhs)
-    eq.factor = translate(eq.fields["factor"])
-    eq.front = translate(eq.fields["front"])
-
-    if eq.eq_type == "series":
-        eq.general = translate(eq.general[0])
-
-    elif eq.eq_type == "contfrac":
-        eq.general = parse_brackets(eq.general[0])[0]
-
-        if eq.begin != "":
-            eq.begin = parse_brackets(eq.begin)
-
-    equation = "\\begin{equation*}\\tag{" + eq.label + "}\n  " + eq.lhs + "\n  = "
-
-    if eq.factor == "1":
-        eq.factor = ""
-
-    # translates the Maple information (with spacing)
-    if eq.eq_type == "series":
-        if eq.factor != "":
-            equation += eq.factor + " "
-
-        elif eq.front != "":
-            equation += eq.front + "+"
-
-        equation += "\\sum_{k=0}^\\infty "
-
-        if eq.category == "power series":
-            equation += eq.general
-        elif eq.category == "asymptotic series":  # make sure to fix asymptotic series
-            equation += "(" + eq.general + ")"
-
-    elif eq.eq_type == "contfrac":
-        start = 1  # in case the value of start isn't assigned
-
-        # add terms before general
-        if eq.front != "":
-            equation += eq.front + "+"
-            start = 1
-
-        if eq.begin != "":
-            for piece in eq.begin:
-                equation += make_frac(piece) + " \\subplus "
-                start += 1
-
-        if eq.factor != "":
-            if eq.factor == "-1":
-                equation += "-"
-            else:
-                equation += eq.factor + " "
-
-        # trim unnecessary parentheses
-        for i, element in enumerate(eq.general):
-            eq.general[i] = trim_parens(translate(element))
-
-        if eq.general != ["0", "1"]:
-            equation += "\\CFK{m}{" + str(start) + "}{\\infty}@@{" + eq.general[0] + "}{" + eq.general[1] + "}"
-        else:
-            equation += "\\dots"
-
-    # adds metadata
-    if view_metadata:
-        equation += "\n\\end{equation*}"
-        equation += "\n\\begin{center}"
-        equation += "\nParameters: $$" + eq.parameters + "$$"
-        equation += "\n$$" + translate(eq.constraints) + "$$"
-        equation += "\n" + eq.category
-        equation += "\n\\end{center}"
-    else:
-        equation += "\n  %  \\constraint{$" + translate(eq.constraints) + "$}"
-        equation += "\n  %  \\category{" + eq.category + "}"
-        equation += "\n\\end{equation*}"
-
-    return replace_strings(equation, SPECIAL)

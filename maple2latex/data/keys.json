@@ -1,30 +1,154 @@
 {
     "functions": {
-        "sqrt": [
-            {
-                "args": 1,
-                "repr": ["\\sqrt{", "}"]
-            }
-        ],
-
         "sin": [
             {
                 "args": 1,
-                "repr": ["\\sin(", ")"]
+                "repr": ["\\sin@{", "}"]
             }
         ],
 
         "cos": [
             {
                 "args": 1,
-                "repr": ["\\cos(", ")"]
+                "repr": ["\\cos@{", "}"]
             }
         ],
 
         "tan": [
             {
                 "args": 1,
-                "repr": ["\\tan(", ")"]
+                "repr": ["\\tan@{", "}"]
+            }
+        ],
+
+        "arccos": [
+            {
+                "args": 1,
+                "repr": ["\\acos@{", "}"]
+            }
+        ],
+
+        "arccosh": [
+            {
+                "args": 1,
+                "repr": ["\\acosh@{", "}"]
+            }
+        ],
+
+        "arcsin": [
+            {
+                "args": 1,
+                "repr": ["\\asin@{", "}"]
+            }
+        ],
+
+        "arcsinh": [
+            {
+                "args": 1,
+                "repr": ["\\asinh@{", "}"]
+            }
+        ],
+
+        "arctan": [
+            {
+                "args": 1,
+                "repr": ["\\atan@{", "}"]
+            }
+        ],
+
+        "arctanh": [
+            {
+                "args": 1,
+                "repr": ["\\atanh@{", "}"]
+            }
+        ],
+
+        "sinh": [
+            {
+                "args": 1,
+                "repr": ["\\sinh@{", "}"]
+            }
+        ],
+
+        "cosh": [
+            {
+                "args": 1,
+                "repr": ["\\cosh@{", "}"]
+            }
+        ],
+
+        "coth": [
+            {
+                "args": 1,
+                "repr": ["\\coth@{", "}"]
+            }
+        ],
+
+        "tanh": [
+            {
+                "args": 1,
+                "repr": ["\\tanh@{", "}"]
+            }
+        ],
+
+        "erfc": [
+            {
+                "args": 1,
+                "repr": ["\\erfc@{", "}"]
+            }
+        ],
+
+        "erf": [
+            {
+                "args": 1,
+                "repr": ["\\erf@{", "}"]
+            }
+        ],
+
+        "log": [
+            {
+                "args": 1,
+                "repr": ["\\log@{", "}"]
+            },
+
+            {
+                "args": 2,
+                "repr": ["\\log_{", "}@{", "}"]
+            }
+        ],
+
+        "ln": [
+            {
+                "args": 1,
+                "repr": ["\\ln@{", "}"]
+            }
+        ],
+
+                "cerf": [
+            {
+                "args": 1,
+                "repr": ["\\erfw@{", "}"]
+            }
+        ],
+
+        "Ein": [
+            {
+                "args": 1,
+                "repr": ["\\ExpIntEin@{", "}"]
+            }
+        ],
+
+        "erfcI": [
+            {
+                "args": 2,
+                "repr": ["I^{", "} \\erfc@{", "}"]
+            }
+        ],
+
+        "sqrt": [
+            {
+                "args": 1,
+                "repr": ["\\sqrt{", "}"]
             }
         ],
 
@@ -38,26 +162,7 @@
         "exp": [
             {
                 "args": 1,
-                "repr": ["e^{", "}"]
-            }
-        ],
-
-        "log": [
-            {
-                "args": 1,
-                "repr": ["\\log{(", ")}"]
-            },
-
-            {
-                "args": 2,
-                "repr": ["\\log_{", "} {(", ")}"]
-            }
-        ],
-
-        "ln": [
-            {
-                "args": 1,
-                "repr": ["\\ln{(", ")}"]
+                "repr": ["\\expe^{", "}"]
             }
         ],
 
@@ -136,20 +241,6 @@
             }
         ],
 
-        "erfc": [
-            {
-                "args": 1,
-                "repr": ["\\erfc@@{(", ")}"]
-            }
-        ],
-
-        "erf": [
-            {
-                "args": 1,
-                "repr": ["\\erf@@{(", ")}"]
-            }
-        ],
-
         "FresnelC": [
             {
                 "args": 1,
@@ -197,6 +288,13 @@
             }
         ],
 
+        "special-trigamma": [
+            {
+                "args": 1,
+                "repr": ["\\digamma'@{", "}"]
+            }
+        ],
+
         "WhittakerW": [
             {
                 "args": 3,
@@ -208,76 +306,6 @@
             {
                 "args": 1,
                 "repr": ["\\RiemannZeta@{", "}"]
-            }
-        ],
-
-        "arccos": [
-            {
-                "args": 1,
-                "repr": ["\\Acos@@{(", ")}"]
-            }
-        ],
-
-        "arccosh": [
-            {
-                "args": 1,
-                "repr": ["\\Acosh@@{(", ")}"]
-            }
-        ],
-
-        "arcsin": [
-            {
-                "args": 1,
-                "repr": ["\\Asin@@{(", ")}"]
-            }
-        ],
-
-        "arcsinh": [
-            {
-                "args": 1,
-                "repr": ["\\Asinh@@{(", ")}"]
-            }
-        ],
-
-        "arctan": [
-            {
-                "args": 1,
-                "repr": ["\\Atan@@{(", ")}"]
-            }
-        ],
-
-        "arctanh": [
-            {
-                "args": 1,
-                "repr": ["\\Atanh@@{(", ")}"]
-            }
-        ],
-
-        "sinh": [
-            {
-                "args": 1,
-                "repr": ["\\sinh@@{(", ")}"]
-            }
-        ],
-
-        "cosh": [
-            {
-                "args": 1,
-                "repr": ["\\cosh@@{(", ")}"]
-            }
-        ],
-
-        "coth": [
-            {
-                "args": 1,
-                "repr": ["\\coth@@{(", ")}"]
-            }
-        ],
-
-        "tanh": [
-            {
-                "args": 1,
-                "repr": ["\\tanh@@{(", ")}"]
             }
         ],
 
@@ -327,27 +355,6 @@
             {
                 "args": 2,
                 "repr": ["\\SphBesselJ{", "}@{", "}"]
-            }
-        ],
-
-        "cerf": [
-            {
-                "args": 1,
-                "repr": ["\\erfw@@{(", ")}"]
-            }
-        ],
-
-        "Ein": [
-            {
-                "args": 1,
-                "repr": ["\\ExpIntEin@{", "}"]
-            }
-        ],
-
-        "erfcI": [
-            {
-                "args": 2,
-                "repr": ["I^{", "} \\erfc@@{(", ")}"]
             }
         ],
 
@@ -417,7 +424,7 @@
         "argument": [
             {
                 "args": 1,
-                "repr": ["\\arg{(", ")}"]
+                "repr": ["\\arg@{", "}"]
             }
         ],
 
@@ -432,6 +439,76 @@
             {
                 "args": 1,
                 "repr": ["(", ")"]
+            }
+        ],
+
+        "regincBeta": [
+            {
+                "args": 3,
+                "repr": ["\\IncI{", "}@{", "}{", "}"]
+            }
+        ],
+
+        "Beta": [
+            {
+                "args": 2,
+                "repr": ["\\EulerBeta@{", "}{", "}"]
+            }
+        ],
+
+        "cnormalI": [
+            {
+                "args": 2,
+                "repr": ["\\RepInterfc{", "}@{", "}"]
+            }
+        ],
+
+        "Mills": [
+            {
+                "args": 1,
+                "repr": ["\\Mills@{", "}"]
+            }
+        ],
+
+        "gammacdf": [
+            {
+                "args": 3,
+                "repr": ["\\RegGammaP@{", "}{", "}{", "}"]
+            }
+        ],
+
+        "cgammacdf": [
+            {
+                "args": 3,
+                "repr": ["\\RegGammaQ@{", "}{", "}{", "}"]
+            }
+        ],
+
+        "normaldcdf": [
+            {
+                "args": 1,
+                "repr": ["\\GaussDistF@{", "}"]
+            }
+        ],
+
+        "cnormaldcdf": [
+            {
+                "args": 1,
+                "repr": ["\\GaussDistQ@{", "}"]
+            }
+        ],
+
+        "not": [
+            {
+                "args": 1,
+                "repr": ["", ""]
+            }
+        ],
+
+        "Binet": [
+            {
+                "args": 1,
+                "repr": ["\\Binet@{", "}"]
             }
         ]
     },
@@ -451,7 +528,7 @@
         "mu": "\\mu",
         "nu": "\\nu",
         "xi": "\\xi",
-        "pi": "\\pi",
+        "pi": "\\cpi",
         "rho": "\\rho",
         "sigma": "\\sigma",
         "tau": "\\tau",
@@ -461,12 +538,15 @@
         "psi": "\\psi",
         "omega": "\\omega",
         "Pi": "\\pi",
-        "I": "i",
         "Catalan": "\\CatalansConstant",
         "infinity": "\\infty",
         "Delian": "\\sqrt[\\leftroot{-2}\\uproot{2} 3]{2}",
         "Theodorus": "\\sqrt{3}",
-        "integer": "\\mathbb{Z}"
+        "integer": "\\mathbb{Z}",
+        "or": "\\lor ",
+        "and": "\\wedge ",
+        "realcons": "\\RR",
+        "I": "\\iunit"
     },
 
     "constraints": {
@@ -480,6 +560,7 @@
         "::positive": "> 0",
         "::nonnegative": "\\geq 0",
         "::nonneg": "\\geq 0",
-        "::": "\\in "
+        "::": "\\in ",
+        "<>": "\\neq "
     }
 }

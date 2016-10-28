@@ -14,7 +14,8 @@ trim_parens_test_cases = TEST_CASES["trim_parens"]
 basic_translate_test_cases = TEST_CASES["basic_translate"]
 get_arguments_test_cases = TEST_CASES["get_arguments"]
 translate_test_cases = TEST_CASES["translate"]
-make_equation_test_cases = TEST_CASES["make_equation"]
+from_maple_test_cases = TEST_CASES["from_maple"]
+get_sortable_label_test_cases = TEST_CASES["get_sortable_label"]
 
 
 class TestParseBrackets(TestCase):
@@ -47,7 +48,13 @@ class TestTranslate(TestCase):
             self.assertEqual(t.translate(case["exp"]), case["res"])
 
 
-class TestMakeEquation(TestCase):
-    def test_make_equation(self):
-        for case in make_equation_test_cases:
-            self.assertEqual(t.make_equation(t.MapleEquation(case["eq"]), case["view_metadata"]), case["res"])
+class TestFromMaple(TestCase):
+    def test_from_maple(self):
+        for case in from_maple_test_cases:
+            self.assertEqual(str(t.LatexEquation.from_maple(t.MapleEquation(case["eq"]))), case["res"])
+
+
+class TestGetSortableLabel(TestCase):
+    def test_get_sortable_label(self):
+        for case in get_sortable_label_test_cases:
+            self.assertEqual(t.LatexEquation.get_sortable_label(t.MapleEquation(case["eq"])), case["res"])

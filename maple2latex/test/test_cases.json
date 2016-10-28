@@ -26,6 +26,16 @@
             {
                 "exp": "((1 + 2))",
                 "res": "(1 + 2)"
+            },
+
+            {
+                "exp": "",
+                "res": ""
+            },
+
+            {
+                "exp": [],
+                "res": []
             }
         ],
 
@@ -36,56 +46,74 @@
             },
 
             {
-                "exp": ["\\pi", "*", "I"],
-                "res": "\\pi i"
+                "exp": ["\\cpi", "*", "3"],
+                "res": "\\cpi 3"
             }
         ],
 
         "get_arguments": [
             {
                 "function": "rabbit",
-                "arg_string": ["(", ")"],
-                "res": []
+                "arg_string": [],
+                "res": [["\\rabbitConstant"], []]
             },
 
             {
                 "function": "hypergeom",
-                "arg_string": ["(", "[1", ",", "2]", ",", "[]", ",", "4", ")"],
-                "res": ["2", "0", "1,2", "", "4"]
+                "arg_string": ["[1", ",", "2]", ",", "[]", ",", "4"],
+                "res": [["\\HyperpFq{", "}{", "}@@{", "}{", "}{", "}"], ["2", "0", "1,2", "", "4"]]
             },
 
             {
                 "function": "qhyper",
-                "arg_string": ["(", "[1", ",", "2", ",", "3]", ",", "[4", ",", "5]", ",", "6", ",", "7", ")"],
-                "res": ["3", "2", "1,2,3", "4,5", "6", "7"]
+                "arg_string": ["[1", ",", "2", ",", "3]", ",", "[4", ",", "5]", ",", "6", ",", "7"],
+                "res": [["\\qHyperrphis{", "}{", "}@@{", "}{", "}{", "}{", "}"], ["3", "2", "1,2,3", "4,5", "6", "7"]]
             },
 
             {
                 "function": "sum",
-                "arg_string": ["(", "m", ",", "1..infinity", ")"],
-                "res": ["1", "\\infty", "m"]
+                "arg_string": ["m", ",", "1..infinity"],
+                "res": [["\\sum_{", "}^{", "} (", ")"], ["1", "\\infty", "m"]]
             },
 
             {
                 "function": "BesselJ",
-                "arg_string": ["(", "\\nu", ",", "z", ")"],
-                "res": ["\\nu", "z"]
+                "arg_string": ["\\nu", ",", "z"],
+                "res": [["\\BesselJ{", "}@{", "}"], ["\\nu", "z"]]
+            },
+
+            {
+                "function": "RealRange",
+                "arg_string": ["0", ",", "(1)"],
+                "res": [["(", ", ", ")"], ["0", "1"]]
+            },
+
+            {
+                "function": "Psi",
+                "arg_string": ["1", ",", "x"],
+                "res": [["\\digamma'@{", "}"], ["x"]]
+            },
+
+            {
+                "function": "not",
+                "arg_string": ["x", "<", "3"],
+                "res": [["", ""], ["x\\geq 3"]]
             }
         ],
 
         "translate": [
             {
                 "exp": "sin(x)",
-                "res": "\\sin(x)"
+                "res": "\\sin@@{x}"
             },
 
             {
                 "exp": "log[beta](nu)",
-                "res": "\\log_{\\beta} {(\\nu)}"
+                "res": "\\log_{\\beta}@{\\nu}"
             }
         ],
 
-        "make_equation": [
+        "from_maple": [
             {
                 "eq": [
                     "create( 'series',",
@@ -96,8 +124,7 @@
                     "general = [ 2 * k - 3 ],",
                     "constraints = { k::integer },"
                 ],
-                "view_metadata": false,
-                "res": "\\begin{equation*}\\tag{0.0.0}\n  n\n  = \\frac{4}{5} \\sum_{k=0}^\\infty 2k-3\n  %  \\constraint{$k\\in\\mathbb{Z}$}\n  %  \\category{power series}\n\\end{equation*}"
+                "res": "\\begin{equation}\n  n\n  = \\frac{4}{5} \\sum_{k=0}^\\infty 2k-3\n  %  \\category{power series}\n  %  \\mapletag{0.0.0}\n  %  \\constraint{$k\\in\\mathbb{Z}$}\n\\end{equation}\n"
             },
 
             {
@@ -109,8 +136,7 @@
                     "front = 17,",
                     "general = [ k / 2 ],"
                 ],
-                "view_metadata": false,
-                "res": "\\begin{equation*}\\tag{0.0.0}\n  p\n  = 17+\\sum_{k=0}^\\infty \\left(\\frac{k}{2}\\right)\n  %  \\constraint{$$}\n  %  \\category{asymptotic series}\n\\end{equation*}"
+                "res": "\\begin{equation}\n  p\n  = 17+\\sum_{k=0}^\\infty \\left(\\frac{k}{2}\\right)\n  %  \\category{asymptotic series}\n  %  \\mapletag{0.0.0}\n\\end{equation}\n"
             },
 
             {
@@ -122,8 +148,7 @@
                     "factor = 15,",
                     "general = [ [3, 5] ],"
                 ],
-                "view_metadata": false,
-                "res": "\\begin{equation*}\\tag{0.0.0}\n  \\zeta\n  = 15 \\CFK{m}{1}{\\infty}@@{3}{5}\n  %  \\constraint{$$}\n  %  \\category{test_data}\n\\end{equation*}"
+                "res": "\\begin{equation}\n  \\zeta\n  = 15 \\CFK{m}{1}{\\infty}@@{3}{5}\n  %  \\category{test_data}\n  %  \\mapletag{0.0.0}\n\\end{equation}\n"
             },
 
             {
@@ -132,43 +157,85 @@
                     "booklabelv1 = \"0.0.0\",",
                     "category = \"test_data\"",
                     "lhs = zeta,",
-                    "begin = [[1,2]],",
+                    "begin = map(proc (x) [1, x] end proc,",
+                    "[",
+                    "1,2,3,4,5,6,7,8,9,10,11",
+                    "]),",
                     "front = 3,",
-                    "general = [[4, 5]],"
+                    "factor = 1,",
+                    "general = [[0, 1]],"
                 ],
-                "view_metadata": false,
-                "res": "\\begin{equation*}\\tag{0.0.0}\n  \\zeta\n  = 3+\\frac{1}{2} \\subplus \\CFK{m}{2}{\\infty}@@{4}{5}\n  %  \\constraint{$$}\n  %  \\category{test_data}\n\\end{equation*}"
+                "res": "\\begin{equation}\n  \\zeta\n  = 3+\\frac{1}{1} \\subplus \\frac{1}{2} \\subplus \\frac{1}{3} \\subplus \\frac{1}{4} \\subplus \\frac{1}{5} \\subplus \\frac{1}{6} \\subplus \\frac{1}{7} \\subplus \\frac{1}{8} \\subplus \\frac{1}{9} \\subplus \\frac{1}{10} \\subplus \\dots\n  %  \\category{test_data}\n  %  \\mapletag{0.0.0}\n\\end{equation}\n"
             },
 
             {
                 "eq": [
                     "create( 'contfrac', ",
-                    "booklabelv1 = \"0.0.0\",",
+                    "booklabelv1 = \"\",",
                     "category = \"test_data\"",
                     "lhs = zeta,",
                     "begin = [[1,2]],",
                     "factor = 3,",
                     "front = 4,",
-                    "general = [[0, 1]],"
+                    "even = [[0, 1]],",
+                    "odd = [[2, 3]],"
                 ],
-                "view_metadata": false,
-                "res": "\\begin{equation*}\\tag{0.0.0}\n  \\zeta\n  = 4+\\frac{1}{2} \\subplus 3 \\dots\n  %  \\constraint{$$}\n  %  \\category{test_data}\n\\end{equation*}"
+                "res": "\\begin{equation}\n  \\zeta\n  = 4+\\frac{1}{2} \\subplus 3 \\CFK{m}{2}{\\infty}@@{s_m}{1}\n  %  \\category{test_data}\n  %  \\substitution{$s_{2j} = \\frac{0}{1},s_{2j+1} = \\frac{2}{3}$}\n\\end{equation}\n"
             },
 
             {
                 "eq": [
                     "create( 'contfrac', ",
-                    "booklabelv1 = \"0.0.0\",",
+                    "booklabelv1 = \"\",",
                     "category = \"test_data\"",
                     "lhs = zeta,",
                     "begin = [[1,2]],",
                     "factor = -1,",
                     "front = 4,",
-                    "even = [[5, 6]],",
-                    "odd = [[7, 8]],"
+                    "general = [[m, 2], [2, 3], [3, 4]],"
                 ],
-                "view_metadata": true,
-                "res": "\\begin{equation*}\\tag{0.0.0}\n  \\zeta\n  = 4+\\frac{1}{2} \\subplus -\\CFK{m}{2}{\\infty}@@{5}{6}\n\\end{equation*}\n\\begin{center}\nParameters: $$$$\n$$$$\ntest_data\n\\end{center}"
+                "res": "\\begin{equation}\n  \\zeta\n  = 4+\\frac{1}{2} \\subplus -\\CFK{m}{2}{\\infty}@@{s_m}{1}\n  %  \\category{test_data}\n  %  \\substitution{$s_{3j-2} = \\frac{\\left(3j-2\\right)}{2},s_{3j-1} = \\frac{2}{3},s_{3j} = \\frac{3}{4}$}\n\\end{equation}\n"
+            }
+        ],
+
+        "get_sortable_label": [
+            {
+                "eq": [
+                    "create( 'contfrac', ",
+                    "booklabelv1 = \"\",",
+                    "category = \"test_data\"",
+                    "lhs = zeta,",
+                    "begin = [[1,2]],",
+                    "factor = 3,",
+                    "front = 4,",
+                    "even = [[0, 1]],",
+                    "odd = [[2, 3]],"
+                ],
+                "res": [9223372036854775807, 9223372036854775807, 9223372036854775807]
+            },
+
+            {
+                "eq": [
+                    "create( 'contfrac', ",
+                    "booklabelv1 = \"3.4.5a\",",
+                    "category = \"test_data\"",
+                    "lhs = zeta,",
+                    "factor = 15,",
+                    "general = [ [3, 5] ],"
+                ],
+                "res": [3, 4, 5, 1]
+            },
+
+            {
+                "eq": [
+                    "create( 'contfrac', ",
+                    "booklabelv1 = \"3.4.5.\",",
+                    "category = \"test_data\"",
+                    "lhs = zeta,",
+                    "factor = 15,",
+                    "general = [ [3, 5] ],"
+                ],
+                "res": [3, 4, 5]
             }
         ]
     }
