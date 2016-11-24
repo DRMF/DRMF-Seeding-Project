@@ -1,9 +1,10 @@
 __author__ = "Joon Bang"
 __status__ = "Prototype"
 
-INPUT_FILE = "tex2wiki/data/01outb.tex"
-OUTPUT_FILE = "tex2wiki/data/01outb.mmd"
+INPUT_FILE = "tex2wiki/data/test.tex"
+OUTPUT_FILE = "tex2wiki/data/test.mmd"
 GLOSSARY_LOCATION = "tex2wiki/data/new.Glossary.csv"
+TITLE_STRING = "Orthogonal Polynomials"
 METADATA_TYPES = ["substitution", "constraint"]
 METADATA_MEANING = {"substitution": "Substitution(s)", "constraint": "Constraint(s)"}
 
@@ -18,7 +19,7 @@ class LatexEquation(object):
 
 
 def generate_html(tag_name, text, options=None, spacing=2):
-    # (str, str(, dict, bool)) -> str
+    # type: (str, str(, dict, bool)) -> str
     """
     Generates an html tag, with optional html parameters.
     When spacing = 0, there should be no spacing.
@@ -42,9 +43,8 @@ def generate_html(tag_name, text, options=None, spacing=2):
 
 
 def generate_math_html(text, options=None, spacing=True):
-    """
-    Special case of generate_html, where the tag is "math".
-    """
+    # type: (str(, dict, bool)) -> str
+    """Special case of generate_html, where the tag is "math"."""
     if options is None:
         options = {}
 
@@ -60,8 +60,8 @@ def generate_math_html(text, options=None, spacing=True):
 
 
 def generate_link(left, right=""):
-    """Generates a link thingie."""
-
+    # type: (str(, str)) -> str
+    """Generates a MediaWiki link."""
     if right == "":
         return "[[" + left + "|" + left + "]]"
 
@@ -69,7 +69,8 @@ def generate_link(left, right=""):
 
 
 def multi_split(s, seps):
-    """Copy pasted from internet!"""
+    # type: (str, list) -> list
+    """Splits a string on multiple characters."""
     res = [s]
     for sep in seps:
         s, res = res, []
@@ -79,14 +80,16 @@ def multi_split(s, seps):
 
 
 def convert_dollar_signs(string):
+    # type: (str) -> str
+    """Converts dollar signs to html for math mode."""
     count = 0
     result = ""
     for i, ch in enumerate(string):
-        if ch == "$" and count % 2 == 0:
-            result += "<math>{\\displaystyle "
-            count += 1
-        elif ch == "$":
-            result += "}</math>"
+        if ch == "$":
+            if count % 2 == 0:
+                result += "<math>{\\displaystyle "
+            else:
+                result += "}</math>"
             count += 1
         else:
             result += ch
@@ -94,24 +97,9 @@ def convert_dollar_signs(string):
     return result
 
 
-def format_formula(formula):
-    if formula[0] == ":":
-        return formula[1:].zfill(2)
-
-    formula = multi_split(formula.split("Formula:", 1)[1], [".", ":"])
-
-    for j in [-1, -2, -3]:
-        formula[j] = formula[j].zfill(2)
-
-    if len(formula) == 3:
-        formula = formula[0] + "." + formula[1] + ":" + formula[2]
-    else:
-        formula = ":".join(formula[:-3]) + ":" + formula[-3] + "." + formula[-2] + ":" + formula[-1]
-
-    return formula
-
-
 def format_metadata(string):
+    # type: (str) -> str
+    """Formats the metadata of an equation."""
     if string == "":
         return ""
 
@@ -134,20 +122,22 @@ def format_metadata(string):
 
 
 def extract_data(data):
+    # type: (list) -> list
+    """Extracts the equations and pertinent data from the tex file."""
     result = list()
+
     for section_data in data:
         equations = section_data[1][:-1]
         for i, equation in enumerate(equations):
             # formula stuff
             try:
-                formula = format_formula(get_data_str(equation, latex="\\formula"))
+                formula = get_data_str(equation, latex="\\mapletag")
             except IndexError:  # there is no formula.
                 break
 
-            equation = equation.split("\n")[1:]
+            equation = equation.split("\n")
 
             # get metadata
-            percent_list = list()
             raw_metadata = ""
 
             j = 0
@@ -161,8 +151,6 @@ def extract_data(data):
             for data_type in METADATA_TYPES:
                 metadata[data_type] = format_metadata(get_data_str(raw_metadata, latex="\\"+data_type))
 
-            # print metadata
-
             equations[i] = LatexEquation(formula, '\n'.join(equation), metadata)
 
         result.append([section_data[0], equations])
@@ -171,6 +159,8 @@ def extract_data(data):
 
 
 def find_end(text, left_delimiter, right_delimiter, start=0):
+    # type: (str, str, str(, int)) -> int
+    """A .find that accounts for nested delimiters."""
     net = 0  # left delimiters encountered - right delimiters encountered
     for i, ch in enumerate(text[start:]):
         if ch == left_delimiter:
@@ -185,14 +175,19 @@ def find_end(text, left_delimiter, right_delimiter, start=0):
 
 
 def get_data_str(text, latex=""):
-    if latex + "{" not in text:
+    # type: (str(, str)) -> str
+    """Gets the string in between curly brackets."""
+    start = text.find(latex + "{")
+
+    if start == -1:
         return ""
 
-    start = text.find(latex + "{")
     return text[start + len(latex + "{"):find_end(text, "{", "}", start)]
 
 
 def generate_nav_bar(info):
+    # type: (list) -> list
+    """Generates the navigation bar code for a page."""
     links = list()
     for link, text in info:
         link = link.replace("''", "")
@@ -200,8 +195,8 @@ def generate_nav_bar(info):
         links.append(generate_link(link, text))
 
     nav_section = generate_html("div", "<< " + links[0], options={"id": "alignleft"}, spacing=1) + "\n" + \
-                  generate_html("div", links[1], options={"id": "aligncenter"}, spacing=1) + "\n" + \
-                  generate_html("div", links[2] + " >>", options={"id": "alignright"}, spacing=1)
+        generate_html("div", links[1], options={"id": "aligncenter"}, spacing=1) + "\n" + \
+        generate_html("div", links[2] + " >>", options={"id": "alignright"}, spacing=1)
 
     header = generate_html("div", nav_section, options={"id": "drmf_head"})
     footer = generate_html("div", nav_section, options={"id": "drmf_foot"})
@@ -210,7 +205,7 @@ def generate_nav_bar(info):
 
 
 def get_macro_name(macro):
-    # (str) -> str
+    # type: (str) -> str
     """Obtains the macro name."""
     macro_name = ""
     for ch in macro:
@@ -223,7 +218,7 @@ def get_macro_name(macro):
 
 
 def find_all(pattern, string):
-    # (str, str) -> generator
+    # type: (str, str) -> generator
     """Finds all instances of pattern in string."""
 
     i = string.find(pattern)
@@ -233,7 +228,7 @@ def find_all(pattern, string):
 
 
 def get_symbols(text, glossary):
-    # (str, dict) -> str
+    # type: (str, dict) -> str
     """Generates span text based on symbols present in text."""
     symbols = set()
 
@@ -275,18 +270,20 @@ def get_symbols(text, glossary):
 
 
 def create_general_pages(data, title):
+    # type: (list, str) -> str
+    """Creates the 'index' pages for each section."""
     ret = ""
 
     # get list of section names
     section_names = [d[0] for d in data]
-    section_names = ["Orthogonal Polynomials"] + section_names + ["Orthogonal Polynomials"]
+    section_names = [TITLE_STRING] + section_names + [TITLE_STRING]
 
     for i, section_data in enumerate(data):
         section_name = section_data[0]
         result = "drmf_bof\n'''" + section_name.replace("''", "") + "'''\n{{DISPLAYTITLE:" + section_name + "}}\n"
 
         # get header and footer
-        center_text = ("Orthogonal Polynomials" + "#Sections in " + title).replace(" ", "_")
+        center_text = (TITLE_STRING + "#Sections in " + title).replace(" ", "_")
         link_info = [[section_names[i], section_names[i]], [center_text, section_names[i + 1]],
                      [section_names[i + 2], section_names[i + 2]]]
         header, footer = generate_nav_bar(link_info)
@@ -295,9 +292,7 @@ def create_general_pages(data, title):
 
         text = ""
         for eq in section_data[1]:
-            # equation is of type LatexEquation
-            print eq
-            print
+            # equation should be of type LatexEquation
             text += generate_math_html(eq.equation, options={"id": eq.label})
 
             metadata_exists = False
@@ -318,6 +313,8 @@ def create_general_pages(data, title):
 
 
 def create_specific_pages(data, glossary):
+    # type: (list, dict) -> str
+    """Creates specific pages for each formula."""
     formulae = list()
     for section_data in data:
         for equations in section_data[1:]:
@@ -325,7 +322,7 @@ def create_specific_pages(data, glossary):
                 formulae.append("Formula:" + eq.label)
             formulae.append(section_data[0])
 
-    formulae = ["Orthogonal Polynomials"] + formulae[:-1] + ["Orthogonal Polynomials"]
+    formulae = [TITLE_STRING] + formulae[:-1] + [TITLE_STRING]
 
     i = 0
     pages = list()
@@ -404,6 +401,7 @@ def main():
         data.append([section_name, equations])
 
     data = extract_data(data)
+
     output = create_general_pages(data, title) + create_specific_pages(data, glossary)
 
     with open(OUTPUT_FILE, "w") as output_file:
