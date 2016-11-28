@@ -4,7 +4,7 @@ __status__ = "Prototype"
 INPUT_FILE = "tex2wiki/data/test.tex"
 OUTPUT_FILE = "tex2wiki/data/test.mmd"
 GLOSSARY_LOCATION = "tex2wiki/data/new.Glossary.csv"
-TITLE_STRING = "Orthogonal Polynomials"
+TITLE_STRING = "CFSF Dataset"
 METADATA_TYPES = ["substitution", "constraint"]
 METADATA_MEANING = {"substitution": "Substitution(s)", "constraint": "Constraint(s)"}
 
@@ -16,6 +16,56 @@ class LatexEquation(object):
         self.label = label
         self.equation = equation
         self.metadata = metadata
+
+    def __str__(self):
+        return self.label + "\n" + self.equation + "\n" + str(self.metadata)
+
+    @staticmethod
+    def make_from_raw(raw):
+        equations = raw[:-1]
+        for i, equation in enumerate(equations):
+            # formula stuff
+            try:
+                formula = get_data_str(equation, latex="\\mapletag")
+            except IndexError:  # there is no formula.
+                break
+
+            equation = equation.split("\n")
+
+            # get metadata
+            raw_metadata = ""
+
+            j = 0
+            while j < len(equation):
+                if "%" in equation[j]:
+                    raw_metadata += equation.pop(j)[1:].strip().strip("\n") + "\n"
+                else:
+                    j += 1
+
+            metadata = dict()
+            for data_type in METADATA_TYPES:
+                metadata[data_type] = format_metadata(get_data_str(raw_metadata, latex="\\" + data_type))
+
+            equations[i] = LatexEquation(formula, '\n'.join(equation), metadata)
+
+        return equations
+
+
+class DataUnit(object):
+    def __init__(self, title, subunits):
+        self.title = title
+        self.subunits = subunits
+
+    def __str__(self):
+        result = self.title + "\n"
+
+        if type(self.subunits) == list and type(self.subunits[0]) == DataUnit:
+            for sub in self.subunits:
+                result += str(sub) + "\n"
+        else:
+            result += str([str(eq) for eq in self.subunits]) + "\n"
+
+        return result
 
 
 def generate_html(tag_name, text, options=None, spacing=2):
@@ -376,6 +426,39 @@ def create_specific_pages(data, glossary):
     return "\n".join(pages) + "\n"
 
 
+def section_split(string, sub=0):
+    # type: (str) -> DataUnit
+    """
+    Split string into DataTree objects.
+    Will eventually become replacement for large part of main() + extract_data(),
+    and should theoretically make the create_general_pages and create_specific_pages methods simpler,
+    as well as more easily store all data from the .tex file.
+    """
+
+    string = string.split("\\" + sub * "sub" + "section")
+
+    # base case; when depth too far
+    if len(string) == 1:
+        title = get_data_str(string[0]).replace("$", "''")
+
+        equations = string[0].split("\\end{equation}")
+        for i, equation in enumerate(equations[:-1]):
+            equations[i] = equation.split("\\begin{equation}", 1)[1].strip()
+
+        equations = LatexEquation.make_from_raw(equations)
+
+        return DataUnit(title, equations)
+
+    chunk_data = list()  # list of DataSection
+
+    for chunk in string[1:]:
+        chunk_data.append(section_split(chunk, sub + 1))
+
+    title = get_data_str(string[0]).replace("$", "''")
+
+    return DataUnit(title, chunk_data)
+
+
 def main():
     with open(INPUT_FILE) as input_file:
         text = input_file.read()
@@ -387,6 +470,10 @@ def main():
             glossary[get_macro_name(row[0])] = row
 
     text = text.split("\\begin{document}", 1)[1]
+
+    info = section_split(text)  # creates tree, split into section, subsection, subsubsection, etc.
+    # TODO: change create_general_pages & create_specific_pages to utilize DataUnit format rather than list format
+
     text = text.split("\\section")
 
     title = get_data_str(text[0])
