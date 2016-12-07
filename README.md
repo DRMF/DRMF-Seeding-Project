@@ -30,7 +30,7 @@ To achieve the desired result, one should execute the progams in the following o
 
 ## Maple CFSF Seeding Project
 
-This Python code (developed by Joon Bang) translates Maple files from Annie Cuyt's continued fractions package for special functions (CFSF) to LaTeX.
+This Python code (developed by Joon Bang) translates Maple files from Annie Cuyt's continued fractions package for special functions ([CFSF](http://www.swmath.org/software/13927)) to LaTeX.
 
 The project is located in the `maple2latex` folder.
 
