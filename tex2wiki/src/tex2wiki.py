@@ -1,10 +1,10 @@
 __author__ = "Joon Bang"
 __status__ = "Prototype"
 
-INPUT_FILE = "tex2wiki/data/test.tex"
-OUTPUT_FILE = "tex2wiki/data/test.mmd"
+INPUT_FILE = "tex2wiki/data/01outb.tex"
+OUTPUT_FILE = "tex2wiki/data/01outb.mmd"
 GLOSSARY_LOCATION = "tex2wiki/data/new.Glossary.csv"
-TITLE_STRING = "CFSF Dataset"
+TITLE_STRING = "Orthogonal Polynomials"
 METADATA_TYPES = ["substitution", "constraint"]
 METADATA_MEANING = {"substitution": "Substitution(s)", "constraint": "Constraint(s)"}
 
@@ -26,7 +26,7 @@ class LatexEquation(object):
         for i, equation in enumerate(equations):
             # formula stuff
             try:
-                formula = get_data_str(equation, latex="\\mapletag")
+                formula = format_formula(get_data_str(equation, latex="\\formula"))
             except IndexError:  # there is no formula.
                 break
 
@@ -102,7 +102,7 @@ def generate_math_html(text, options=None, spacing=True):
     result = "<math" + " " * (option_text != []) + ", ".join(option_text) + ">"
 
     if spacing:
-        result += "{\\displaystyle\n" + text + "\n}</math>\n"
+        result += "{\\displaystyle \n" + text + "\n}</math>\n"
     else:
         result += "{\\displaystyle " + text + "}</math>\n"
 
@@ -147,6 +147,23 @@ def convert_dollar_signs(string):
     return result
 
 
+def format_formula(formula):
+    if formula[0] == ":":
+        return formula[1:].zfill(2)
+
+    formula = multi_split(formula.split("Formula:", 1)[1], [".", ":"])
+
+    for j in [-1, -2, -3]:
+        formula[j] = formula[j].zfill(2)
+
+    if len(formula) == 3:
+        formula = formula[0] + "." + formula[1] + ":" + formula[2]
+    else:
+        formula = ":".join(formula[:-3]) + ":" + formula[-3] + "." + formula[-2] + ":" + formula[-1]
+
+    return formula
+
+
 def format_metadata(string):
     # type: (str) -> str
     """Formats the metadata of an equation."""
@@ -181,7 +198,7 @@ def extract_data(data):
         for i, equation in enumerate(equations):
             # formula stuff
             try:
-                formula = get_data_str(equation, latex="\\mapletag")
+                formula = format_formula(get_data_str(equation, latex="\\formula"))
             except IndexError:  # there is no formula.
                 break
 
@@ -319,29 +336,29 @@ def get_symbols(text, glossary):
     return span_text[:-7]  # slice off the extra br and endline
 
 
-def create_general_pages(data, title):
-    # type: (list, str) -> str
-    """Creates the 'index' pages for each section."""
+def create_general_pages(data):
+    # type: (DataUnit) -> str
+    """Creates the 'index' pages for each section. Corrected for use of DataUnit."""
     ret = ""
 
-    # get list of section names
-    section_names = [d[0] for d in data]
-    section_names = [TITLE_STRING] + section_names + [TITLE_STRING]
+    section_names = [TITLE_STRING] + [unit.title for unit in data.subunits] + [TITLE_STRING]
 
-    for i, section_data in enumerate(data):
-        section_name = section_data[0]
-        result = "drmf_bof\n'''" + section_name.replace("''", "") + "'''\n{{DISPLAYTITLE:" + section_name + "}}\n"
+    # deep down, subunits is a list of LatexEquation(s)
+
+    for i, section in enumerate(data.subunits):
+        result = "drmf_bof\n'''" + section.title.replace("''", "") + "'''\n{{DISPLAYTITLE:" + section.title + "}}\n"
 
         # get header and footer
-        center_text = (TITLE_STRING + "#Sections in " + title).replace(" ", "_")
+        center_text = (TITLE_STRING + "#").replace(" ", "_") + section.title
         link_info = [[section_names[i], section_names[i]], [center_text, section_names[i + 1]],
                      [section_names[i + 2], section_names[i + 2]]]
         header, footer = generate_nav_bar(link_info)
 
-        result += header + "\n== " + section_name + " ==\n\n"
+        result += header + "\n== " + section.title + " ==\n\n"
 
         text = ""
-        for eq in section_data[1]:
+        metadata_exists = False
+        for eq in section.subunits:
             # equation should be of type LatexEquation
             text += generate_math_html(eq.equation, options={"id": eq.label})
 
@@ -355,33 +372,36 @@ def create_general_pages(data, title):
             if not metadata_exists:
                 text = text[:-1] + "<br />\n"
 
+        if not metadata_exists:
+            text = text[:-7] + "\n"
+
         result += text + footer + "\n" + "drmf_eof\n"
 
         ret += result
 
     return ret
 
-
 def create_specific_pages(data, glossary):
-    # type: (list, dict) -> str
-    """Creates specific pages for each formula."""
+    # type: (DataUnit, dict) -> str
+    """Creates specific pages for each formula. Corrected for use with DataUnit."""
+
     formulae = list()
-    for section_data in data:
-        for equations in section_data[1:]:
-            for eq in equations:
-                formulae.append("Formula:" + eq.label)
-            formulae.append(section_data[0])
+    for unit in data.subunits:
+        for eq in unit.subunits:
+            formulae.append("Formula:" + eq.label)
+        formulae.append(unit.title)
 
     formulae = [TITLE_STRING] + formulae[:-1] + [TITLE_STRING]
 
+    print formulae
+
     i = 0
     pages = list()
-    for j, section_data in enumerate(data):
-        section_name = section_data[0]
-        for eq in section_data[1]:
+    for j, unit in enumerate(data.subunits):
+        for eq in unit.subunits:
             # get header and footer
-            center_text = (section_name + "#" + eq.label).replace(" ", "_")
-            middle = "formula in " + section_name
+            center_text = (unit.title + "#" + eq.label).replace(" ", "_")
+            middle = "formula in " + unit.title
             link_info = [[formulae[i].replace(" ", "_"), formulae[i]], [center_text, middle],
                          [formulae[i + 2].replace(" ", "_"), formulae[i + 2]]]
             header, footer = generate_nav_bar(link_info)
@@ -431,8 +451,8 @@ def section_split(string, sub=0):
     """
     Split string into DataTree objects.
     Will eventually become replacement for large part of main() + extract_data(),
-    and should theoretically make the create_general_pages and create_specific_pages methods simpler,
-    as well as more easily store all data from the .tex file.
+    and should theoretically make the create_general_pages and create_specific_pages methods simpler, faster,
+    and able to more easily store all data from the .tex file.
     """
 
     string = string.split("\\" + sub * "sub" + "section")
@@ -472,24 +492,8 @@ def main():
     text = text.split("\\begin{document}", 1)[1]
 
     info = section_split(text)  # creates tree, split into section, subsection, subsubsection, etc.
-    # TODO: change create_general_pages & create_specific_pages to utilize DataUnit format rather than list format
 
-    text = text.split("\\section")
-
-    title = get_data_str(text[0])
-
-    data = list()
-    for section in text[1:]:
-        section_name = get_data_str(section).replace("$", "''")
-        equations = section.split("\\end{equation}")
-        for i, equation in enumerate(equations[:-1]):
-            equations[i] = equation.split("\\begin{equation}", 1)[1].strip()
-
-        data.append([section_name, equations])
-
-    data = extract_data(data)
-
-    output = create_general_pages(data, title) + create_specific_pages(data, glossary)
+    output = create_general_pages(info) + create_specific_pages(info, glossary)
 
     with open(OUTPUT_FILE, "w") as output_file:
         output_file.write(output)
