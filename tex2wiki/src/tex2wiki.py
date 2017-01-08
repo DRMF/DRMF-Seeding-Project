@@ -1,13 +1,15 @@
 __author__ = "Joon Bang"
 __status__ = "Prototype"
 
-INPUT_FILE = "tex2wiki/data/01outb.tex"
-OUTPUT_FILE = "tex2wiki/data/01outb.mmd"
+INPUT_FILE = "tex2wiki/data/09outb.tex"
+OUTPUT_FILE = "tex2wiki/data/09outb.mmd"
 GLOSSARY_LOCATION = "tex2wiki/data/new.Glossary.csv"
 TITLE_STRING = "Orthogonal Polynomials"
 METADATA_TYPES = ["substitution", "constraint"]
 METADATA_MEANING = {"substitution": "Substitution(s)", "constraint": "Constraint(s)"}
 
+import copy
+import compare_files
 import csv
 
 
@@ -44,11 +46,26 @@ class LatexEquation(object):
 
             metadata = dict()
             for data_type in METADATA_TYPES:
-                metadata[data_type] = format_metadata(get_data_str(raw_metadata, latex="\\" + data_type))
+                temp = format_metadata(get_data_str(raw_metadata, latex="\\" + data_type)).split("\n")
+                for k, line in enumerate(temp):
+                    if line.rstrip().endswith("&"):
+                        temp[k] = line.rstrip() + "<br />"
+
+                metadata[data_type] = "\n".join(temp)
 
             equations[i] = LatexEquation(formula, '\n'.join(equation), metadata)
 
         return equations
+
+
+class FormattedEquation(object):
+    def __init__(self, label, equation, metadata):
+        self.label = label
+        self.equation = equation
+        self.metadata = metadata
+
+    def __str__(self):
+        return "Equation: " + self.equation + "\nMetadata: " + ("empty\n" if self.metadata == "" else self.metadata)
 
 
 class DataUnit(object):
@@ -59,11 +76,11 @@ class DataUnit(object):
     def __str__(self):
         result = self.title + "\n"
 
-        if type(self.subunits) == list and type(self.subunits[0]) == DataUnit:
+        if type(self.subunits) == list and len(self.subunits) and type(self.subunits[0]) == DataUnit:
             for sub in self.subunits:
                 result += str(sub) + "\n"
         else:
-            result += str([str(eq) for eq in self.subunits]) + "\n"
+            result += str("\n".join([str(eq) for eq in self.subunits])) + "\n"
 
         return result
 
@@ -92,8 +109,8 @@ def generate_html(tag_name, text, options=None, spacing=2):
     return result
 
 
-def generate_math_html(text, options=None, spacing=True):
-    # type: (str(, dict, bool)) -> str
+def generate_math_html(text, options=None, spacing=2):
+    # type: (str(, dict, int)) -> str
     """Special case of generate_html, where the tag is "math"."""
     if options is None:
         options = {}
@@ -101,10 +118,12 @@ def generate_math_html(text, options=None, spacing=True):
     option_text = [key + "=\"" + value + "\"" for key, value in options.iteritems()]
     result = "<math" + " " * (option_text != []) + ", ".join(option_text) + ">"
 
-    if spacing:
+    if spacing == 2:
         result += "{\\displaystyle \n" + text + "\n}</math>\n"
-    else:
+    elif spacing == 1:
         result += "{\\displaystyle " + text + "}</math>\n"
+    else:
+        result += "{\\displaystyle " + text + "}</math>"
 
     return result
 
@@ -296,7 +315,7 @@ def find_all(pattern, string):
 
 def get_symbols(text, glossary):
     # type: (str, dict) -> str
-    """Generates span text based on symbols present in text."""
+    """Generates span text based on symbols present in text. Equivalent of old symbols_list module."""
     symbols = set()
 
     for keyword in glossary:
@@ -344,7 +363,6 @@ def create_general_pages(data):
     section_names = [TITLE_STRING] + [unit.title for unit in data.subunits] + [TITLE_STRING]
 
     # deep down, subunits is a list of LatexEquation(s)
-
     for i, section in enumerate(data.subunits):
         result = "drmf_bof\n'''" + section.title.replace("''", "") + "'''\n{{DISPLAYTITLE:" + section.title + "}}\n"
 
@@ -354,54 +372,113 @@ def create_general_pages(data):
                      [section_names[i + 2], section_names[i + 2]]]
         header, footer = generate_nav_bar(link_info)
 
-        result += header + "\n== " + section.title + " ==\n\n"
-
-        text = ""
-        metadata_exists = False
-        for eq in section.subunits:
-            # equation should be of type LatexEquation
-            text += generate_math_html(eq.equation, options={"id": eq.label})
-
-            metadata_exists = False
-            for data_type in sorted(eq.metadata.keys()):
-                if eq.metadata[data_type] != "":
-                    text += generate_html("div", METADATA_MEANING[data_type] + ": " + eq.metadata[data_type],
-                                          options={"align": "right"}, spacing=False) + "<br />\n"
-                    metadata_exists = True
-
-            if not metadata_exists:
-                text = text[:-1] + "<br />\n"
-
-        if not metadata_exists:
-            text = text[:-7] + "\n"
-
-        result += text + footer + "\n" + "drmf_eof\n"
+        result += header + "\n" + general_equation_format(section)[0] + "\n" + footer + "\n" + "drmf_eof\n"
 
         ret += result
 
+    # post-processing
+    ret = ret.replace("\n\n\n", "\n")
+
     return ret
+
+
+def format_stuffs(data):
+    # type: (DataUnit) -> str
+    """Format the equations for the 'general' pages."""
+
+    result = copy.deepcopy(data)
+
+    for i, unit in enumerate(result.subunits):
+        if type(unit) == LatexEquation:
+            equation = generate_math_html(unit.equation, options={"id": unit.label})
+            metadata = list()
+            for data_type in sorted(unit.metadata.keys()):
+                if unit.metadata[data_type] != "":
+                    metadata.append(
+                        generate_html("div", METADATA_MEANING[data_type] + ": " + unit.metadata[data_type],
+                                      options={"align": "right"}, spacing=0)
+                    )
+
+            text = equation.rstrip("\n") + "\n" * bool(len(metadata)) + "<br />\n".join(metadata) + "<br />\n"
+            result.subunits[i] = text
+        else:
+            result.subunits[i] = format_stuffs(result.subunits[i])
+
+    return result
+
+
+def general_equation_format(data, depth=0):
+    # type: (DataUnit) -> str
+    """Format the equations for the 'general' pages."""
+
+    border = "=" * (2 + int(depth >= 2))  # '==' when depth < 2; '===' when depth >= 2
+    text = "%s %s %s\n\n" % (border, data.title, border)
+
+    contains_deeper_depth = False
+    metadata = list()
+    for i, unit in enumerate(data.subunits):
+        if type(unit) == LatexEquation:
+            equation = generate_math_html(unit.equation, options={"id": unit.label})
+            metadata = list()
+            for data_type in sorted(unit.metadata.keys()):
+                if unit.metadata[data_type] != "":
+                    metadata.append(
+                        generate_html("div", METADATA_MEANING[data_type] + ": " + unit.metadata[data_type],
+                                      options={"align": "right"}, spacing=0)
+                    )
+
+            text += equation.rstrip("\n") + "\n" * bool(len(metadata)) + "<br />\n".join(metadata) + "<br />\n"
+        else:
+            contains_deeper_depth = True
+            temp = general_equation_format(unit, depth + 1)
+            text = text.rstrip("\n") + "\n\n" + temp[0]
+
+            if depth + 1 >= 2 and i == len(data.subunits) - 1 and temp[1]:
+                text = remove_break(text)
+
+    if depth < 2 and metadata == list() and not contains_deeper_depth:
+        text = remove_break(text)
+
+    return text, metadata == list()
+
 
 def create_specific_pages(data, glossary):
     # type: (DataUnit, dict) -> str
     """Creates specific pages for each formula. Corrected for use with DataUnit."""
 
-    formulae = list()
-    for unit in data.subunits:
-        for eq in unit.subunits:
-            formulae.append("Formula:" + eq.label)
-        formulae.append(unit.title)
-
-    formulae = [TITLE_STRING] + formulae[:-1] + [TITLE_STRING]
-
-    print formulae
+    formulae = [TITLE_STRING] + make_formula_list(data)[:-1] + [TITLE_STRING]
 
     i = 0
     pages = list()
     for j, unit in enumerate(data.subunits):
-        for eq in unit.subunits:
+        res, i = specific_page_format(unit, unit.title, formulae, glossary, j, i)
+        pages += res
+        i += 1
+
+    return "\n".join(pages) + "\n"
+
+
+def make_formula_list(info):
+    formulae = list()
+    if len(info.subunits) and type(info.subunits[0]) != DataUnit:
+        for eq in info.subunits:
+            formulae.append("Formula:" + eq.label)
+        formulae.append(info.title)
+    else:
+        for subunit in info.subunits:
+            formulae += make_formula_list(subunit)
+
+    return formulae
+
+
+def specific_page_format(info, title, formulae, glossary, j, i=0):
+    pages = list()
+
+    if len(info.subunits) and type(info.subunits[0]) != DataUnit:
+        for eq in info.subunits:
             # get header and footer
-            center_text = (unit.title + "#" + eq.label).replace(" ", "_")
-            middle = "formula in " + unit.title
+            center_text = (title + "#" + eq.label).replace(" ", "_")
+            middle = "formula in " + title
             link_info = [[formulae[i].replace(" ", "_"), formulae[i]], [center_text, middle],
                          [formulae[i + 2].replace(" ", "_"), formulae[i + 2]]]
             header, footer = generate_nav_bar(link_info)
@@ -429,21 +506,38 @@ def create_specific_pages(data, glossary):
             result += get_symbols(result, glossary) + "\n<br />\n\n"
 
             # bibliography section
-            result += "== Bibliography ==\n\n"
+            result += "== Bibliography==\n\n"  # TODO: Fix typo after feature parity has been met
             result += "<span class=\"plainlinks\">[http://homepage.tudelft.nl/11r49/askey/contents.html " \
-                      "Equation in Section 1." + str(j + 1) + "]</span> of [[Bibliography#KLS|'''KLS''']]."
-
-            result += "\n\n== URL links ==\n\nWe ask users to provide relevant URL links in this space.\n\n"
+                      "Equation in Section 1." + str(j + 1) + "]</span> of [[Bibliography#KLS|'''KLS''']]."  # TODO: FIX
 
             # end of page
             result += "<br />" + footer + "\ndrmf_eof"
             pages.append(result)
 
             i += 1
+    else:
+        for subunit in info.subunits:
+            res = specific_page_format(subunit, title, formulae, glossary, j, i)
+            pages += res[0]
+            i = res[1]
 
-        i += 1
+    return pages, i
 
-    return "\n".join(pages) + "\n"
+
+def remove_break(string):
+    while string.rstrip("\n").endswith("<br />"):
+        string = string.rstrip("\n")[:-6]
+
+    return string
+
+
+def rstrip(string, delimiter):
+    # type: (str, str) -> str
+    """A more intuitive version of rstrip, which simply removes delimiter if it is present."""
+    while string.endswith(delimiter):
+        string = string[:(-1 * len(delimiter))]
+
+    return string
 
 
 def section_split(string, sub=0):
@@ -494,9 +588,12 @@ def main():
     info = section_split(text)  # creates tree, split into section, subsection, subsubsection, etc.
 
     output = create_general_pages(info) + create_specific_pages(info, glossary)
+    output = output.replace("<br /><br />", "<br />")
 
     with open(OUTPUT_FILE, "w") as output_file:
         output_file.write(output)
 
 if __name__ == '__main__':
     main()
+
+    compare_files.compare(OUTPUT_FILE.replace("/", "\\").replace(".mmd", ""))
