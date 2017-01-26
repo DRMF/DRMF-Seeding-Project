@@ -12,10 +12,20 @@ import copy
 import compare_files
 import csv
 
+# TODO: Fix bugs with the special cases formula formatting; causes issues with math id="...", spantext
+# TODO: Notes about bugs of old (Azeem) output:
+# TODO: 09.25:27 (headers are bugged)
+# TODO: 09.07:07 (misses \iunit)
+# TODO: 09.07:19 (misses \cos@@)
+# TODO: 09.08:19 (headers are bugged)
+# Was Azeem's program run with an older version of Glossary.csv? It would explain some discrepancies.
+# Header bugs are inexplicable.
+
 
 class LatexEquation(object):
-    def __init__(self, label, equation, metadata):
+    def __init__(self, label, raw_label, equation, metadata):
         self.label = label
+        self.raw_label = raw_label
         self.equation = equation
         self.metadata = metadata
 
@@ -28,7 +38,8 @@ class LatexEquation(object):
         for i, equation in enumerate(equations):
             # formula stuff
             try:
-                formula = format_formula(get_data_str(equation, latex="\\formula"))
+                # print get_data_str(equation, latex="\\formula")
+                raw_formula, formula = format_formula(get_data_str(equation, latex="\\formula"))
             except IndexError:  # there is no formula.
                 break
 
@@ -53,19 +64,9 @@ class LatexEquation(object):
 
                 metadata[data_type] = "\n".join(temp)
 
-            equations[i] = LatexEquation(formula, '\n'.join(equation), metadata)
+            equations[i] = LatexEquation(formula, raw_formula, '\n'.join(equation), metadata)
 
         return equations
-
-
-class FormattedEquation(object):
-    def __init__(self, label, equation, metadata):
-        self.label = label
-        self.equation = equation
-        self.metadata = metadata
-
-    def __str__(self):
-        return "Equation: " + self.equation + "\nMetadata: " + ("empty\n" if self.metadata == "" else self.metadata)
 
 
 class DataUnit(object):
@@ -167,20 +168,32 @@ def convert_dollar_signs(string):
 
 
 def format_formula(formula):
-    if formula[0] == ":":
-        return formula[1:].zfill(2)
+    """Obtain the raw formula (integers), as well as the formatted version."""
+    if formula[0] == ":":  # handling for Jacobi special stuff
+        return [str(int(formula[1:]))], formula[1:].zfill(2)
 
     formula = multi_split(formula.split("Formula:", 1)[1], [".", ":"])
 
     for j in [-1, -2, -3]:
         formula[j] = formula[j].zfill(2)
 
+    raw = copy.deepcopy(formula)
+
+    # remove any text from the raw equation
+    i = 0
+    while i < len(raw):
+        if not raw[i].isdigit():
+            raw.pop(i)
+        else:
+            raw[i] = str(int(raw[i]))  # removes any 0s that are present from left end.
+            i += 1
+
     if len(formula) == 3:
         formula = formula[0] + "." + formula[1] + ":" + formula[2]
     else:
         formula = ":".join(formula[:-3]) + ":" + formula[-3] + "." + formula[-2] + ":" + formula[-1]
 
-    return formula
+    return raw, formula
 
 
 def format_metadata(string):
@@ -318,6 +331,11 @@ def get_symbols(text, glossary):
     """Generates span text based on symbols present in text. Equivalent of old symbols_list module."""
     symbols = set()
 
+    special_cases = {"&": "& : logical and<br />"}
+    acknowledged = dict()
+    for case in special_cases:
+        acknowledged[case] = False
+
     for keyword in glossary:
         for index in find_all(keyword, text):
             # if the macro is present in the text
@@ -327,7 +345,15 @@ def get_symbols(text, glossary):
                     symbols.add(keyword)
 
     span_text = ""
-    for symbol in sorted(symbols, key=str.lower):
+
+    # code to handle special cases
+    for keyword in special_cases:
+        for index in find_all(keyword, text):
+            if index != -1 and not acknowledged[keyword]:
+                span_text += special_cases[keyword] + "\n"
+                acknowledged[keyword] = True  # to prevent duplicates
+
+    for symbol in sorted(symbols, key=text.index):
         links = list()
         for cell in glossary[symbol]:
             if "http://" in cell or "https://" in cell:
@@ -352,7 +378,7 @@ def get_symbols(text, glossary):
         span_text += "<span class=\"plainlinks\">[" + id_link + " <math>{\\displaystyle " + appearance + \
                      "}</math>]</span> : " + ''.join(meaning) + " : " + " ".join(links) + "<br />\n"
 
-    return span_text[:-7]  # slice off the extra br and endline
+    return remove_break(span_text)  # slice off the extra br and endline
 
 
 def create_general_pages(data):
@@ -372,7 +398,7 @@ def create_general_pages(data):
                      [section_names[i + 2], section_names[i + 2]]]
         header, footer = generate_nav_bar(link_info)
 
-        result += header + "\n" + general_equation_format(section)[0] + "\n" + footer + "\n" + "drmf_eof\n"
+        result += header + "\n" + equation_list_format(section)[0].rstrip("\n") + "\n" + footer + "\n" + "drmf_eof\n"
 
         ret += result
 
@@ -382,34 +408,9 @@ def create_general_pages(data):
     return ret
 
 
-def format_stuffs(data):
+def equation_list_format(data, depth=0):
     # type: (DataUnit) -> str
-    """Format the equations for the 'general' pages."""
-
-    result = copy.deepcopy(data)
-
-    for i, unit in enumerate(result.subunits):
-        if type(unit) == LatexEquation:
-            equation = generate_math_html(unit.equation, options={"id": unit.label})
-            metadata = list()
-            for data_type in sorted(unit.metadata.keys()):
-                if unit.metadata[data_type] != "":
-                    metadata.append(
-                        generate_html("div", METADATA_MEANING[data_type] + ": " + unit.metadata[data_type],
-                                      options={"align": "right"}, spacing=0)
-                    )
-
-            text = equation.rstrip("\n") + "\n" * bool(len(metadata)) + "<br />\n".join(metadata) + "<br />\n"
-            result.subunits[i] = text
-        else:
-            result.subunits[i] = format_stuffs(result.subunits[i])
-
-    return result
-
-
-def general_equation_format(data, depth=0):
-    # type: (DataUnit) -> str
-    """Format the equations for the 'general' pages."""
+    """Format the equations in a section into a list style."""
 
     border = "=" * (2 + int(depth >= 2))  # '==' when depth < 2; '===' when depth >= 2
     text = "%s %s %s\n\n" % (border, data.title, border)
@@ -430,7 +431,7 @@ def general_equation_format(data, depth=0):
             text += equation.rstrip("\n") + "\n" * bool(len(metadata)) + "<br />\n".join(metadata) + "<br />\n"
         else:
             contains_deeper_depth = True
-            temp = general_equation_format(unit, depth + 1)
+            temp = equation_list_format(unit, depth + 1)
             text = text.rstrip("\n") + "\n\n" + temp[0]
 
             if depth + 1 >= 2 and i == len(data.subunits) - 1 and temp[1]:
@@ -446,32 +447,38 @@ def create_specific_pages(data, glossary):
     # type: (DataUnit, dict) -> str
     """Creates specific pages for each formula. Corrected for use with DataUnit."""
 
-    formulae = [TITLE_STRING] + make_formula_list(data)[:-1] + [TITLE_STRING]
+    formulae = [TITLE_STRING] + make_formula_list(data)[:-1][0] + [TITLE_STRING]
+
+    # print "\n".join(formulae)
 
     i = 0
     pages = list()
     for j, unit in enumerate(data.subunits):
-        res, i = specific_page_format(unit, unit.title, formulae, glossary, j, i)
+        res, i = equation_page_format(unit, unit.title, formulae, glossary, i)
         pages += res
         i += 1
+
+        open("tex2wiki/data/darn.txt", "w").write("\n".join(res))
 
     return "\n".join(pages) + "\n"
 
 
-def make_formula_list(info):
+def make_formula_list(info, depth=0):
     formulae = list()
     if len(info.subunits) and type(info.subunits[0]) != DataUnit:
         for eq in info.subunits:
             formulae.append("Formula:" + eq.label)
-        formulae.append(info.title)
     else:
         for subunit in info.subunits:
-            formulae += make_formula_list(subunit)
+            formulae += make_formula_list(subunit, depth + 1)[0]
 
-    return formulae
+    if depth < 2:
+        formulae.append(info.title)
+
+    return formulae, depth
 
 
-def specific_page_format(info, title, formulae, glossary, j, i=0):
+def equation_page_format(info, title, formulae, glossary, i=0):
     pages = list()
 
     if len(info.subunits) and type(info.subunits[0]) != DataUnit:
@@ -479,8 +486,14 @@ def specific_page_format(info, title, formulae, glossary, j, i=0):
             # get header and footer
             center_text = (title + "#" + eq.label).replace(" ", "_")
             middle = "formula in " + title
+
+            last_index = i + 2
+
+            if "Formula" not in formulae[i + 2]:
+                last_index = i + 3
+
             link_info = [[formulae[i].replace(" ", "_"), formulae[i]], [center_text, middle],
-                         [formulae[i + 2].replace(" ", "_"), formulae[i + 2]]]
+                         [formulae[last_index].replace(" ", "_"), formulae[last_index]]]
             header, footer = generate_nav_bar(link_info)
 
             # add title of page, navigation headers
@@ -505,10 +518,13 @@ def specific_page_format(info, title, formulae, glossary, j, i=0):
             result += "== Symbols List ==\n\n"
             result += get_symbols(result, glossary) + "\n<br />\n\n"
 
-            # bibliography section
+            # bibliography section TODO: fix links!
             result += "== Bibliography==\n\n"  # TODO: Fix typo after feature parity has been met
             result += "<span class=\"plainlinks\">[http://homepage.tudelft.nl/11r49/askey/contents.html " \
-                      "Equation in Section 1." + str(j + 1) + "]</span> of [[Bibliography#KLS|'''KLS''']]."  # TODO: FIX
+                      "Equation in Section " + ".".join(eq.raw_label[:2]) + "]</span> of [[Bibliography#KLS|'''KLS''']].\n\n"
+
+            # url links placeholder
+            result += "== URL links ==\n\nWe ask users to provide relevant URL links in this space.\n\n"
 
             # end of page
             result += "<br />" + footer + "\ndrmf_eof"
@@ -517,7 +533,7 @@ def specific_page_format(info, title, formulae, glossary, j, i=0):
             i += 1
     else:
         for subunit in info.subunits:
-            res = specific_page_format(subunit, title, formulae, glossary, j, i)
+            res = equation_page_format(subunit, title, formulae, glossary, i)
             pages += res[0]
             i = res[1]
 
@@ -527,15 +543,6 @@ def specific_page_format(info, title, formulae, glossary, j, i=0):
 def remove_break(string):
     while string.rstrip("\n").endswith("<br />"):
         string = string.rstrip("\n")[:-6]
-
-    return string
-
-
-def rstrip(string, delimiter):
-    # type: (str, str) -> str
-    """A more intuitive version of rstrip, which simply removes delimiter if it is present."""
-    while string.endswith(delimiter):
-        string = string[:(-1 * len(delimiter))]
 
     return string
 
