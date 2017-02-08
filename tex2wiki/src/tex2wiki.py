@@ -1,8 +1,8 @@
 __author__ = "Joon Bang"
 __status__ = "Prototype"
 
-INPUT_FILE = "tex2wiki/data/09outb.tex"
-OUTPUT_FILE = "tex2wiki/data/09outb.mmd"
+INPUT_FILE = "tex2wiki/data/14outb.tex"
+OUTPUT_FILE = "tex2wiki/data/14outb.mmd"
 GLOSSARY_LOCATION = "tex2wiki/data/new.Glossary.csv"
 TITLE_STRING = "Orthogonal Polynomials"
 METADATA_TYPES = ["substitution", "constraint"]
@@ -18,7 +18,9 @@ import csv
 # TODO: 09.07:07 (misses \iunit)
 # TODO: 09.07:19 (misses \cos@@)
 # TODO: 09.08:19 (headers are bugged)
-# Was Azeem's program run with an older version of Glossary.csv? It would explain some discrepancies.
+# TODO: 09.15:17 (misses \HyperpFq)
+# TODO: 09.15:19 (misses \cos@@)
+# Was Azeem's program run with a much older version of Glossary.csv? It could explain some discrepancies.
 # Header bugs are inexplicable.
 
 
@@ -38,7 +40,6 @@ class LatexEquation(object):
         for i, equation in enumerate(equations):
             # formula stuff
             try:
-                # print get_data_str(equation, latex="\\formula")
                 raw_formula, formula = format_formula(get_data_str(equation, latex="\\formula"))
             except IndexError:  # there is no formula.
                 break
@@ -447,7 +448,7 @@ def create_specific_pages(data, glossary):
     # type: (DataUnit, dict) -> str
     """Creates specific pages for each formula. Corrected for use with DataUnit."""
 
-    formulae = [TITLE_STRING] + make_formula_list(data)[:-1][0] + [TITLE_STRING]
+    formulae = [TITLE_STRING] + make_formula_list(data)[0][:-1] + [TITLE_STRING]
 
     # print "\n".join(formulae)
 
@@ -464,6 +465,9 @@ def create_specific_pages(data, glossary):
 
 
 def make_formula_list(info, depth=0):
+    # (str(, int)) -> str, int
+    """Generates the list of formulae contained in the file. Used for generating headers & footers."""
+
     formulae = list()
     if len(info.subunits) and type(info.subunits[0]) != DataUnit:
         for eq in info.subunits:
@@ -479,6 +483,7 @@ def make_formula_list(info, depth=0):
 
 
 def equation_page_format(info, title, formulae, glossary, i=0):
+    """Formats equations into individual MediaWiki pages."""
     pages = list()
 
     if len(info.subunits) and type(info.subunits[0]) != DataUnit:
@@ -487,10 +492,7 @@ def equation_page_format(info, title, formulae, glossary, i=0):
             center_text = (title + "#" + eq.label).replace(" ", "_")
             middle = "formula in " + title
 
-            last_index = i + 2
-
-            if "Formula" not in formulae[i + 2]:
-                last_index = i + 3
+            last_index = i + 2 + int("Formula" not in formulae[i + 2])  # sets the index for the "next" link
 
             link_info = [[formulae[i].replace(" ", "_"), formulae[i]], [center_text, middle],
                          [formulae[last_index].replace(" ", "_"), formulae[last_index]]]
@@ -518,10 +520,13 @@ def equation_page_format(info, title, formulae, glossary, i=0):
             result += "== Symbols List ==\n\n"
             result += get_symbols(result, glossary) + "\n<br />\n\n"
 
-            # bibliography section TODO: fix links!
+            # bibliography section
             result += "== Bibliography==\n\n"  # TODO: Fix typo after feature parity has been met
-            result += "<span class=\"plainlinks\">[http://homepage.tudelft.nl/11r49/askey/contents.html " \
-                      "Equation in Section " + ".".join(eq.raw_label[:2]) + "]</span> of [[Bibliography#KLS|'''KLS''']].\n\n"
+            result += "<span class=\"plainlinks\">" \
+                      "[http://homepage.tudelft.nl/11r49/askey/contents.html " \
+                      "Equation in Section " + \
+                      ".".join(eq.raw_label[:2]) + \
+                      "]</span> of [[Bibliography#KLS|'''KLS''']].\n\n"  # Meaning? Need to check validity of this.
 
             # url links placeholder
             result += "== URL links ==\n\nWe ask users to provide relevant URL links in this space.\n\n"
@@ -541,6 +546,9 @@ def equation_page_format(info, title, formulae, glossary, i=0):
 
 
 def remove_break(string):
+    # (str) -> str
+    """Removes <br /> from the end of a string."""
+
     while string.rstrip("\n").endswith("<br />"):
         string = string.rstrip("\n")[:-6]
 
@@ -603,4 +611,8 @@ def main():
 if __name__ == '__main__':
     main()
 
+    print "Complete. Now comparing files..."
+
     compare_files.compare(OUTPUT_FILE.replace("/", "\\").replace(".mmd", ""))
+
+    print "File comparison successful."
