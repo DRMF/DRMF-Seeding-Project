@@ -1,16 +1,14 @@
 __author__ = "Joon Bang"
-__status__ = "Prototype"
-
-INPUT_FILE = "tex2wiki/data/14outb.tex"
-OUTPUT_FILE = "tex2wiki/data/14outb.mmd"
-GLOSSARY_LOCATION = "tex2wiki/data/new.Glossary.csv"
-TITLE_STRING = "Orthogonal Polynomials"
-METADATA_TYPES = ["substitution", "constraint"]
-METADATA_MEANING = {"substitution": "Substitution(s)", "constraint": "Constraint(s)"}
+__status__ = "Development"
 
 import copy
 import compare_files
 import csv
+import sys
+
+GLOSSARY_LOCATION = "tex2wiki/data/new.Glossary.csv"
+METADATA_TYPES = ["substitution", "constraint"]
+METADATA_MEANING = {"substitution": "Substitution(s)", "constraint": "Constraint(s)"}
 
 # TODO: Fix bugs with the special cases formula formatting; causes issues with math id="...", spantext
 # TODO: Notes about bugs of old (Azeem) output:
@@ -347,19 +345,19 @@ def get_symbols(text, glossary):
     return remove_break(span_text)  # slice off the extra br and endline
 
 
-def create_general_pages(data):
-    # type: (DataUnit) -> str
+def create_general_pages(data, title_string=""):
+    # type: (DataUnit(, str)) -> str
     """Creates the 'index' pages for each section. Corrected for use of DataUnit."""
     ret = ""
 
-    section_names = [TITLE_STRING] + [unit.title for unit in data.subunits] + [TITLE_STRING]
+    section_names = [title_string] + [unit.title for unit in data.subunits] + [title_string]
 
     # deep down, subunits is a list of LatexEquation(s)
     for i, section in enumerate(data.subunits):
         result = "drmf_bof\n'''" + section.title.replace("''", "") + "'''\n{{DISPLAYTITLE:" + section.title + "}}\n"
 
         # get header and footer
-        center_text = (TITLE_STRING + "#").replace(" ", "_") + section.title
+        center_text = (title_string + "#").replace(" ", "_") + section.title
         link_info = [[section_names[i], section_names[i]], [center_text, section_names[i + 1]],
                      [section_names[i + 2], section_names[i + 2]]]
         header, footer = generate_nav_bar(link_info)
@@ -368,14 +366,14 @@ def create_general_pages(data):
 
         ret += result
 
-    # post-processing
+    # some post-processing
     ret = ret.replace("\n\n\n", "\n")
 
     return ret
 
 
 def equation_list_format(data, depth=0):
-    # type: (DataUnit) -> str
+    # type: (DataUnit(, str)) -> str
     """Format the equations in a section into a list style."""
 
     border = "=" * (2 + int(depth >= 2))  # '==' when depth < 2; '===' when depth >= 2
@@ -409,13 +407,11 @@ def equation_list_format(data, depth=0):
     return text, metadata == list()
 
 
-def create_specific_pages(data, glossary):
+def create_specific_pages(data, glossary, title_string):
     # type: (DataUnit, dict) -> str
     """Creates specific pages for each formula. Corrected for use with DataUnit."""
 
-    formulae = [TITLE_STRING] + make_formula_list(data)[0][:-1] + [TITLE_STRING]
-
-    # print "\n".join(formulae)
+    formulae = [title_string] + make_formula_list(data)[0][:-1] + [title_string]
 
     i = 0
     pages = list()
@@ -547,9 +543,19 @@ def section_split(string, sub=0):
     return DataUnit(title, chunk_data)
 
 
-def main():
-    with open(INPUT_FILE) as input_file:
-        text = input_file.read()
+def usage():
+    """Prints usage of program."""
+
+    print "Usage: python tex2wiki.py filename1 filename2 ...\nNote: filename(s) should NOT include the extension."
+    sys.exit(0)
+
+
+def main(input_file, output_file, title):
+    # (str, str, str) -> None
+    """Converts a .tex file to MediaWiki page(s)."""
+
+    with open(input_file) as f:
+        text = f.read()
 
     glossary = dict()
     with open(GLOSSARY_LOCATION, "rb") as csv_file:
@@ -561,17 +567,26 @@ def main():
 
     info = section_split(text)  # creates tree, split into section, subsection, subsubsection, etc.
 
-    output = create_general_pages(info) + create_specific_pages(info, glossary)
+    output = create_general_pages(info, title) + create_specific_pages(info, glossary, title)
     output = output.replace("<br /><br />", "<br />")
 
-    with open(OUTPUT_FILE, "w") as output_file:
-        output_file.write(output)
+    with open(output_file, "w") as f:
+        f.write(output)
+
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) < 2:
+        usage()
 
-    print "Complete. Now comparing files..."
+    for i, filename in enumerate(sys.argv[1:]):
+        main(
+            input_file=filename + ".tex",
+            output_file=filename + ".mmd",
+            title="Orthogonal Polynomials"
+        )
 
-    compare_files.compare(OUTPUT_FILE.replace("/", "\\").replace(".mmd", ""))  # only works for Windows
+        print "Complete. Now comparing files..."
 
-    print "File comparison successful."
+        compare_files.compare(filename.replace("/", "\\"), i)  # only works for Windows
+
+        print "File comparison successful."
