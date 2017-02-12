@@ -20,8 +20,6 @@ import csv
 # TODO: 09.08:19 (headers are bugged)
 # TODO: 09.15:17 (misses \HyperpFq)
 # TODO: 09.15:19 (misses \cos@@)
-# Was Azeem's program run with a much older version of Glossary.csv? It could explain some discrepancies.
-# Header bugs are inexplicable.
 
 
 class LatexEquation(object):
@@ -113,7 +111,7 @@ def generate_html(tag_name, text, options=None, spacing=2):
 
 def generate_math_html(text, options=None, spacing=2):
     # type: (str(, dict, int)) -> str
-    """Special case of generate_html, where the tag is "math"."""
+    """Special case of generate_html, where the tag is "<math>"."""
     if options is None:
         options = {}
 
@@ -141,12 +139,13 @@ def generate_link(left, right=""):
 
 def multi_split(s, seps):
     # type: (str, list) -> list
-    """Splits a string on multiple characters."""
+    """Splits a string on multiple characters, specified in "seps"."""
     res = [s]
     for sep in seps:
         s, res = res, []
         for seq in s:
             res += seq.split(sep)
+
     return res
 
 
@@ -169,7 +168,8 @@ def convert_dollar_signs(string):
 
 
 def format_formula(formula):
-    """Obtain the raw formula (integers), as well as the formatted version."""
+    # (list) -> list
+    """Obtain the raw formula (the numerical values), as well as the formatted version."""
     if formula[0] == ":":  # handling for Jacobi special stuff
         return [str(int(formula[1:]))], formula[1:].zfill(2)
 
@@ -219,43 +219,6 @@ def format_metadata(string):
             result += ch
 
     return result.strip()
-
-
-def extract_data(data):
-    # type: (list) -> list
-    """Extracts the equations and pertinent data from the tex file."""
-    result = list()
-
-    for section_data in data:
-        equations = section_data[1][:-1]
-        for i, equation in enumerate(equations):
-            # formula stuff
-            try:
-                formula = format_formula(get_data_str(equation, latex="\\formula"))
-            except IndexError:  # there is no formula.
-                break
-
-            equation = equation.split("\n")
-
-            # get metadata
-            raw_metadata = ""
-
-            j = 0
-            while j < len(equation):
-                if "%" in equation[j]:
-                    raw_metadata += equation.pop(j)[1:].strip().strip("\n") + "\n"
-                else:
-                    j += 1
-
-            metadata = dict()
-            for data_type in METADATA_TYPES:
-                metadata[data_type] = format_metadata(get_data_str(raw_metadata, latex="\\"+data_type))
-
-            equations[i] = LatexEquation(formula, '\n'.join(equation), metadata)
-
-        result.append([section_data[0], equations])
-
-    return result
 
 
 def find_end(text, left_delimiter, right_delimiter, start=0):
@@ -330,7 +293,7 @@ def find_all(pattern, string):
 def get_symbols(text, glossary):
     # type: (str, dict) -> str
     """Generates span text based on symbols present in text. Equivalent of old symbols_list module."""
-    symbols = set()
+    symbols = list()
 
     special_cases = {"&": "& : logical and<br />"}
     acknowledged = dict()
@@ -343,7 +306,8 @@ def get_symbols(text, glossary):
             if index != -1:
                 index += len(keyword)  # now index of next character
                 if index >= len(text) or not text[index].isalpha():
-                    symbols.add(keyword)
+                    symbols.append([keyword, index])
+                    break
 
     span_text = ""
 
@@ -354,7 +318,8 @@ def get_symbols(text, glossary):
                 span_text += special_cases[keyword] + "\n"
                 acknowledged[keyword] = True  # to prevent duplicates
 
-    for symbol in sorted(symbols, key=text.index):
+    for symbol in sorted(symbols, key=lambda l: l[1]):  # sort by list index.
+        symbol = symbol[0]
         links = list()
         for cell in glossary[symbol]:
             if "http://" in cell or "https://" in cell:
@@ -459,13 +424,11 @@ def create_specific_pages(data, glossary):
         pages += res
         i += 1
 
-        open("tex2wiki/data/darn.txt", "w").write("\n".join(res))
-
     return "\n".join(pages) + "\n"
 
 
 def make_formula_list(info, depth=0):
-    # (str(, int)) -> str, int
+    # (str(, int)) -> (str, int)
     """Generates the list of formulae contained in the file. Used for generating headers & footers."""
 
     formulae = list()
@@ -483,6 +446,7 @@ def make_formula_list(info, depth=0):
 
 
 def equation_page_format(info, title, formulae, glossary, i=0):
+    # (DataUnit, str, list, dict(, int)) -> (str, int)
     """Formats equations into individual MediaWiki pages."""
     pages = list()
 
@@ -557,12 +521,7 @@ def remove_break(string):
 
 def section_split(string, sub=0):
     # type: (str) -> DataUnit
-    """
-    Split string into DataTree objects.
-    Will eventually become replacement for large part of main() + extract_data(),
-    and should theoretically make the create_general_pages and create_specific_pages methods simpler, faster,
-    and able to more easily store all data from the .tex file.
-    """
+    """Split string into DataTree objects."""
 
     string = string.split("\\" + sub * "sub" + "section")
 
@@ -613,6 +572,6 @@ if __name__ == '__main__':
 
     print "Complete. Now comparing files..."
 
-    compare_files.compare(OUTPUT_FILE.replace("/", "\\").replace(".mmd", ""))
+    compare_files.compare(OUTPUT_FILE.replace("/", "\\").replace(".mmd", ""))  # only works for Windows
 
     print "File comparison successful."
