@@ -15,7 +15,7 @@ PATHREF = os.path.dirname(os.path.realpath(__file__)) + '/data/testref.txt'
 class TestMain(TestCase):
 
     def test_generation(self):
-        main(pathw=PATHW, pathr=PATHR, pathref=PATHREF)
+        main(pathr=PATHR, pathw=PATHW, pathref=PATHREF)
         with open(PATHW, 'r') as l:
             latex = l.read()
         self.assertEqual(
@@ -24,10 +24,9 @@ class TestMain(TestCase):
                     '\n'
                     '\\usepackage{amsmath}\n'
                     '\\usepackage{amsfonts}\n'
-                    '\\usepackage{amssymb}\n'
-                    '\\usepackage{breqn}\n'
                     '\\usepackage{DLMFmath}\n'
                     '\\usepackage{DRMFfcns}\n'
+                    '\\usepackage{amssymb}\n'
                     '\\usepackage[paperwidth=15in, paperheight=20in, margin=0.5in]{geometry}\n'
                     '\n'
                     '\\begin{document}\n'

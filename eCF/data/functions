@@ -81,7 +81,6 @@
  LucasL,                        \LucasL,                    ({-}, {-}@{-}),             ()
  Max,                           \max,                       ((-,-), (-,-,-)),           ()
  Min,                           \min,                       ((-,-), (-,-,-)),           ()
- Mod,                           ,                           (({-}\bmod{-})),            ()
  ParabolicCylinderD,            \WhitD,                     ({-}@{-}),                  ()
  Pochhammer,                    \pochhammer,                ({-}{-}),                   (QPochhammer)
  PolyLog,                       \Polylogarithm,             ({-}@{-}, S{-}{-}@{-}),     ()

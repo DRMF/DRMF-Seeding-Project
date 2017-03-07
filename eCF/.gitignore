@@ -1,5 +1,6 @@
 Divya/
 other/
+Azeem/
 
 data/Identities.*
 data/newIdentities.*
@@ -11,7 +12,7 @@ data/ZE.3new.*
 data/ZE.4.*
 data/questions.txt
 
-src/test.txt
+src/test.*
 src/Glossary.csv
 src/new.Glossary.csv
 src/new.Glossary.updated.csv
@@ -19,6 +20,7 @@ src/pythonTest.py
 src/tasks.txt
 src/README_Glossary
 src/x.log
+src/tex2wiki.py
 
 *.sty
 *.aux

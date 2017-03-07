@@ -6,8 +6,8 @@ __status__ = "Development"
 import csv  # imported for using csv format
 import sys  # imported for getting args
 from shutil import copyfile
-from tex2Wiki import append_text, append_revision, getString,\
-    getSym, getEq, secLabel, getEqP, unmodLabel, isnumber
+from tex2Wiki import append_text, append_revision, get_string,\
+    get_sym, get_eq, sec_label, get_eq_p, unmod_label, isnumber
 
 
 def modLabel(label):
@@ -120,14 +120,14 @@ def DLMF(ofname, mmd, llinks, n):
                 labels.append("Zeta and Related Functions")
                 sections.append(["Zeta and Related Functions", 0])
             elif "\\part" in line:
-                if getString(line) == "BOF":
+                if get_string(line) == "BOF":
                     parse = False
-                elif getString(line) == "EOF":
+                elif get_string(line) == "EOF":
                     parse = True
                 elif parse:
                     stringWrite = "\'\'\'"
-                    stringWrite += getString(line) + "\'\'\'\n"
-                    chapter = getString(line)
+                    stringWrite += get_string(line) + "\'\'\'\n"
+                    chapter = get_string(line)
                     if startFlag:
                         mainPrepend += (
                             "\n== Sections in " +
@@ -142,11 +142,11 @@ def DLMF(ofname, mmd, llinks, n):
                     head = True
             elif "\\section" in line:
                 mainPrepend += ("* [[" +
-                                secLabel(getString(line)) +
+                                sec_label(get_string(line)) +
                                 "|" +
-                                getString(line) +
+                                get_string(line) +
                                 "]]\n")
-                sections.append([getString(line)])
+                sections.append([get_string(line)])
 
         secCounter = 0
         eqCounter = 0
@@ -155,18 +155,18 @@ def DLMF(ofname, mmd, llinks, n):
             if "\\section" in line:
                 parse = True
                 secCounter += 1
-                append_revision(secLabel(getString(line)))
+                append_revision(sec_label(get_string(line)))
                 append_text(
                     "{{DISPLAYTITLE:" + (sections[secCounter][0]) + "}}\n")
                 append_text("<div id=\"drmf_head\">\n")
                 append_text(
                     "<div id=\"alignleft\"> << [[" +
-                    secLabel(
+                    sec_label(
                         sections[
                             secCounter -
                             1][0]) +
                     "|" +
-                    secLabel(
+                    sec_label(
                         sections[
                             secCounter -
                             1][0]) +
@@ -178,36 +178,36 @@ def DLMF(ofname, mmd, llinks, n):
                         " ",
                         "_") +
                     "|" +
-                    secLabel(
+                    sec_label(
                         sections[secCounter][0]) +
                     "]] </div>\n")
                 append_text(
                     "<div id=\"alignright\"> [[" +
-                    secLabel(
+                    sec_label(
                         sections[
                             (secCounter +
                              1) %
                             len(sections)][0]) +
                     "|" +
-                    secLabel(
+                    sec_label(
                         sections[
                             (secCounter +
                              1) %
                             len(sections)][0]) +
                     "]] >> </div>\n</div>\n\n")
                 head = True
-                append_text("== " + getString(line) + " ==\n")
+                append_text("== " + get_string(line) + " ==\n")
             elif ("\\section" in lines[(i + 1) % len(lines)] or "\\end{document}" in lines[
                     (i + 1) % len(lines)]) and parse:
                 append_text("<div id=\"drmf_foot\">\n")
                 append_text(
                     "<div id=\"alignleft\"> << [[" +
-                    secLabel(
+                    sec_label(
                         sections[
                             secCounter -
                             1][0]) +
                     "|" +
-                    secLabel(
+                    sec_label(
                         sections[
                             secCounter -
                             1][0]) +
@@ -220,18 +220,18 @@ def DLMF(ofname, mmd, llinks, n):
                         " ",
                         "_") +
                     "|" +
-                    secLabel(
+                    sec_label(
                         sections[secCounter][0]) +
                     "]] </div>\n")
                 append_text(
                     "<div id=\"alignright\"> [[" +
-                    secLabel(
+                    sec_label(
                         sections[
                             (secCounter +
                              1) %
                             len(sections)][0]) +
                     "|" +
-                    secLabel(
+                    sec_label(
                         sections[
                             (secCounter +
                              1) %
@@ -242,13 +242,13 @@ def DLMF(ofname, mmd, llinks, n):
                 eqCounter = 0
 
             elif "\\subsection" in line and parse:
-                append_text("\n== " + getString(line) + " ==\n")
+                append_text("\n== " + get_string(line) + " ==\n")
                 head = True
             elif "\\paragraph" in line and parse:
-                append_text("\n=== " + getString(line) + " ===\n")
+                append_text("\n=== " + get_string(line) + " ===\n")
                 head = True
             elif "\\subsubsection" in line and parse:
-                append_text("\n=== " + getString(line) + " ===\n")
+                append_text("\n=== " + get_string(line) + " ===\n")
                 head = True
 
             elif "\\begin{equation}" in line and parse:
@@ -299,7 +299,7 @@ def DLMF(ofname, mmd, llinks, n):
                 if "\\drmfname" in line and parse:
                     append_text(
                         "<div align=\"right\">This formula has the name: " +
-                        getString(line) +
+                        get_string(line) +
                         "</div><br />\n")
             elif math and parse:
                 flagM = True
@@ -369,7 +369,7 @@ def DLMF(ofname, mmd, llinks, n):
                     substitution = False
                     append_text(
                         "<div align=\"right\">Substitution(s): " +
-                        getEq(subLine) +
+                        get_eq(subLine) +
                         "</div><br />\n")
 
             if constraint and parse:
@@ -388,7 +388,7 @@ def DLMF(ofname, mmd, llinks, n):
                     constraint = False
                     append_text(
                         "<div align=\"right\">Constraint(s): " +
-                        getEq(conLine) +
+                        get_eq(conLine) +
                         "</div><br />\n")
 
         eqCounter = n
@@ -429,7 +429,7 @@ def DLMF(ofname, mmd, llinks, n):
                 symbols = []
                 eqCounter += 1
                 label = labels[eqCounter]
-                append_revision(secLabel(label))
+                append_revision(sec_label(label))
                 append_text("{{DISPLAYTITLE:" + (labels[eqCounter]) + "}}\n")
                 if eqCounter == len(labels) - 1:
                     break
@@ -439,44 +439,44 @@ def DLMF(ofname, mmd, llinks, n):
                         append_text(
                             "<div id=\"alignleft\"> "
                             "<< [[" +
-                            secLabel(
+                            sec_label(
                                 sections[secCount][0]).replace(
                                 " ",
                                 "_") +
                             "|" +
-                            secLabel(
+                            sec_label(
                                 sections[secCount][0]) +
                             "]] </div>\n")
                     else:
                         append_text(
                             "<div id=\"alignleft\"> "
                             "<< [[" +
-                            secLabel(
+                            sec_label(
                                 labels[
                                     eqCounter -
                                     1]).replace(
                                 " ",
                                 "_") +
                             "|" +
-                            secLabel(
+                            sec_label(
                                 labels[
                                     eqCounter -
                                     1]) +
                             "]] </div>\n")
                     append_text(
                         "<div id=\"aligncenter\"> [[" +
-                        secLabel(
+                        sec_label(
                             sections[
                                 secCount +
                                 1][0]).replace(
                             " ",
                             "_") +
                         "#" +
-                        secLabel(
+                        sec_label(
                             labels[eqCounter][
                                 len("Formula:"):]) +
                         "|formula in " +
-                        secLabel(
+                        sec_label(
                             sections[
                                 secCount +
                                 1][0]) +
@@ -484,7 +484,7 @@ def DLMF(ofname, mmd, llinks, n):
                     if True:
                         append_text(
                             "<div id=\"alignright\"> [[" +
-                            secLabel(
+                            sec_label(
                                 labels[
                                     (eqCounter +
                                      1) %
@@ -493,7 +493,7 @@ def DLMF(ofname, mmd, llinks, n):
                                 " ",
                                 "_") +
                             "|" +
-                            secLabel(
+                            sec_label(
                                 labels[
                                     (eqCounter +
                                      1) %
@@ -507,51 +507,51 @@ def DLMF(ofname, mmd, llinks, n):
                         newSec = False
                         append_text(
                             "<div id=\"alignleft\"> << [[" +
-                            secLabel(
+                            sec_label(
                                 sections[secCount][0]).replace(
                                 " ",
                                 "_") +
                             "|" +
-                            secLabel(
+                            sec_label(
                                 sections[secCount][0]) +
                             "]] </div>\n")
                     else:
                         append_text(
                             "<div id=\"alignleft\"> "
                             "<< [[" +
-                            secLabel(
+                            sec_label(
                                 labels[
                                     eqCounter -
                                     1]).replace(
                                 " ",
                                 "_") +
                             "|" +
-                            secLabel(
+                            sec_label(
                                 labels[
                                     eqCounter -
                                     1]) +
                             "]] </div>\n")
                     append_text(
                         "<div id=\"aligncenter\"> [[" +
-                        secLabel(
+                        sec_label(
                             sections[
                                 secCount +
                                 1][0]).replace(
                             " ",
                             "_") +
                         "#" +
-                        secLabel(
+                        sec_label(
                             labels[eqCounter][
                                 len("Formula:"):]) +
                         "|formula in " +
-                        secLabel(
+                        sec_label(
                             sections[
                                 secCount +
                                 1][0]) +
                         "]] </div>\n")
                     append_text(
                         "<div id=\"alignright\"> [[" +
-                        secLabel(
+                        sec_label(
                             labels[
                                 (eqCounter +
                                  1) %
@@ -560,7 +560,7 @@ def DLMF(ofname, mmd, llinks, n):
                                 " ",
                                 "_")) +
                         "|" +
-                        secLabel(
+                        sec_label(
                             labels[
                                 (eqCounter +
                                  1) %
@@ -775,7 +775,7 @@ def DLMF(ofname, mmd, llinks, n):
 
                 # should there be a space between bibliography and ==?
                 append_text("\n== Bibliography==\n\n")
-                r = unmodLabel(labels[eqCounter])
+                r = unmod_label(labels[eqCounter])
                 q = r.find("DLMF:") + 5
                 p = r.find(":", q)
                 section = r[q:p]
@@ -803,43 +803,43 @@ def DLMF(ofname, mmd, llinks, n):
                         newSec = False
                         append_text(
                             "<div id=\"alignleft\"> << [[" +
-                            secLabel(
+                            sec_label(
                                 sections[secCount][0]).replace(
                                 " ",
                                 "_") +
                             "|" +
-                            secLabel(
+                            sec_label(
                                 sections[secCount][0]) +
                             "]] </div>\n")
                     else:
                         append_text(
                             "<div id=\"alignleft\"> << [[" +
-                            secLabel(
+                            sec_label(
                                 labels[
                                     eqCounter -
                                     1]).replace(
                                 " ",
                                 "_") +
                             "|" +
-                            secLabel(
+                            sec_label(
                                 labels[
                                     eqCounter -
                                     1]) +
                             "]] </div>\n")
                     append_text(
                         "<div id=\"aligncenter\"> [[" +
-                        secLabel(
+                        sec_label(
                             sections[
                                 secCount +
                                 1][0]).replace(
                             " ",
                             "_") +
                         "#" +
-                        secLabel(
+                        sec_label(
                             labels[eqCounter][
                                 len("Formula:"):]) +
                         "|formula in " +
-                        secLabel(
+                        sec_label(
                             sections[
                                 secCount +
                                 1][0]) +
@@ -847,7 +847,7 @@ def DLMF(ofname, mmd, llinks, n):
                     if True:
                         append_text(
                             "<div id=\"alignright\"> [[" +
-                            secLabel(
+                            sec_label(
                                 labels[
                                     (eqCounter +
                                      1) %
@@ -856,7 +856,7 @@ def DLMF(ofname, mmd, llinks, n):
                                 " ",
                                 "_") +
                             "|" +
-                            secLabel(
+                            sec_label(
                                 labels[
                                     (eqCounter +
                                      1) %
@@ -922,10 +922,10 @@ def DLMF(ofname, mmd, llinks, n):
             elif "\\drmfname" in line and parse:
                 math = False
                 comToWrite = "\n== Name ==\n\n<div align=\"left\">" + \
-                    getString(line) + "</div><br />\n" + comToWrite
+                             get_string(line) + "</div><br />\n" + comToWrite
 
             elif "\\drmfnote" in line and parse:
-                symbols = symbols + getSym(line)
+                symbols = symbols + get_sym(line)
                 if hNote:
                     comToWrite += "\n== Note(s) ==\n\n"
                     hNote = False
@@ -947,7 +947,7 @@ def DLMF(ofname, mmd, llinks, n):
                     if line[ind:ind + 7] == "\\eqref{":
                         pause = True
                         eqR = line[ind:line.find("}", ind) + 1]
-                        rLab = getString(eqR)
+                        rLab = get_string(eqR)
                         for l in lLink:
                             if rLab == l[0:l.find("=") - 1]:
                                 rlabel = l[l.find("=>") + 3:l.find("\\n")]
@@ -994,10 +994,10 @@ def DLMF(ofname, mmd, llinks, n):
                     proof = False
                     append_text(
                         comToWrite +
-                        getEqP(proofLine) +
+                        get_eq_p(proofLine) +
                         "</div>\n<br />\n")
                     comToWrite = ""
-                    symbols = symbols + getSym(symLine)
+                    symbols = symbols + get_sym(symLine)
                     symLine = ""
             elif proof:
                 symLine += line.strip("\n")
@@ -1006,7 +1006,7 @@ def DLMF(ofname, mmd, llinks, n):
                     if line[ind:ind + 7] == "\\eqref{":
                         pause = True
                         eqR = line[ind:line.find("}", ind) + 1]
-                        rLab = getString(eqR)
+                        rLab = get_string(eqR)
                         for l in lLink:
                             if rLab == l[0:l.find("=") - 1]:
                                 rlabel = l[l.find("=>") + 3:l.find("\\n")]
@@ -1048,10 +1048,10 @@ def DLMF(ofname, mmd, llinks, n):
                     proof = False
                     append_text(
                         comToWrite +
-                        getEqP(proofLine).rstrip("\n") +
+                        get_eq_p(proofLine).rstrip("\n") +
                         "</div>\n<br />\n")
                     comToWrite = ""
-                    symbols = symbols + getSym(symLine)
+                    symbols = symbols + get_sym(symLine)
                     symLine = ""
 
             elif math:
@@ -1070,7 +1070,7 @@ def DLMF(ofname, mmd, llinks, n):
                         1]:
                     append_text(line.rstrip("\n"))
                     symLine += line.strip("\n")
-                    symbols = symbols + getSym(symLine)
+                    symbols = symbols + get_sym(symLine)
                     symLine = ""
                     append_text("\n</math></div>\n")
                 else:
@@ -1078,7 +1078,7 @@ def DLMF(ofname, mmd, llinks, n):
                     append_text(line)
             if note and parse:
                 noteLine = noteLine + line
-                symbols = symbols + getSym(line)
+                symbols = symbols + get_sym(line)
                 if "\\end{equation}" in lines[
                     i +
                     1] or "\\drmfn" in lines[
@@ -1099,13 +1099,13 @@ def DLMF(ofname, mmd, llinks, n):
                             noteLine.find(
                                 "}", noteLine.find("\\emph{") + len("\\emph{")) + 1:]
                     comToWrite = comToWrite + "<div align=\"left\">" + \
-                        getEq(noteLine) + "</div><br />\n"
+                                 get_eq(noteLine) + "</div><br />\n"
 
             if constraint and parse:
                 conLine += line.replace("&", "&<br />")
 
                 symLine += line.strip("\n")
-                # symbols=symbols+getSym(line)
+                # symbols=symbols+get_sym(line)
                 if "\\end{equation}" in lines[
                     i +
                     1] or "\\drmfn" in lines[
@@ -1118,19 +1118,19 @@ def DLMF(ofname, mmd, llinks, n):
                         i +
                         1]:
                     constraint = False
-                    symbols = symbols + getSym(symLine)
+                    symbols = symbols + get_sym(symLine)
                     symLine = ""
                     append_text(
                         comToWrite +
                         "<div align=\"left\">" +
-                        getEq(conLine) +
+                        get_eq(conLine) +
                         "</div><br />\n")
                     comToWrite = ""
             if substitution and parse:
                 subLine = subLine + line.replace("&", "&<br />")
 
                 symLine += line.strip("\n")
-                # symbols=symbols+getSym(line)
+                # symbols=symbols+get_sym(line)
                 if "\\end{equation}" in lines[
                     i +
                     1] or "\\drmfn" in lines[
@@ -1143,12 +1143,12 @@ def DLMF(ofname, mmd, llinks, n):
                         i +
                         1]:
                     substitution = False
-                    symbols = symbols + getSym(symLine)
+                    symbols = symbols + get_sym(symLine)
                     symLine = ""
                     append_text(
                         comToWrite +
                         "<div align=\"left\">" +
-                        getEq(subLine) +
+                        get_eq(subLine) +
                         "</div><br />\n")
                     comToWrite = ""
 
