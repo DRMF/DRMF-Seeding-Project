@@ -978,7 +978,9 @@ def main(pathr=DIR_NAME + 'Identities.m',
                             '\\usepackage{amssymb}\n'
                             '\\usepackage[paperwidth=15in, paperheight=20in, '
                             'margin=0.5in]{geometry}\n\n'
-                            '\\begin{document}\n\n\n')
+                            '\\begin{document}\n\n'
+                            '\\title{eCF Dataset}\n'
+                            '\\section{Main}\n\n')
 
                 for line in mathematica:
                     line = line.replace('\n', '')

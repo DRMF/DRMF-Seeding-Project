@@ -31,6 +31,8 @@ class TestMain(TestCase):
                     '\n'
                     '\\begin{document}\n'
                     '\n'
+                    '\\title{eCF Dataset}\n'
+                    '\\section{Main}\n'
                     '\n'
                     '\\begin{equation}\n'
                     '  equation\n'
