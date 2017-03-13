@@ -6,7 +6,7 @@
 [![Code Health](https://landscape.io/github/DRMF/DRMF-Seeding-Project/master/landscape.svg?style=flat)](https://landscape.io/github/DRMF/DRMF-Seeding-Project/master)
 
 This project is meant to convert different designated source formats to semantic LaTeX for the
-DRMF project. One major aspect of this conversion is the inclusion, insertion, and replacement 
+[DRMF project](https://drmf.wmflabs.org). One major aspect of this conversion is the inclusion, insertion, and replacement 
 of LaTeX semantic macros.  
 
 ## MediaWiki Wikitext Generation
