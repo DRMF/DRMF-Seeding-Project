@@ -100,7 +100,7 @@ def remove_special(content):
 
                 is_comment = line.lstrip().startswith("%")
 
-                line = pi_pat.sub(r'\1\\cpi\2', line)
+                line = pi_pat.sub(r'\1\\cpi', line)
                 line = expe_pat.sub(r'\1\\expe^', line)
 
                 # only check for flags if the line is comment
