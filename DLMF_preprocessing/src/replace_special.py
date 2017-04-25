@@ -79,7 +79,7 @@ def remove_special(content):
 
         in_eq = True
 
-        pi_pat = re.compile(r'(\s*)\\pi(\s*\b|[aeiou])')
+        pi_pat = re.compile(r'(\s*)\\pi(?![a-zA-Z])')
         expe_pat = re.compile(r'\b([^\\]?\W*)\s*e\s*\^')
 
         spaces_pat = re.compile(r' {2,}')
