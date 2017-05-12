@@ -9,6 +9,7 @@
 
 import os
 import argparse
+import sys
 
 __author__ = 'Kevin Chen'
 __status__ = 'Development'
@@ -195,7 +196,6 @@ def process_references(pathr):
     except IOError:
         print('no reference file found.')
         return dict(zip([], []))
-
 
 
 def master_function(line, params):
@@ -921,37 +921,41 @@ def replace_vars(line):
 
 
 def convert(line):
-    line = line.replace(' ', '')
-    line = remove_inactive(line)
-    line = remove_conditionalexpression(line)
-    line = remove_symbol(line)
-    line = line.replace('EulerGamma', '\\EulerConstant')
-    line = carat(line)
-    for func in FUNCTION_CONVERSIONS:
-        line = master_function(line, func)
-    line = beta(line)
-    line = cfk(line)
-    line = gamma(line)
-    line = integrate(line)
-    line = legendrep(line)
-    line = legendreq(line)
-    line = polyeulergamma(line)
-    line = product(line)
-    line = qpochhammer(line)
-    line = summation(line)
-    line = convert_fraction(line)
-    line = constraint(line)
-    line = piecewise(line)
-    line = replace_operators(line)
-    line = replace_vars(line)
-    return line
+    try:
+        line = line.replace(' ', '')
+        line = remove_inactive(line)
+        line = remove_conditionalexpression(line)
+        line = remove_symbol(line)
+        line = line.replace('EulerGamma', '\\EulerConstant')
+        line = carat(line)
+        for func in FUNCTION_CONVERSIONS:
+            line = master_function(line, func)
+        line = beta(line)
+        line = cfk(line)
+        line = gamma(line)
+        line = integrate(line)
+        line = legendrep(line)
+        line = legendreq(line)
+        line = polyeulergamma(line)
+        line = product(line)
+        line = qpochhammer(line)
+        line = summation(line)
+        line = convert_fraction(line)
+        line = constraint(line)
+        line = piecewise(line)
+        line = replace_operators(line)
+        line = replace_vars(line)
+        return line
+
+    except (ValueError, IndexError):
+        return 'Could not convert.'
 
 
 def main(pathr=DIR_NAME + 'Identities.m',
          pathw=DIR_NAME + 'newIdentities.tex',
          pathref=DIR_NAME + 'References.txt',
-         verbose=False, manual=False):
-    # ((str, str, str, bool, bool)) -> None
+         verbose=False, manual=False, test=False):
+    # ((str, str, str, bool, bool, bool)) -> None
     """
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
@@ -1011,12 +1015,12 @@ def main(pathr=DIR_NAME + 'Identities.m',
     else:
         try:
             while True:
-                try:
-                    line = raw_input('Mathematica: ')
-                    line = convert(line)
-                    print('LaTeX: ' + line)
-                except (ValueError, IndexError):
-                    print('Could not convert.')
+                line = raw_input('Mathematica: ')
+                line = convert(line)
+                print('LaTeX: ' + line)
+                if test:
+                    convert('Log[a,b]')
+                    break
         except KeyboardInterrupt:
             print('\nExiting.')
 
