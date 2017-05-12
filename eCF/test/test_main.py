@@ -15,7 +15,7 @@ PATHREF = os.path.dirname(os.path.realpath(__file__)) + '/data/testref.txt'
 class TestMain(TestCase):
 
     def test_generation(self):
-        main(pathr=PATHR, pathw=PATHW, pathref=PATHREF)
+        main(pathr=PATHR, pathw=PATHW, pathref=PATHREF, verbose=True)
         with open(PATHW, 'r') as l:
             latex = l.read()
         self.assertEqual(
