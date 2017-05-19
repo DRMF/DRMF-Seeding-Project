@@ -48,5 +48,6 @@ class TestMain(TestCase):
                     '\n'
                     '\\end{document}\n'))
 
-    def test_manual(self):
+    def test_other(self):
+        main()
         main(manual='test')
