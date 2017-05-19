@@ -12,10 +12,6 @@ PATHR = os.path.dirname(os.path.realpath(__file__)) + '/data/test.m'
 PATHREF = os.path.dirname(os.path.realpath(__file__)) + '/data/testref.txt'
 
 
-def mock_raw_input(s):
-    return 'test'
-
-
 class TestMain(TestCase):
 
     def test_generation(self):
@@ -53,6 +49,4 @@ class TestMain(TestCase):
                     '\\end{document}\n'))
 
     def test_manual(self):
-        main.raw_input = mock_raw_input
-        main(manual=True, test=True)
-        self.assertEqual(True, True)
+        main(manual='test')

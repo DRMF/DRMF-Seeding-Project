@@ -921,6 +921,13 @@ def replace_vars(line):
 
 
 def convert(line):
+    # (str) -> str
+    """
+    Runs the string through all the conversions.
+    
+    :param line: equation to be converted
+    :returns: converted line
+    """
     try:
         line = line.replace(' ', '')
         line = remove_inactive(line)
@@ -954,8 +961,8 @@ def convert(line):
 def main(pathr=DIR_NAME + 'Identities.m',
          pathw=DIR_NAME + 'newIdentities.tex',
          pathref=DIR_NAME + 'References.txt',
-         verbose=False, manual=False, test=False):
-    # ((str, str, str, bool, bool, bool)) -> None
+         verbose=False, manual=False):
+    # ((str, str, str, bool, str)) -> None
     """
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
@@ -964,7 +971,7 @@ def main(pathr=DIR_NAME + 'Identities.m',
     :param pathr: directory of file to be read from
     :param pathref: directory of file with references to be inserted
     :param verbose: specify whether or not to output converted lines
-    :param manual: specify whether or not to enter equations manually
+    :param manual: string of manual function input
     :returns: None
     """
 
@@ -1013,16 +1020,7 @@ def main(pathr=DIR_NAME + 'Identities.m',
                 latex.write('\n\n\\end{document}\n')
 
     else:
-        try:
-            while True:
-                line = raw_input('Mathematica: ')
-                line = convert(line)
-                print('LaTeX: ' + line)
-                if test:
-                    convert('Log[a,b]')
-                    break
-        except KeyboardInterrupt:
-            print('\nExiting.')
+        print convert(manual)
 
 
 # Open data/functions, and process the data into a comprehensible tuple that
@@ -1061,20 +1059,19 @@ if __name__ == '__main__':
                              ' current directory as the starting point')
     parser.add_argument('-v', '--verbose', help='increase output verbosity',
                         action='store_true')
-    parser.add_argument('-m', '--manual', help='manually enter equations'
-                                               ' instead of specifying a file',
-                        action='store_true')
+    parser.add_argument('-m', metavar='FUNC', help='manually '
+                        'enter equations instead of specifying a file')
     args = parser.parse_args()
 
     if type(args.REF) is type(None) and type(args.PATHW) is type(None)\
             and type(args.PATHR) is type(None):
-        main(verbose=args.verbose, manual=args.manual)
+        main(verbose=args.verbose, manual=args.m)
     elif type(args.REF) is type(None) and type(args.PATHW) is type(None):
         main(pathr=args.PATHR,
-             verbose=args.verbose, manual=args.manual)
+             verbose=args.verbose, manual=args.m)
     elif type(args.REF) is type(None):
         main(pathr=args.PATHR, pathw=args.PATHW,
-             verbose=args.verbose, manual=args.manual)
+             verbose=args.verbose, manual=args.m)
     else:
         main(pathr=args.PATHR, pathw=args.PATHW, pathref=args.REF,
-             verbose=args.verbose, manual=args.manual)
+             verbose=args.verbose, manual=args.m)
