@@ -48,6 +48,7 @@ class TestMain(TestCase):
                     '\n'
                     '\\end{document}\n'))
 
+    @staticmethod
     def test_other(self):
         main(pathr=PATHR, pathw=PATHW, pathref='')
         main(manual='test')
