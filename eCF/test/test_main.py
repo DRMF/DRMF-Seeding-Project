@@ -48,7 +48,6 @@ class TestMain(TestCase):
                     '\n'
                     '\\end{document}\n'))
 
-    @staticmethod
     def test_other(self):
-        main(pathr=PATHR, pathw=PATHW, pathref='')
-        main(manual='test')
+        self.assertNotEqual(main(pathr=PATHR, pathw=PATHW, pathref=''), True)
+        self.assertNotEqual(main(manual='test'), True)
