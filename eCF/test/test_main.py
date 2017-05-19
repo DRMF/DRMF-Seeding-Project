@@ -49,5 +49,5 @@ class TestMain(TestCase):
                     '\\end{document}\n'))
 
     def test_other(self):
-        main()
+        main(pathr=PATHR, pathw=PATHW, pathref='')
         main(manual='test')
