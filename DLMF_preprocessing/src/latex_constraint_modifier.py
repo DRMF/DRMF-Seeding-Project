@@ -1,8 +1,9 @@
 
+import argparse
+
 __author__ = 'Kevin Chen'
 __status__ = 'Development'
 
-import argparse
 
 CONVERSIONS = {'\\constraint': '{\\bf C}:~',
                '\\substitution': '{\\bf S}:~',
@@ -167,10 +168,11 @@ if __name__ == '__main__':
                     ' them viewable metadata.')
     parser.add_argument('PATHR', type=str,
                         help='path of input .tex file, with the current'
-                             ' directory as the starting point', )
+                             ' directory as the starting point')
     parser.add_argument('PATHW', type=str,
                         help='path of file to be outputted to, with the'
                              ' current directory as the starting point')
+
     args = parser.parse_args()
 
     main(args.PATHR, args.PATHW)

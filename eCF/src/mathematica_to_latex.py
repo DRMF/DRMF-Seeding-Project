@@ -7,11 +7,14 @@
 
 """
 
+import os
+import argparse
+import sys
+
 __author__ = 'Kevin Chen'
 __status__ = 'Development'
-__credits__ = ["Divya Gandla", "Kevin Chen"]
+__credits__ = ['Divya Gandla', 'Kevin Chen']
 
-import os
 
 DIR_NAME = os.path.dirname(os.path.realpath(__file__)) + '/../data/'
 
@@ -26,7 +29,7 @@ SYMBOLS = {
     'CapitalAlpha': ' A', 'CapitalBeta': ' B', 'CapitalGamma': 'Gamma',
     'CapitalDelta': 'Delta', 'CapitalEpsilon': 'E', 'CapitalZeta': ' Z',
     'CapitalEta': ' H', 'CapitalTheta': 'Theta', 'CapitalIota': ' I',
-    'CapitalKappa': 'K', 'CapitalLambda': 'Lambda', 'CapitalMu': ' M',
+    'CapitalKappa': ' K', 'CapitalLambda': 'Lambda', 'CapitalMu': ' M',
     'CapitalNu': ' N', 'CapitalXi': 'Xi', 'CapitalOmicron': 'O',
     'CapitalPi': 'Pi', 'CapitalRho': ' P', 'CapitalSigma': 'Sigma',
     'CapitalTau': ' T', 'CapitalUpsilon': ' Y', 'CapitalPhi': 'Phi',
@@ -39,7 +42,8 @@ SYMBOLS = {
 
     'Aleph': 'aleph', 'Bet': 'beth', 'Gimel': 'gimel', 'Dalet': 'daleth',
 
-    'Infinity': 'infty'}
+    'Infinity': 'infty'
+}
 
 LEFT_BRACKETS = list('([{')
 RIGHT_BRACKETS = list(')]}')
@@ -176,17 +180,22 @@ def process_references(pathr):
     :param pathr: directory of file to be read from
     :return: dictionary of processed references
     """
-    with open(pathr) as refs:
-        references = list(line.split('\n') for line in
-                          refs.read().split('\n\n'))
+    try:
+        with open(pathr) as refs:
+            references = list(line.split('\n') for line in
+                              refs.read().split('\n\n'))
 
-    key = []
-    value = []
-    for pair in references:
-        key.append(pair[0][3:-1].replace('"', ''))
-        value.append('&'.join(pair[1:]))
+        key = []
+        value = []
+        for pair in references:
+            key.append(pair[0][3:-1].replace('"', ''))
+            value.append('&'.join(pair[1:]))
 
-    return dict(zip(key, value))
+        return dict(zip(key, value))
+
+    except IOError:
+        print('no reference file found.')
+        return dict(zip([], []))
 
 
 def master_function(line, params):
@@ -692,7 +701,6 @@ def constraint(line):
         return line
 
     constraints = arg_split(sections[-1].replace('&&', '&'), '&')
-
     for i, element, in enumerate(constraints):
         if i == 0:
             constraints[i] = ('\n%  \\constraint{$' +
@@ -713,7 +721,6 @@ def constraint(line):
                       'Irrational', 'Real', 'Rational', 'Prime')
 
     for _ in range(line.count('Element')):
-
         try:
             pos1
         except NameError:
@@ -730,7 +737,6 @@ def constraint(line):
                     sep[1] + line[pos1[1]:])
 
     for _ in range(line.count('NotElement')):
-
         try:
             pos2
         except NameError:
@@ -769,7 +775,6 @@ def convert_fraction(line):
 
     while i != len(line):
         if line[i] == '/':
-
             j = search(line, i, sign)
             k = search(line, i, sign, 1)
 
@@ -846,6 +851,7 @@ def replace_operators(line):
     :param line: line to be converted
     :returns: converted line
     """
+
     line = line.replace('==', '=')
     line = line.replace('!=', ' \\ne ')
     line = line.replace('||', ' \\lor ')
@@ -914,10 +920,49 @@ def replace_vars(line):
     return line
 
 
-def main(pathw=DIR_NAME + 'newIdentities.tex',
-         pathr=DIR_NAME + 'Identities.m',
-         pathref=DIR_NAME + 'References.txt'):
-    # ((str, str)) -> None
+def convert(line):
+    # (str) -> str
+    """
+    Runs the string through all the conversions.
+    
+    :param line: equation to be converted
+    :returns: converted line
+    """
+    try:
+        line = line.replace(' ', '')
+        line = remove_inactive(line)
+        line = remove_conditionalexpression(line)
+        line = remove_symbol(line)
+        line = line.replace('EulerGamma', '\\EulerConstant')
+        line = carat(line)
+        for func in FUNCTION_CONVERSIONS:
+            line = master_function(line, func)
+        line = beta(line)
+        line = cfk(line)
+        line = gamma(line)
+        line = integrate(line)
+        line = legendrep(line)
+        line = legendreq(line)
+        line = polyeulergamma(line)
+        line = product(line)
+        line = qpochhammer(line)
+        line = summation(line)
+        line = convert_fraction(line)
+        line = constraint(line)
+        line = piecewise(line)
+        line = replace_operators(line)
+        line = replace_vars(line)
+        return line
+
+    except (ValueError, IndexError):
+        return 'Could not convert.'
+
+
+def main(pathr=DIR_NAME + 'Identities.m',
+         pathw=DIR_NAME + 'newIdentities.tex',
+         pathref=DIR_NAME + 'References.txt',
+         verbose=False, manual=False):
+    # ((str, str, str, bool, str)) -> None
     """
     Opens Mathematica file with identities and puts converted lines into
     newIdentities.tex.
@@ -925,75 +970,57 @@ def main(pathw=DIR_NAME + 'newIdentities.tex',
     :param pathw: directory of file to be written to
     :param pathr: directory of file to be read from
     :param pathref: directory of file with references to be inserted
+    :param verbose: specify whether or not to output converted lines
+    :param manual: string of manual function input
     :returns: None
     """
-    references = process_references(pathref)
 
-    with open(pathw, 'w') as latex:
-        with open(pathr, 'r') as mathematica:
+    if not manual:
+        references = process_references(pathref)
 
-            latex.write('\n\\documentclass{article}\n\n'
-                        '\\usepackage{amsmath}\n'
-                        '\\usepackage{amsfonts}\n'
-                        '\\usepackage{amssymb}\n'
-                        '\\usepackage{breqn}\n'
-                        '\\usepackage{DLMFmath}\n'
-                        '\\usepackage{DRMFfcns}\n'
-                        '\\usepackage[paperwidth=15in, paperheight=20in, '
-                        'margin=0.5in]{geometry}\n\n'
-                        '\\begin{document}\n\n\n')
+        with open(pathw, 'w') as latex:
+            with open(pathr, 'r') as mathematica:
 
-            for line in mathematica:
-                line = line.replace('\n', '')
+                latex.write('\n\\documentclass{article}\n\n'
+                            '\\usepackage{amsmath}\n'
+                            '\\usepackage{amsfonts}\n'
+                            '\\usepackage{DLMFmath}\n'
+                            '\\usepackage{DRMFfcns}\n'
+                            '\\usepackage{amssymb}\n'
+                            '\\usepackage[paperwidth=15in, paperheight=20in, '
+                            'margin=0.5in]{geometry}\n\n'
+                            '\\begin{document}\n\n'
+                            '\\title{eCF Dataset}\n'
+                            '\\section{Main}\n\n')
 
-                if '(*' in line and '*)' in line:
-                    mtt = line[4:-3].replace('"', '')
-                    line = '\\begin{equation}'
-                    latex.write(line + '\n')
-                else:
-                    line = line.replace(' ', '')
+                for line in mathematica:
+                    line = line.replace('\n', '')
 
-                    line = remove_inactive(line)
-                    line = remove_conditionalexpression(line)
-                    line = remove_symbol(line)
+                    if '(*' in line and '*)' in line:
+                        mtt = line[4:-3].replace('"', '')
+                        line = '\\begin{equation}'
+                        latex.write(line + '\n')
+                    else:
+                        line = convert(line)
 
-                    line = line.replace('EulerGamma', '\\EulerConstant')
+                        if line != '':
+                            line += '\n%  \\mathematicatag{$\\tt{' + mtt + '}$}'
+                            try:
+                                line += '\n%  \\mathematicareference{$\\text{' + \
+                                        references[mtt] + '}$}'
+                            except KeyError:
+                                pass
+                            line = '  ' + line + '\n\\end{equation}'
 
-                    line = carat(line)
+                        if verbose:
+                            print line
 
-                    for func in FUNCTION_CONVERSIONS:
-                        line = master_function(line, func)
+                        latex.write(line + '\n')
 
-                    line = beta(line)
-                    line = cfk(line)
-                    line = gamma(line)
-                    line = integrate(line)
-                    line = legendrep(line)
-                    line = legendreq(line)
-                    line = polyeulergamma(line)
-                    line = product(line)
-                    line = qpochhammer(line)
-                    line = summation(line)
+                latex.write('\n\n\\end{document}\n')
 
-                    line = convert_fraction(line)
-                    line = constraint(line)
-                    line = piecewise(line)
-                    line = replace_operators(line)
-                    line = replace_vars(line)
-
-                    if line != '':
-                        line += '\n%  \\mathematicatag{$\\tt{' + mtt + '}$}'
-                        try:
-                            line += '\n%  \\mathematicareference{$\\text{' + \
-                                    references[mtt] + '}$}'
-                        except KeyError:
-                            pass
-                        line = '  ' + line + '\n\\end{equation}'
-
-                    print line
-                    latex.write(line + '\n')
-
-            latex.write('\n\n\\end{document}\n')
+    else:
+        print convert(manual)
 
 
 # Open data/functions, and process the data into a comprehensible tuple that
@@ -1019,4 +1046,32 @@ FUNCTION_CONVERSIONS = tuple(FUNCTION_CONVERSIONS)
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(
+        description='Receive .m file and convert to .tex.')
+    parser.add_argument('PATHR', nargs='?', type=str,
+                        help='path of input .m file, with the current'
+                             ' directory as the starting point', )
+    parser.add_argument('PATHW', nargs='?', type=str,
+                        help='path of file to be outputted to, with the'
+                             ' current directory as the starting point')
+    parser.add_argument('REF', nargs='?', type=str,
+                        help='path of file containing references, with the'
+                             ' current directory as the starting point')
+    parser.add_argument('-v', '--verbose', help='increase output verbosity',
+                        action='store_true')
+    parser.add_argument('-m', metavar='FUNC', help='manually '
+                        'enter equations instead of specifying a file')
+    args = parser.parse_args()
+
+    if type(args.REF) is type(None) and type(args.PATHW) is type(None)\
+            and type(args.PATHR) is type(None):
+        main(verbose=args.verbose, manual=args.m)
+    elif type(args.REF) is type(None) and type(args.PATHW) is type(None):
+        main(pathr=args.PATHR,
+             verbose=args.verbose, manual=args.m)
+    elif type(args.REF) is type(None):
+        main(pathr=args.PATHR, pathw=args.PATHW,
+             verbose=args.verbose, manual=args.m)
+    else:
+        main(pathr=args.PATHR, pathw=args.PATHW, pathref=args.REF,
+             verbose=args.verbose, manual=args.m)

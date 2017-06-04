@@ -16,7 +16,7 @@ SYMBOLS = {
     'CapitalAlpha': ' A', 'CapitalBeta': ' B', 'CapitalGamma': 'Gamma',
     'CapitalDelta': 'Delta', 'CapitalEpsilon': 'E', 'CapitalZeta': ' Z',
     'CapitalEta': ' H', 'CapitalTheta': 'Theta', 'CapitalIota': ' I',
-    'CapitalKappa': 'K', 'CapitalLambda': 'Lambda', 'CapitalMu': ' M',
+    'CapitalKappa': ' K', 'CapitalLambda': 'Lambda', 'CapitalMu': ' M',
     'CapitalNu': ' N', 'CapitalXi': 'Xi', 'CapitalOmicron': 'O',
     'CapitalPi': 'Pi', 'CapitalRho': ' P', 'CapitalSigma': 'Sigma',
     'CapitalTau': ' T', 'CapitalUpsilon': ' Y', 'CapitalPhi': 'Phi',
